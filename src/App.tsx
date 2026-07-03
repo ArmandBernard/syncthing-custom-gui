@@ -1,21 +1,14 @@
 import { ApiKeyForm } from './components/ApiKeyForm'
-import { StatusIndicator } from './components/StatusIndicator'
 import { useApiKey } from './hooks/useApiKey'
 import { Header } from './components/Header.tsx'
 
 function App() {
-  const { apiKey, setApiKey, clearApiKey } = useApiKey()
+  const { apiKey, setApiKey } = useApiKey()
 
   return (
     <div className="flex min-h-screen flex-col bg-surface">
       <Header />
-      <main className="flex flex-1 flex-col">
-        {apiKey ? (
-          <StatusIndicator onChangeKey={clearApiKey} />
-        ) : (
-          <ApiKeyForm onSubmit={setApiKey} />
-        )}
-      </main>
+      <main className="flex flex-1 flex-col">{!apiKey && <ApiKeyForm onSubmit={setApiKey} />}</main>
     </div>
   )
 }
