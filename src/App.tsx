@@ -8,7 +8,7 @@ function App() {
   const status = useServerStatus(apiKey)
 
   return (
-    <div className="min-h-screen bg-gray-50 px-4">
+    <div className="min-h-screen bg-gray-50 px-4 flex flex-col">
       {apiKey ? (
         <StatusIndicator status={status} onChangeKey={clearApiKey} />
       ) : (
