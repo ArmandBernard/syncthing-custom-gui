@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ApiKeyProvider } from './hooks/ApiKeyProvider.tsx'
 import { ThemeProvider } from './hooks/ThemeProvider.tsx'
+import { SnackbarProvider } from './hooks/SnackbarProvider.tsx'
 import './styles/index.css'
 import App from './App.tsx'
 
@@ -17,9 +18,11 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <ApiKeyProvider>
-          <App />
-        </ApiKeyProvider>
+        <SnackbarProvider>
+          <ApiKeyProvider>
+            <App />
+          </ApiKeyProvider>
+        </SnackbarProvider>
       </ThemeProvider>
     </QueryClientProvider>
   </StrictMode>,
