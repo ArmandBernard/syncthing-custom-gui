@@ -15,25 +15,28 @@ export function ConnectedDevices() {
   }
 
   return (
-    <ul className="flex flex-col gap-2">
-      {Object.entries(connections?.connections ?? {}).map(([id, connection]) => (
-        <li key={id}>
-          <Card>
-            <div>
-              (Name) <ConnectionStatus connection={connection} />
-            </div>
-            <ul>
-              <li>
-                Upload: <ByteSize bytes={connection.outBytesTotal} />
-              </li>
-              <li>
-                Download: <ByteSize bytes={connection.inBytesTotal} />
-              </li>
-            </ul>
-          </Card>
-        </li>
-      ))}
-    </ul>
+    <div className="flex flex-col gap-4">
+      <h2 className="text-xl">Devices</h2>
+      <ul className="flex flex-col gap-2">
+        {Object.entries(connections?.connections ?? {}).map(([id, connection]) => (
+          <li key={id}>
+            <Card>
+              <div>
+                (Name) <ConnectionStatus connection={connection} />
+              </div>
+              <ul>
+                <li>
+                  Upload: <ByteSize bytes={connection.outBytesTotal} />
+                </li>
+                <li>
+                  Download: <ByteSize bytes={connection.inBytesTotal} />
+                </li>
+              </ul>
+            </Card>
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }
 

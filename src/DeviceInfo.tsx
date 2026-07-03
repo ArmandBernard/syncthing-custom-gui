@@ -29,20 +29,22 @@ export function DeviceInfo() {
   const myDeviceConfigInfo = config.devices.find((d) => d.deviceID === myId)!
 
   return (
-    <Card className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4">
       <h2 className="text-xl">Device info</h2>
-      <ul>
-        <li>Name: {myDeviceConfigInfo.name}</li>
-        <li>
-          Uptime: <TimeSpan seconds={status.uptime} />
-        </li>
-        <li>
-          Download: <ByteSize bytes={connections.total.inBytesTotal} />
-        </li>
-        <li>
-          Upload: <ByteSize bytes={connections.total.outBytesTotal} />
-        </li>
-      </ul>
-    </Card>
+      <Card>
+        <ul>
+          <li>Name: {myDeviceConfigInfo.name}</li>
+          <li>
+            Uptime: <TimeSpan seconds={status.uptime} />
+          </li>
+          <li>
+            Download: <ByteSize bytes={connections.total.inBytesTotal} />
+          </li>
+          <li>
+            Upload: <ByteSize bytes={connections.total.outBytesTotal} />
+          </li>
+        </ul>
+      </Card>
+    </div>
   )
 }
