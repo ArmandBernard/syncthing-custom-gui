@@ -1,4 +1,4 @@
-import type {ServerStatus} from '../lib/syncthingClient'
+import type { ServerStatus } from '../hooks/useServerStatus'
 
 type StatusIndicatorProps = {
   status: ServerStatus

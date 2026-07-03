@@ -10,7 +10,7 @@ export class SyncthingApiError extends Error {
   }
 }
 
-type RequestOptions<E> = ('params' extends keyof E ? { params: E['params'] } : object) &
+export type RequestOptions<E> = ('params' extends keyof E ? { params: E['params'] } : object) &
   ('query' extends keyof E
     ? undefined extends E['query']
       ? { query?: E['query'] }
