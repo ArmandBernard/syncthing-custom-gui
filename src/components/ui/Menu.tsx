@@ -12,7 +12,7 @@ import {
   type ReactNode,
   type ToggleEvent as ReactToggleEvent,
 } from 'react'
-import { usePopoverPosition } from './usePopoverPosition'
+import { usePopoverPosition, type PopoverOrigin } from './usePopoverPosition'
 
 export interface MenuItemProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'onSelect'> {
   onSelect: () => void
@@ -88,6 +88,15 @@ export interface MenuProps {
   label: string
   /** Additional classes applied to the trigger button. */
   triggerClassName?: string
+  /**
+   * Point on the trigger to anchor the popup from. If the caller knows where
+   * the trigger sits on screen (e.g. pinned to a corner), setting this
+   * (together with `transformOrigin`) picks a placement outright instead of
+   * relying on `usePopoverPosition`'s runtime auto-fit.
+   */
+  anchorOrigin?: PopoverOrigin
+  /** Point on the popup placed at `anchorOrigin`. See `anchorOrigin`. */
+  transformOrigin?: PopoverOrigin
   /** `Menu.Item`/`Menu.Toggle` elements only. */
   children: ReactNode
 }
@@ -97,7 +106,7 @@ export interface MenuProps {
  * Button" pattern), e.g. a "..." overflow menu. Not to be confused with
  * "Select", a form dropdown built separately.
  */
-export function Menu({ label, triggerClassName = '', children }: MenuProps) {
+export function Menu({ label, triggerClassName = '', anchorOrigin, transformOrigin, children }: MenuProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [focusedIndex, setFocusedIndex] = useState(-1)
   const triggerRef = useRef<HTMLButtonElement>(null)
@@ -108,7 +117,7 @@ export function Menu({ label, triggerClassName = '', children }: MenuProps) {
     timeout: null,
   })
 
-  const { top, left } = usePopoverPosition(triggerRef, popoverRef, isOpen)
+  const { top, left } = usePopoverPosition(triggerRef, popoverRef, isOpen, { anchorOrigin, transformOrigin })
 
   const items = Children.toArray(children).reduce<{ index: number; disabled: boolean; label: string }[]>(
     (acc, child, index) => {
