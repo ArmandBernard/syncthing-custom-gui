@@ -1,3 +1,4 @@
+import { getStoredApiKey } from '../apiKey'
 import type { EndpointMap } from './endpoints'
 
 export class SyncthingApiError extends Error {
@@ -63,12 +64,14 @@ function buildPath(pathTemplate: string, params?: Record<string, string>, query?
 }
 
 export async function syncthingRequest<K extends keyof EndpointMap>(
-  apiKey: string,
   key: K,
   ...args: object extends RequestOptions<EndpointMap[K]>
     ? [options?: RequestOptions<EndpointMap[K]>]
     : [options: RequestOptions<EndpointMap[K]>]
 ): Promise<EndpointMap[K]['response']> {
+  const apiKey = getStoredApiKey()
+  if (!apiKey) throw new SyncthingApiError(0, 'No Syncthing API key configured')
+
   const options = args[0] as unknown as RuntimeOptions | undefined
   const [method, pathTemplate] = (key as string).split(' ', 2)
   const url = buildPath(pathTemplate, options?.params, options?.query)

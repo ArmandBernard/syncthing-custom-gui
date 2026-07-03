@@ -1,18 +1,8 @@
-import { useCallback, useState } from 'react'
-import { clearStoredApiKey, getStoredApiKey, setStoredApiKey } from '../lib/apiKey'
+import { useContext } from 'react'
+import { ApiKeyContext, type ApiKeyContextValue } from './ApiKeyContext'
 
-export function useApiKey() {
-  const [apiKey, setApiKeyState] = useState(() => getStoredApiKey())
-
-  const setApiKey = useCallback((key: string) => {
-    setStoredApiKey(key)
-    setApiKeyState(key)
-  }, [])
-
-  const clearApiKey = useCallback(() => {
-    clearStoredApiKey()
-    setApiKeyState(null)
-  }, [])
-
-  return { apiKey, setApiKey, clearApiKey }
+export function useApiKey(): ApiKeyContextValue {
+  const context = useContext(ApiKeyContext)
+  if (!context) throw new Error('useApiKey must be used within an ApiKeyProvider')
+  return context
 }
