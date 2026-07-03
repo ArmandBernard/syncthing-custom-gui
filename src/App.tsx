@@ -1,7 +1,19 @@
+import { ApiKeyForm } from './components/ApiKeyForm'
+import { StatusIndicator } from './components/StatusIndicator'
+import { useApiKey } from './hooks/useApiKey'
+import { useServerStatus } from './hooks/useServerStatus'
+
 function App() {
+  const { apiKey, setApiKey, clearApiKey } = useApiKey()
+  const status = useServerStatus(apiKey)
+
   return (
     <div className="min-h-screen bg-gray-50 px-4">
-      <h1 className="pt-24 text-center text-lg font-semibold text-gray-900">Syncthing GUI</h1>
+      {apiKey ? (
+        <StatusIndicator status={status} onChangeKey={clearApiKey} />
+      ) : (
+        <ApiKeyForm onSubmit={setApiKey} />
+      )}
     </div>
   )
 }
