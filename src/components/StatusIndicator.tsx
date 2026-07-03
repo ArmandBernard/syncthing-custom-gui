@@ -1,14 +1,16 @@
 import { type ServerStatus, useServerStatus } from '../hooks/useServerStatus'
+import { Card } from './ui/Card'
+import { Button } from './ui/Button'
 
 type StatusIndicatorProps = {
   onChangeKey: () => void
 }
 
 const STATUS_CONFIG: Record<ServerStatus, { label: string; dotColor: string }> = {
-  checking: { label: 'Checking...', dotColor: 'bg-gray-400' },
-  online: { label: 'Online', dotColor: 'bg-green-500' },
-  unauthorized: { label: 'Unauthorized — check your API key', dotColor: 'bg-red-500' },
-  offline: { label: "Offline — can't reach Syncthing", dotColor: 'bg-red-500' },
+  checking: { label: 'Checking...', dotColor: 'bg-on-surface-variant' },
+  online: { label: 'Online', dotColor: 'bg-success' },
+  unauthorized: { label: 'Unauthorized — check your API key', dotColor: 'bg-error' },
+  offline: { label: "Offline — can't reach Syncthing", dotColor: 'bg-error' },
 }
 
 export function StatusIndicator({ onChangeKey }: StatusIndicatorProps) {
@@ -17,19 +19,15 @@ export function StatusIndicator({ onChangeKey }: StatusIndicatorProps) {
 
   return (
     <div className="flex flex-1 flex-col items-center justify-center">
-      <div className="rounded-lg border border-gray-200 p-6 shadow-sm gap-4 ">
+      <Card variant="outlined" className="flex flex-col items-center gap-4">
         <div className="flex items-center gap-2">
           <span className={`h-3 w-3 rounded-full ${dotColor}`} />
-          <span className="text-sm font-medium text-gray-900">{label}</span>
+          <span className="text-sm font-medium text-on-surface">{label}</span>
         </div>
-        <button
-          type="button"
-          onClick={onChangeKey}
-          className="text-sm text-blue-600 hover:underline hover:cursor-pointer"
-        >
+        <Button type="button" variant="text" onClick={onChangeKey}>
           Change API key
-        </button>
-      </div>
+        </Button>
+      </Card>
     </div>
   )
 }

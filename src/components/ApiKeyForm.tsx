@@ -1,4 +1,7 @@
 import { useState } from 'react'
+import { Card } from './ui/Card'
+import { TextField } from './ui/TextField'
+import { Button } from './ui/Button'
 
 type ApiKeyFormProps = {
   onSubmit: (apiKey: string) => void
@@ -14,31 +17,27 @@ export function ApiKeyForm({ onSubmit }: ApiKeyFormProps) {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="mx-auto mt-24 flex w-full max-w-sm flex-col gap-4 rounded-lg border border-gray-200 p-6 shadow-sm"
-    >
-      <div>
-        <h1 className="text-lg font-semibold text-gray-900">Connect to Syncthing</h1>
-        <p className="mt-1 text-sm text-gray-500">
-          Find your API key under Syncthing's Settings &rarr; General, then paste it below.
-        </p>
-      </div>
-      <input
-        type="password"
-        value={value}
-        onChange={(event) => setValue(event.target.value)}
-        placeholder="API key"
-        autoFocus
-        className="rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-      />
-      <button
-        type="submit"
-        disabled={!value.trim()}
-        className="rounded-md bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
-      >
-        Save
-      </button>
-    </form>
+    <div className="flex flex-1 flex-col items-center justify-center">
+      <Card variant="elevated" className="max-w-sm">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <div>
+            <h1 className="text-lg font-semibold text-on-surface">Connect to Syncthing</h1>
+            <p className="mt-1 text-sm text-on-surface-variant">
+              Find your API key under Syncthing's Settings &rarr; General, then paste it below.
+            </p>
+          </div>
+          <TextField
+            type="password"
+            label="API key"
+            value={value}
+            onChange={(event) => setValue(event.target.value)}
+            autoFocus
+          />
+          <Button type="submit" variant="filled" disabled={!value.trim()}>
+            Save
+          </Button>
+        </form>
+      </Card>
+    </div>
   )
 }
