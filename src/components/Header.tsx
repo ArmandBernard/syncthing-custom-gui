@@ -8,7 +8,7 @@ export function Header() {
         border-b dark:border-b-none border-outline-variant bg-surface-container-highest shadow-md`}
     >
       <div className="text-xl flex items-center">syncthing-custom-gui</div>
-      <div className="flex">
+      <div className="flex gap-2">
         <StatusIndicator />
         <AppMenu />
       </div>
