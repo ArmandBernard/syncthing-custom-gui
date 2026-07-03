@@ -6,6 +6,7 @@ import {
   useRef,
   useState,
   type ButtonHTMLAttributes,
+  type FocusEventHandler,
   type KeyboardEvent as ReactKeyboardEvent,
   type ReactElement,
   type ReactNode,
@@ -20,7 +21,7 @@ export interface MenuItemProps extends Omit<ButtonHTMLAttributes<HTMLButtonEleme
   /** Internal: injected by Menu via cloneElement, do not pass directly. */
   _focused?: boolean
   /** Internal: injected by Menu via cloneElement, do not pass directly. */
-  _itemRef?: (node: HTMLButtonElement | null) => void
+  _itemRef?: (node: HTMLElement | null) => void
 }
 
 /** A single action in a `Menu`. Must be a direct child of `Menu`. */
@@ -53,12 +54,41 @@ function isMenuItemElement(node: ReactNode): node is ReactElement<MenuItemProps>
   return isValidElement(node) && node.type === MenuItem
 }
 
+export interface MenuToggleProps {
+  children: ReactNode
+  disabled?: boolean
+  className?: string
+  /** Internal: injected by Menu via cloneElement, do not pass directly. */
+  _itemRef?: (node: HTMLElement | null) => void
+  /** Internal: injected by Menu via cloneElement, do not pass directly. */
+  onFocus?: FocusEventHandler<HTMLDivElement>
+}
+
+/**
+ * A single roving-tabindex slot in a `Menu` that wraps a composite widget
+ * (e.g. `SegmentedButtons`) instead of a single clickable label. Unlike
+ * `MenuItem`, selecting a value inside it does not close the menu — the menu
+ * may hold other items above/below that the user likely wants to keep using.
+ * Must be a direct child of `Menu`.
+ */
+export function MenuToggle({ children, className = '', _itemRef, onFocus }: MenuToggleProps) {
+  return (
+    <div ref={_itemRef} onFocus={onFocus} className={`px-3 py-2 ${className}`}>
+      {children}
+    </div>
+  )
+}
+
+function isMenuToggleElement(node: ReactNode): node is ReactElement<MenuToggleProps> {
+  return isValidElement(node) && node.type === MenuToggle
+}
+
 export interface MenuProps {
   /** Label rendered on the trigger button. */
   label: string
   /** Additional classes applied to the trigger button. */
   triggerClassName?: string
-  /** `Menu.Item` (or `MenuItem`) elements only. */
+  /** `Menu.Item`/`Menu.Toggle` elements only. */
   children: ReactNode
 }
 
@@ -72,7 +102,7 @@ export function Menu({ label, triggerClassName = '', children }: MenuProps) {
   const [focusedIndex, setFocusedIndex] = useState(-1)
   const triggerRef = useRef<HTMLButtonElement>(null)
   const popoverRef = useRef<HTMLDivElement>(null)
-  const itemNodesRef = useRef<Map<number, HTMLButtonElement>>(new Map())
+  const itemNodesRef = useRef<Map<number, HTMLElement>>(new Map())
   const typeaheadRef = useRef<{ text: string; timeout: ReturnType<typeof setTimeout> | null }>({
     text: '',
     timeout: null,
@@ -88,6 +118,10 @@ export function Menu({ label, triggerClassName = '', children }: MenuProps) {
           disabled: !!child.props.disabled,
           label: typeof child.props.children === 'string' ? child.props.children : '',
         })
+      } else if (isMenuToggleElement(child)) {
+        // No text label to typeahead-match against — that's fine, typeahead
+        // simply never lands on this item, which is the expected behavior.
+        acc.push({ index, disabled: !!child.props.disabled, label: '' })
       }
       return acc
     },
@@ -99,7 +133,17 @@ export function Menu({ label, triggerClassName = '', children }: MenuProps) {
   }, [items])
 
   const focusItemByIndex = useCallback((index: number) => {
-    itemNodesRef.current.get(index)?.focus()
+    const node = itemNodesRef.current.get(index)
+    if (!node) return
+    if (node instanceof HTMLButtonElement) {
+      node.focus()
+      return
+    }
+    // Composite item (Menu.Toggle): delegate focus to its checked radio (or
+    // the first one), rather than the non-focusable wrapper div.
+    const radios = node.querySelectorAll<HTMLInputElement>('input[type="radio"]')
+    const checked = Array.from(radios).find((radio) => radio.checked) ?? radios[0]
+    checked?.focus()
   }, [])
 
   const requestClose = useCallback((returnFocus: boolean) => {
@@ -201,6 +245,16 @@ export function Menu({ label, triggerClassName = '', children }: MenuProps) {
   }
 
   const handleMenuKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+    // Once focus has been delegated into a Menu.Toggle's composite widget
+    // (e.g. a radiogroup), step aside for everything except Escape/Tab and
+    // let the native control handle its own keyboard behavior (arrow-key
+    // cycling between segments, Space to select, etc).
+    const target = event.target as HTMLElement
+    const isInsideComposite = target.closest('[role="radiogroup"]') !== null
+    if (isInsideComposite && event.key !== 'Escape' && event.key !== 'Tab') {
+      return
+    }
+
     switch (event.key) {
       case 'ArrowDown':
         event.preventDefault()
@@ -274,19 +328,30 @@ export function Menu({ label, triggerClassName = '', children }: MenuProps) {
         className="min-w-[112px] rounded-xs bg-surface-container py-2 shadow-lg"
       >
         {Children.map(children, (child, index) => {
-          if (!isMenuItemElement(child)) return child
-          return cloneElement(child, {
-            _focused: focusedIndex === index,
-            _itemRef: (node: HTMLButtonElement | null) => {
-              if (node) itemNodesRef.current.set(index, node)
-              else itemNodesRef.current.delete(index)
-            },
-            onFocus: () => setFocusedIndex(index),
-            onSelect: () => {
-              child.props.onSelect()
-              requestClose(true)
-            },
-          })
+          if (isMenuItemElement(child)) {
+            return cloneElement(child, {
+              _focused: focusedIndex === index,
+              _itemRef: (node: HTMLElement | null) => {
+                if (node) itemNodesRef.current.set(index, node)
+                else itemNodesRef.current.delete(index)
+              },
+              onFocus: () => setFocusedIndex(index),
+              onSelect: () => {
+                child.props.onSelect()
+                requestClose(true)
+              },
+            })
+          }
+          if (isMenuToggleElement(child)) {
+            return cloneElement(child, {
+              _itemRef: (node: HTMLElement | null) => {
+                if (node) itemNodesRef.current.set(index, node)
+                else itemNodesRef.current.delete(index)
+              },
+              onFocus: () => setFocusedIndex(index),
+            })
+          }
+          return child
         })}
       </div>
     </>
@@ -294,3 +359,4 @@ export function Menu({ label, triggerClassName = '', children }: MenuProps) {
 }
 
 Menu.Item = MenuItem
+Menu.Toggle = MenuToggle
