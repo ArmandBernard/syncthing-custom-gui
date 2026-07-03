@@ -3,6 +3,8 @@ import { useSyncthingQuery } from '../hooks/useSyncthingQuery.ts'
 import type { Connection } from '../lib/syncthing/types/system.ts'
 import { Card } from './ui/Card.tsx'
 import { ByteSize } from './ByteSize.tsx'
+import type { ConnectionStatus } from '../lib/ConnectionStatus.ts'
+import getConnectionStatus from '../lib/getConnectionStatus.ts'
 
 export function ConnectedDevices() {
   const { data: connections, isLoading: connectionsAreLoading } = useSyncthingQuery(
@@ -34,7 +36,7 @@ export function ConnectedDevices() {
                   <div className="flex justify-between gap-2">
                     <div className="text-xl">{device.name}</div>
                     <div>
-                      <ConnectionStatus connection={connection} />
+                      <ConnectionStatusText connectionStatus={getConnectionStatus(connection)} />
                     </div>
                   </div>
                   <ul>
@@ -55,16 +57,17 @@ export function ConnectedDevices() {
   )
 }
 
-function ConnectionStatus({ connection }: { connection: Connection }) {
+function ConnectionStatusText({ connectionStatus }: { connectionStatus: ConnectionStatus }) {
   const commonClasses = 'inline text-xl'
 
-  if (!connection.connected) {
-    return <div className={`${commonClasses} text-error`}>Disconnected</div>
-  }
-  if (connection.paused) {
-    return <div className={`${commonClasses} text-amber-400`}>Paused</div>
-  }
-  if (connection.connected) {
-    return <div className={`${commonClasses} text-success`}>Connected</div>
+  switch (connectionStatus) {
+    case 'connected':
+      return <div className={`${commonClasses} text-success`}>Connected</div>
+    case 'disconnected':
+      return <div className={`${commonClasses} text-error`}>Disconnected</div>
+    case 'paused':
+      return <div className={`${commonClasses} text-amber-400`}>Paused</div>
+    default:
+      return <div className={`${commonClasses} text-gray-400`}>Unknown status</div>
   }
 }
