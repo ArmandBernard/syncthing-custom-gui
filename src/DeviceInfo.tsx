@@ -4,7 +4,9 @@ import { Card } from './components/ui/Card.tsx'
 import { TimeSpan } from './components/TimeSpan.tsx'
 
 export function DeviceInfo() {
-  const { data: status, isLoading: statusIsLoading } = useSyncthingQuery('GET /system/status')
+  const { data: status, isLoading: statusIsLoading } = useSyncthingQuery('GET /system/status', {
+    refetchInterval: 10000,
+  })
   const { data: config, isLoading: configIsLoading } = useSyncthingQuery('GET /config')
 
   if (statusIsLoading || !status || configIsLoading || !config) {
