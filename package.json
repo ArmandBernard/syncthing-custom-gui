@@ -1,5 +1,5 @@
 {
-  "name": "syncthing-gui",
+  "name": "syncthing-custom-gui",
   "private": true,
   "version": "0.0.0",
   "type": "module",
