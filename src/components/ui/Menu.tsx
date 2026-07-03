@@ -108,7 +108,7 @@ export function Menu({ label, triggerClassName = '', children }: MenuProps) {
     timeout: null,
   })
 
-  const { top, left } = usePopoverPosition(triggerRef, isOpen)
+  const { top, left } = usePopoverPosition(triggerRef, popoverRef, isOpen)
 
   const items = Children.toArray(children).reduce<{ index: number; disabled: boolean; label: string }[]>(
     (acc, child, index) => {

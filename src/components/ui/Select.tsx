@@ -58,7 +58,7 @@ export function Select({
     timeout: null,
   })
 
-  const { top, left, width } = usePopoverPosition(triggerRef, isOpen)
+  const { top, left, width } = usePopoverPosition(triggerRef, popoverRef, isOpen)
 
   const selectedIndex = options.findIndex((option) => option.value === value)
   const selectedOption = selectedIndex !== -1 ? options[selectedIndex] : null
