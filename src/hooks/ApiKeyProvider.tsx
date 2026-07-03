@@ -15,5 +15,9 @@ export function ApiKeyProvider({ children }: { children: ReactNode }) {
     setApiKeyState(null)
   }, [])
 
-  return <ApiKeyContext.Provider value={{ apiKey, setApiKey, clearApiKey }}>{children}</ApiKeyContext.Provider>
+  return (
+    <ApiKeyContext.Provider value={{ apiKey, setApiKey, clearApiKey }}>
+      {children}
+    </ApiKeyContext.Provider>
+  )
 }

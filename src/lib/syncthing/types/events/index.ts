@@ -34,7 +34,10 @@ import type {
   StateChangedData,
 } from './payloads'
 
-export type ClusterConfigReceivedEvent = EventEnvelope<'ClusterConfigReceived', ClusterConfigReceivedData>
+export type ClusterConfigReceivedEvent = EventEnvelope<
+  'ClusterConfigReceived',
+  ClusterConfigReceivedData
+>
 export type ConfigSavedEvent = EventEnvelope<'ConfigSaved', ConfigSavedData>
 export type DeviceConnectedEvent = EventEnvelope<'DeviceConnected', DeviceConnectedData>
 export type DeviceDisconnectedEvent = EventEnvelope<'DeviceDisconnected', DeviceDisconnectedData>
@@ -51,17 +54,35 @@ export type FolderRejectedEvent = EventEnvelope<'FolderRejected', FolderRejected
 export type FolderResumedEvent = EventEnvelope<'FolderResumed', FolderResumedData>
 export type FolderScanProgressEvent = EventEnvelope<'FolderScanProgress', FolderScanProgressData>
 export type FolderSummaryEvent = EventEnvelope<'FolderSummary', FolderSummaryData>
-export type FolderWatchStateChangedEvent = EventEnvelope<'FolderWatchStateChanged', FolderWatchStateChangedData>
+export type FolderWatchStateChangedEvent = EventEnvelope<
+  'FolderWatchStateChanged',
+  FolderWatchStateChangedData
+>
 export type ItemFinishedEvent = EventEnvelope<'ItemFinished', ItemFinishedData>
 export type ItemStartedEvent = EventEnvelope<'ItemStarted', ItemStartedData>
-export type ListenAddressesChangedEvent = EventEnvelope<'ListenAddressesChanged', ListenAddressesChangedData>
+export type ListenAddressesChangedEvent = EventEnvelope<
+  'ListenAddressesChanged',
+  ListenAddressesChangedData
+>
 export type LocalChangeDetectedEvent = EventEnvelope<'LocalChangeDetected', LocalChangeDetectedData>
 export type LocalIndexUpdatedEvent = EventEnvelope<'LocalIndexUpdated', LocalIndexUpdatedData>
 export type LoginAttemptEvent = EventEnvelope<'LoginAttempt', LoginAttemptData>
-export type PendingDevicesChangedEvent = EventEnvelope<'PendingDevicesChanged', PendingDevicesChangedData>
-export type PendingFoldersChangedEvent = EventEnvelope<'PendingFoldersChanged', PendingFoldersChangedData>
-export type RemoteChangeDetectedEvent = EventEnvelope<'RemoteChangeDetected', RemoteChangeDetectedData>
-export type RemoteDownloadProgressEvent = EventEnvelope<'RemoteDownloadProgress', RemoteDownloadProgressData>
+export type PendingDevicesChangedEvent = EventEnvelope<
+  'PendingDevicesChanged',
+  PendingDevicesChangedData
+>
+export type PendingFoldersChangedEvent = EventEnvelope<
+  'PendingFoldersChanged',
+  PendingFoldersChangedData
+>
+export type RemoteChangeDetectedEvent = EventEnvelope<
+  'RemoteChangeDetected',
+  RemoteChangeDetectedData
+>
+export type RemoteDownloadProgressEvent = EventEnvelope<
+  'RemoteDownloadProgress',
+  RemoteDownloadProgressData
+>
 export type RemoteIndexUpdatedEvent = EventEnvelope<'RemoteIndexUpdated', RemoteIndexUpdatedData>
 export type StartingEvent = EventEnvelope<'Starting', StartingData>
 export type StartupCompleteEvent = EventEnvelope<'StartupComplete', StartupCompleteData>

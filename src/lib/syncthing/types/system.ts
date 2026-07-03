@@ -42,13 +42,7 @@ export interface SystemStatus {
 }
 
 export type ConnectionType =
-  | 'tcp-client'
-  | 'tcp-server'
-  | 'relay-client'
-  | 'relay-server'
-  | 'quic-client'
-  | 'quic-server'
-  | ''
+  'tcp-client' | 'tcp-server' | 'relay-client' | 'relay-server' | 'quic-client' | 'quic-server' | ''
 
 export interface Connection {
   address: string

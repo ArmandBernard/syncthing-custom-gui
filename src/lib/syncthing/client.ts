@@ -39,7 +39,11 @@ const BLOB_RESPONSE_KEYS: ReadonlySet<string> = new Set([
   'GET /debug/support',
 ])
 
-function buildPath(pathTemplate: string, params?: Record<string, string>, query?: Record<string, unknown>): string {
+function buildPath(
+  pathTemplate: string,
+  params?: Record<string, string>,
+  query?: Record<string, unknown>,
+): string {
   let path = pathTemplate
   if (params) {
     for (const [name, value] of Object.entries(params)) {
@@ -85,7 +89,11 @@ export async function syncthingRequest<K extends keyof EndpointMap>(
       'X-API-Key': apiKey,
       ...(hasBody && !isRawTextBody ? { 'Content-Type': 'application/json' } : {}),
     },
-    body: hasBody ? (isRawTextBody ? String(options?.body) : JSON.stringify(options?.body)) : undefined,
+    body: hasBody
+      ? isRawTextBody
+        ? String(options?.body)
+        : JSON.stringify(options?.body)
+      : undefined,
   })
 
   if (!response.ok) {

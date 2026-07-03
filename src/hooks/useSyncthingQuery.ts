@@ -3,7 +3,10 @@ import { syncthingRequest, SyncthingApiError, type RequestOptions } from '../lib
 import type { EndpointMap } from '../lib/syncthing/endpoints'
 import { useApiKey } from './useApiKey'
 
-type ReactQueryOptions<TData> = Omit<UseQueryOptions<TData, SyncthingApiError>, 'queryKey' | 'queryFn'>
+type ReactQueryOptions<TData> = Omit<
+  UseQueryOptions<TData, SyncthingApiError>,
+  'queryKey' | 'queryFn'
+>
 
 type UseSyncthingQueryOptions<E, TData> = RequestOptions<E> & ReactQueryOptions<TData>
 
@@ -14,7 +17,10 @@ export function useSyncthingQuery<K extends keyof EndpointMap>(
     : [options: UseSyncthingQueryOptions<EndpointMap[K], EndpointMap[K]['response']>]
 ) {
   const { apiKey } = useApiKey()
-  const { params, query, body, enabled, ...reactQueryOptions } = (args[0] ?? {}) as Record<string, unknown>
+  const { params, query, body, enabled, ...reactQueryOptions } = (args[0] ?? {}) as Record<
+    string,
+    unknown
+  >
 
   return useQuery<EndpointMap[K]['response'], SyncthingApiError>({
     ...reactQueryOptions,

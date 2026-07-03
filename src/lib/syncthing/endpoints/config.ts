@@ -27,7 +27,11 @@ export interface ConfigEndpoints {
 
   'GET /config/folders/:id': { params: { id: string }; response: FolderConfiguration }
   'PUT /config/folders/:id': { params: { id: string }; body: FolderConfiguration; response: void }
-  'PATCH /config/folders/:id': { params: { id: string }; body: Partial<FolderConfiguration>; response: void }
+  'PATCH /config/folders/:id': {
+    params: { id: string }
+    body: Partial<FolderConfiguration>
+    response: void
+  }
   'DELETE /config/folders/:id': { params: { id: string }; response: void }
 
   'GET /config/devices': { response: DeviceConfiguration[] }
@@ -36,7 +40,11 @@ export interface ConfigEndpoints {
 
   'GET /config/devices/:id': { params: { id: string }; response: DeviceConfiguration }
   'PUT /config/devices/:id': { params: { id: string }; body: DeviceConfiguration; response: void }
-  'PATCH /config/devices/:id': { params: { id: string }; body: Partial<DeviceConfiguration>; response: void }
+  'PATCH /config/devices/:id': {
+    params: { id: string }
+    body: Partial<DeviceConfiguration>
+    response: void
+  }
   'DELETE /config/devices/:id': { params: { id: string }; response: void }
 
   'GET /config/options': { response: OptionsConfiguration }

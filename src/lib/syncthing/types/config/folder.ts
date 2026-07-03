@@ -3,20 +3,10 @@ import type { Size } from './common'
 
 export type FolderType = 'sendreceive' | 'sendonly' | 'receiveonly' | 'receiveencrypted'
 export type PullOrder =
-  | 'random'
-  | 'alphabetic'
-  | 'smallestFirst'
-  | 'largestFirst'
-  | 'oldestFirst'
-  | 'newestFirst'
+  'random' | 'alphabetic' | 'smallestFirst' | 'largestFirst' | 'oldestFirst' | 'newestFirst'
 export type BlockPullOrder = 'standard' | 'random' | 'inOrder'
 export type CopyRangeMethod =
-  | 'standard'
-  | 'ioctl'
-  | 'copy_file_range'
-  | 'sendfile'
-  | 'duplicate_extents'
-  | 'all'
+  'standard' | 'ioctl' | 'copy_file_range' | 'sendfile' | 'duplicate_extents' | 'all'
 /** Go type is a bare string; "basic" and "fake" are the only built-in values. */
 export type FilesystemType = 'basic' | 'fake' | (string & {})
 

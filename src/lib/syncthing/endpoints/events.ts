@@ -1,4 +1,8 @@
-import type { LocalChangeDetectedEvent, RemoteChangeDetectedEvent, SyncthingEvent } from '../types/events'
+import type {
+  LocalChangeDetectedEvent,
+  RemoteChangeDetectedEvent,
+  SyncthingEvent,
+} from '../types/events'
 
 export interface EventEndpoints {
   'GET /events': {
