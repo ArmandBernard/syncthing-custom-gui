@@ -39,6 +39,11 @@
   --md-inverse-surface: #313033;
   --md-inverse-on-surface: #f4eff4;
   --md-inverse-primary: #d0bcff;
+  /* Not part of M3's baseline role set, but a "success" semantic (e.g. an
+     online/connected status) is common enough to need one; picked to sit
+     alongside the baseline palette rather than clash with it. */
+  --md-success: #146c2e;
+  --md-on-success: #ffffff;
 }
 
 /* Follow the OS preference by default, unless the user has explicitly forced light. */
@@ -76,6 +81,8 @@
     --md-inverse-surface: #e6e0e9;
     --md-inverse-on-surface: #313033;
     --md-inverse-primary: #6750a4;
+    --md-success: #7ddb8d;
+    --md-on-success: #00390f;
   }
 }
 
@@ -113,6 +120,8 @@
   --md-inverse-surface: #e6e0e9;
   --md-inverse-on-surface: #313033;
   --md-inverse-primary: #6750a4;
+  --md-success: #7ddb8d;
+  --md-on-success: #00390f;
 }
 
 @theme {
@@ -148,6 +157,8 @@
   --color-inverse-surface: var(--md-inverse-surface);
   --color-inverse-on-surface: var(--md-inverse-on-surface);
   --color-inverse-primary: var(--md-inverse-primary);
+  --color-success: var(--md-success);
+  --color-on-success: var(--md-on-success);
 
   --radius-none: 0px;
   --radius-xs: 4px;
