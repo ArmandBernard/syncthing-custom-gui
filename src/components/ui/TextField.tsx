@@ -63,16 +63,35 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
           className={
             variant === 'filled'
               ? `peer h-14 w-full rounded-t-xs border-b-2 bg-surface-container-highest px-4 pt-5 pb-2 text-base text-on-surface outline-none disabled:opacity-[0.38] ${borderColor}`
-              : `peer h-14 w-full rounded-xs border bg-transparent px-4 text-base text-on-surface outline-none disabled:opacity-[0.38] ${borderColor}`
+              : `peer h-14 w-full rounded-xs bg-transparent px-4 text-base text-on-surface outline-none disabled:opacity-[0.38]`
           }
           {...props}
         />
+        {variant === 'outlined' && (
+          // The border lives on this fieldset rather than the input. A <legend> inside a
+          // <fieldset> border punches a real gap in the border stroke around itself, which is
+          // what actually "notches" the floating label in — no background color to match the
+          // field's surroundings, unlike patching a colored box over the border line.
+          <fieldset
+            aria-hidden="true"
+            className={`pointer-events-none absolute inset-0 m-0 min-w-0 rounded-xs border px-3 transition-colors ${borderColor}`}
+          >
+            <legend
+              className="invisible overflow-hidden whitespace-nowrap text-xs leading-none transition-[max-width] duration-150"
+              style={{ maxWidth: isFloating ? 1000 : 0 }}
+            >
+              {/* Padding lives on this inner span, not the legend itself — padding on the
+                  legend would keep a residual gap even at max-width: 0. */}
+              <span className="px-1">{label}</span>
+            </legend>
+          </fieldset>
+        )}
         <label
           htmlFor={inputId}
           className={
             isFloating
-              ? `pointer-events-none absolute left-4 top-2 origin-left text-xs transition-all ${
-                  variant === 'outlined' ? '-top-2 left-3 bg-surface px-1' : ''
+              ? `pointer-events-none absolute origin-left left-4 text-xs leading-none transition-all ${
+                  variant === 'outlined' ? 'top-0' : 'top-2'
                 } ${labelColor}`
               : `pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-base transition-all ${labelColor}`
           }
@@ -81,7 +100,10 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
         </label>
       </div>
       {supportingText && (
-        <p id={supportingId} className={`mt-1 px-4 text-xs ${error ? 'text-error' : 'text-on-surface-variant'}`}>
+        <p
+          id={supportingId}
+          className={`mt-1 px-4 text-xs ${error ? 'text-error' : 'text-on-surface-variant'}`}
+        >
           {supportingText}
         </p>
       )}
