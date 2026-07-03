@@ -30,17 +30,22 @@ export function ConnectedDevices() {
           return (
             <li key={device.deviceID}>
               <Card>
-                <div>
-                  {device.name} <ConnectionStatus connection={connection} />
+                <div className="flex flex-col gap-4">
+                  <div className="flex justify-between gap-2">
+                    <div className="text-xl">{device.name}</div>
+                    <div>
+                      <ConnectionStatus connection={connection} />
+                    </div>
+                  </div>
+                  <ul>
+                    <li>
+                      Upload: <ByteSize bytes={connection.outBytesTotal} />
+                    </li>
+                    <li>
+                      Download: <ByteSize bytes={connection.inBytesTotal} />
+                    </li>
+                  </ul>
                 </div>
-                <ul>
-                  <li>
-                    Upload: <ByteSize bytes={connection.outBytesTotal} />
-                  </li>
-                  <li>
-                    Download: <ByteSize bytes={connection.inBytesTotal} />
-                  </li>
-                </ul>
               </Card>
             </li>
           )
@@ -51,13 +56,15 @@ export function ConnectedDevices() {
 }
 
 function ConnectionStatus({ connection }: { connection: Connection }) {
+  const commonClasses = 'inline text-xl'
+
   if (!connection.connected) {
-    return <div className="text-error">Disconnected</div>
+    return <div className={`${commonClasses} text-error`}>Disconnected</div>
   }
   if (connection.paused) {
-    return <div className="text-amber-400">Paused</div>
+    return <div className={`${commonClasses} text-amber-400`}>Paused</div>
   }
   if (connection.connected) {
-    return <div className="text-success">Connected</div>
+    return <div className={`${commonClasses} text-success`}>Connected</div>
   }
 }
