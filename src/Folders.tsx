@@ -1,9 +1,6 @@
 import { useSyncthingQuery } from './hooks/useSyncthingQuery.ts'
 import { CircularProgress } from './components/ui/Progress.tsx'
-import { CardAccordion } from './components/ui/CardAccordion.tsx'
-import { useState } from 'react'
-import type { DeviceConfiguration, FolderConfiguration } from './lib/syncthing/types/config'
-import { TimeSpan } from './components/TimeSpan.tsx'
+import { Folder } from './Folder.tsx'
 
 export function Folders() {
   const { data: config, isLoading: configLoading } = useSyncthingQuery('GET /config')
@@ -23,49 +20,5 @@ export function Folders() {
         ))}
       </ul>
     </div>
-  )
-}
-
-function Folder({
-  folder,
-  devices,
-}: {
-  folder: FolderConfiguration
-  devices: DeviceConfiguration[]
-}) {
-  const [expanded, setExpanded] = useState<boolean>(false)
-
-  return (
-    <CardAccordion
-      expanded={expanded}
-      setExpanded={setExpanded}
-      buttonBody={
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="text-xl">{folder.label}</div>
-          </div>
-        </div>
-      }
-    >
-      <div className="flex flex-col gap-4">
-        <ul>
-          <li>Path: {folder.path}</li>
-          <li>
-            Rescan: <TimeSpan seconds={folder.rescanIntervalS} />{' '}
-            {folder.fsWatcherEnabled ? '(enabled)' : '(disabled)'}
-          </li>
-          <li>
-            Devices:{' '}
-            {folder.devices
-              .map((device) => {
-                const deviceConfig = devices.find((d) => d.deviceID === device.deviceID)
-
-                return deviceConfig?.name
-              })
-              .join(', ')}
-          </li>
-        </ul>
-      </div>
-    </CardAccordion>
   )
 }
