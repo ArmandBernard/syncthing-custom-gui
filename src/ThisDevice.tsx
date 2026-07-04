@@ -4,6 +4,7 @@ import { TimeSpan } from './components/TimeSpan.tsx'
 import { ByteSize } from './components/ByteSize.tsx'
 import { CardAccordion } from './components/ui/CardAccordion.tsx'
 import { useState } from 'react'
+import { Identicon } from './components/ui/Identicon.tsx'
 
 export function ThisDevice() {
   const [expanded, setExpanded] = useState(false)
@@ -34,7 +35,12 @@ export function ThisDevice() {
     <CardAccordion
       expanded={expanded}
       setExpanded={setExpanded}
-      buttonBody={<div className="text-xl text-left">{myDeviceConfigInfo.name}</div>}
+      buttonBody={
+        <div className="flex items-center gap-4">
+          <Identicon id={myDeviceConfigInfo.deviceID} />
+          <div className="text-xl">{myDeviceConfigInfo.name}</div>
+        </div>
+      }
     >
       <div className="flex flex-col gap-4">
         <ul>
