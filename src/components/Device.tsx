@@ -9,6 +9,7 @@ import type { DeviceStats } from '../lib/syncthing/types/stats.ts'
 import { RelativeTime } from './RelativeTime.tsx'
 import { useState } from 'react'
 import { CardAccordion } from './ui/CardAccordion.tsx'
+import { Identicon } from './ui/Identicon.tsx'
 
 export function Device({
   connection,
@@ -34,8 +35,11 @@ export function Device({
       expanded={expanded}
       setExpanded={setExpanded}
       buttonBody={
-        <div className="flex justify-between gap-4">
-          <div className="text-xl">{device.name}</div>
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <Identicon id={device.deviceID} />
+            <div className="text-xl">{device.name}</div>
+          </div>
           <div>
             <ConnectionStatusText
               connected={connection.connected}
