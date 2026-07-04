@@ -10,6 +10,9 @@ import { RelativeTime } from './RelativeTime.tsx'
 import { useState } from 'react'
 import { CardAccordion } from './ui/CardAccordion.tsx'
 import { Identicon } from './ui/Identicon.tsx'
+import { Button } from './ui/Button.tsx'
+import { useSyncthingMutation } from '../hooks/useSyncthingMutation.ts'
+import { useSyncthingInvalidate } from '../hooks/useSyncthingInvalidate.ts'
 
 export function Device({
   connection,
@@ -25,9 +28,26 @@ export function Device({
     'GET /db/completion',
     { query: { device: device.deviceID } },
   )
+  const { mutateAsync: pauseAsync } = useSyncthingMutation('POST /system/pause', {
+    query: { device: device.deviceID },
+  })
+  const { mutateAsync: resumeAsync } = useSyncthingMutation('POST /system/resume', {
+    query: { device: device.deviceID },
+  })
+  const invalidateConnections = useSyncthingInvalidate('GET /system/connections')
 
   if (completionIsLoading || !completion) {
     return <CircularProgress aria-label="Loading" />
+  }
+
+  async function handlePauseOrResume() {
+    if (connection.paused) {
+      await resumeAsync()
+    } else {
+      await pauseAsync()
+    }
+    // It can take a little time to unpause
+    setTimeout(async () => await invalidateConnections(), 200)
   }
 
   return (
@@ -50,19 +70,26 @@ export function Device({
         </div>
       }
     >
-      <ul>
-        {!connection.connected && (
+      <div className="flex flex-col gap-4">
+        <ul>
+          {!connection.connected && (
+            <li>
+              Last seen: <RelativeTime date={stats.lastSeen} />
+            </li>
+          )}
           <li>
-            Last seen: <RelativeTime date={stats.lastSeen} />
+            Upload: <ByteSize bytes={connection.outBytesTotal} />
           </li>
-        )}
-        <li>
-          Upload: <ByteSize bytes={connection.outBytesTotal} />
-        </li>
-        <li>
-          Download: <ByteSize bytes={connection.inBytesTotal} />
-        </li>
-      </ul>
+          <li>
+            Download: <ByteSize bytes={connection.inBytesTotal} />
+          </li>
+        </ul>
+        <div className="flex gap-4 justify-end">
+          <Button variant="outlined" onClick={handlePauseOrResume}>
+            {connection.paused ? 'Resume' : 'Pause'}
+          </Button>
+        </div>
+      </div>
     </CardAccordion>
   )
 }
