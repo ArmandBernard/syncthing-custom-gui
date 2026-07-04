@@ -12,8 +12,8 @@ export function SyncthingIconDark({ className }: { className?: string }) {
           <circle
             fill="none"
             stroke="var(--color-on-surface)"
-            stroke-width="6"
-            stroke-miterlimit="10"
+            strokeWidth="6"
+            strokeMiterlimit="10"
             cx="58.7"
             cy="58.5"
             r="43.7"
@@ -27,8 +27,8 @@ export function SyncthingIconDark({ className }: { className?: string }) {
             <line
               fill="none"
               stroke="var(--color-on-surface)"
-              stroke-width="6"
-              stroke-miterlimit="10"
+              strokeWidth="6"
+              strokeMiterlimit="10"
               x1="97.6"
               y1="39.4"
               x2="67.5"
@@ -44,8 +44,8 @@ export function SyncthingIconDark({ className }: { className?: string }) {
             <line
               fill="none"
               stroke="var(--color-on-surface)"
-              stroke-width="6"
-              stroke-miterlimit="10"
+              strokeWidth="6"
+              strokeMiterlimit="10"
               x1="86.5"
               y1="91.8"
               x2="67.5"
@@ -66,8 +66,8 @@ export function SyncthingIconDark({ className }: { className?: string }) {
             <line
               fill="none"
               stroke="var(--color-on-surface)"
-              stroke-width="6"
-              stroke-miterlimit="10"
+              strokeWidth="6"
+              strokeMiterlimit="10"
               x1="16.6"
               y1="69.1"
               x2="67.5"
