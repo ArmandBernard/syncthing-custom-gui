@@ -28,21 +28,23 @@ export function RemoteDevices() {
     <div className="flex flex-col gap-4">
       <h2 className="text-xl">Remote devices</h2>
       <ul className="flex flex-col gap-2">
-        {config.devices.map((device) => {
-          const connection: Connection | undefined = connections.connections[device.deviceID]
-          const deviceStats = stats[device.deviceID]
+        {config.devices
+          .toSorted((da, db) => da.name.localeCompare(db.name))
+          .map((device) => {
+            const connection: Connection | undefined = connections.connections[device.deviceID]
+            const deviceStats = stats[device.deviceID]
 
-          // typically happens if this connection is you
-          if (!connection) {
-            return null
-          }
+            // typically happens if this connection is you
+            if (!connection) {
+              return null
+            }
 
-          return (
-            <li key={device.deviceID}>
-              <Device device={device} connection={connection} stats={deviceStats} />
-            </li>
-          )
-        })}
+            return (
+              <li key={device.deviceID}>
+                <Device device={device} connection={connection} stats={deviceStats} />
+              </li>
+            )
+          })}
       </ul>
     </div>
   )
