@@ -27,6 +27,7 @@ export function Identicon({
   function rectAt(row: number, col: number) {
     return (
       <rect
+        key={`${row}-${col}`}
         x={col * rectSize + '%'}
         y={row * rectSize + '%'}
         width={rectSize + '%'}
