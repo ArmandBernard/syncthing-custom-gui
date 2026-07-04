@@ -12,7 +12,7 @@ type UseSyncthingQueryOptions<E, TData> = RequestOptions<E> & ReactQueryOptions<
 
 export function useSyncthingQuery<K extends keyof EndpointMap>(
   key: K,
-  options: UseSyncthingQueryOptions<EndpointMap[K], EndpointMap[K]['response']>,
+  options: UseSyncthingQueryOptions<EndpointMap[K], EndpointMap[K]['response']> | undefined = {},
 ) {
   const { apiKey } = useApiKey()
   const { enabled, ...reactQueryOptions } = options
