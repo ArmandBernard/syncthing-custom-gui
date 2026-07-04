@@ -10,8 +10,8 @@ export interface CardProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onClick
 }
 
 const VARIANT_CLASSES: Record<CardVariant, string> = {
-  elevated: 'bg-surface-container-low shadow-sm',
-  filled: 'bg-surface-container-highest',
+  elevated: 'bg-surface shadow-sm',
+  filled: 'bg-surface-high',
   outlined: 'bg-surface border border-outline-variant',
 }
 

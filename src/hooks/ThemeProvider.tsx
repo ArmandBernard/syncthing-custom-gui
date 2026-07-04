@@ -8,7 +8,12 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const root = document.documentElement
     root.classList.remove('light', 'dark')
-    if (theme !== 'system') root.classList.add(theme)
+
+    let effectiveTheme = theme
+    if (theme === 'system') {
+      effectiveTheme = window.matchMedia('(prefers-color-scheme: dark)') ? 'dark' : 'light'
+    }
+    root.classList.add(effectiveTheme)
   }, [theme])
 
   const setTheme = useCallback((next: Theme) => {
