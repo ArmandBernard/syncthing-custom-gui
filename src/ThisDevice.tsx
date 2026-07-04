@@ -4,7 +4,7 @@ import { Card } from './components/ui/Card.tsx'
 import { TimeSpan } from './components/TimeSpan.tsx'
 import { ByteSize } from './components/ByteSize.tsx'
 
-export function DeviceInfo() {
+export function ThisDevice() {
   const { data: status, isLoading: statusIsLoading } = useSyncthingQuery('GET /system/status', {
     refetchInterval: 10000,
   })
@@ -30,20 +30,22 @@ export function DeviceInfo() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-xl">Device info</h2>
+      <h2 className="text-xl">This device</h2>
       <Card>
-        <ul>
-          <li>Name: {myDeviceConfigInfo.name}</li>
-          <li>
-            Uptime: <TimeSpan seconds={status.uptime} />
-          </li>
-          <li>
-            Download: <ByteSize bytes={connections.total.inBytesTotal} />
-          </li>
-          <li>
-            Upload: <ByteSize bytes={connections.total.outBytesTotal} />
-          </li>
-        </ul>
+        <div className="flex flex-col gap-4">
+          <div className="text-xl">{myDeviceConfigInfo.name}</div>
+          <ul>
+            <li>
+              Uptime: <TimeSpan seconds={status.uptime} />
+            </li>
+            <li>
+              Download: <ByteSize bytes={connections.total.inBytesTotal} />
+            </li>
+            <li>
+              Upload: <ByteSize bytes={connections.total.outBytesTotal} />
+            </li>
+          </ul>
+        </div>
       </Card>
     </div>
   )
