@@ -13,7 +13,10 @@ export function Identicon({
   let rectSize = 100 / size
 
   function shouldFillRectAt(value: string, row: number, col: number) {
-    return !(value.charCodeAt(row + col * size) % 2)
+    const characterIndex = row + col * size
+    const wrapAroundIndex = characterIndex % value.length
+
+    return !(value.charCodeAt(wrapAroundIndex) % 2)
   }
   function shouldMirrorRectAt(col: number) {
     return !(size % 2 && col === middleCol)
