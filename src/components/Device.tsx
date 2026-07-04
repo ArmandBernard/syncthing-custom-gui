@@ -119,6 +119,6 @@ function ConnectionStatusText({
     case 'syncing':
       return <div className={`${commonClasses} text-on-surface-syncing`}>Syncing</div>
     default:
-      return <div className={`${commonClasses} text-gray-400`}>Unknown status</div>
+      return <div className={`${commonClasses} text-on-surface-variant`}>Unknown status</div>
   }
 }
