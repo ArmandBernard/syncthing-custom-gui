@@ -7,8 +7,8 @@ import type { TransferStatus } from '../lib/TransferStatus.ts'
 import { getTransferStatus } from '../lib/getTransferStatus.ts'
 import type { DeviceStats } from '../lib/syncthing/types/stats.ts'
 import { RelativeTime } from './RelativeTime.tsx'
-import { Accordion } from './ui/Accordion.tsx'
 import { useState } from 'react'
+import { CardAccordion } from './ui/CardAccordion.tsx'
 
 export function Device({
   connection,
@@ -30,40 +30,36 @@ export function Device({
   }
 
   return (
-    <div className="rounded-md bg-surface text-on-surface">
-      <Accordion
-        expanded={expanded}
-        setExpanded={setExpanded}
-        buttonBody={
-          <div className="flex justify-between gap-4 p-4 bg-surface rounded-md hover:brightness-80">
-            <div className="text-xl">{device.name}</div>
-            <div>
-              <ConnectionStatusText
-                connected={connection.connected}
-                transferStatus={getTransferStatus(completion)}
-              />{' '}
-              <div className="inline">{Math.trunc(completion.completion)}%</div>
-            </div>
+    <CardAccordion
+      expanded={expanded}
+      setExpanded={setExpanded}
+      buttonBody={
+        <div className="flex justify-between gap-4">
+          <div className="text-xl">{device.name}</div>
+          <div>
+            <ConnectionStatusText
+              connected={connection.connected}
+              transferStatus={getTransferStatus(completion)}
+            />{' '}
+            <div className="inline">{Math.trunc(completion.completion)}%</div>
           </div>
-        }
-      >
-        <div className="pb-4 px-4">
-          <ul>
-            {!connection.connected && (
-              <li>
-                Last seen: <RelativeTime date={stats.lastSeen} />
-              </li>
-            )}
-            <li>
-              Upload: <ByteSize bytes={connection.outBytesTotal} />
-            </li>
-            <li>
-              Download: <ByteSize bytes={connection.inBytesTotal} />
-            </li>
-          </ul>
         </div>
-      </Accordion>
-    </div>
+      }
+    >
+      <ul>
+        {!connection.connected && (
+          <li>
+            Last seen: <RelativeTime date={stats.lastSeen} />
+          </li>
+        )}
+        <li>
+          Upload: <ByteSize bytes={connection.outBytesTotal} />
+        </li>
+        <li>
+          Download: <ByteSize bytes={connection.inBytesTotal} />
+        </li>
+      </ul>
+    </CardAccordion>
   )
 }
 

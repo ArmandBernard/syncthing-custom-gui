@@ -6,16 +6,13 @@ import {
   useId,
 } from 'react'
 
-export function Accordion({
-  children,
-  expanded,
-  setExpanded,
-  buttonBody,
-}: PropsWithChildren<{
+export type AccordionProps = PropsWithChildren<{
   expanded: boolean
   setExpanded: Dispatch<SetStateAction<boolean>>
   buttonBody: ReactNode
-}>) {
+}>
+
+export function AccordionBase({ children, expanded, setExpanded, buttonBody }: AccordionProps) {
   const sectionId = useId()
 
   return (
