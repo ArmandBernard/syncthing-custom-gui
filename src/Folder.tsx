@@ -25,7 +25,7 @@ export function Folder({
           <div className="flex items-center gap-4">
             <div className="text-xl">{folder.label}</div>
           </div>
-          <FolderStatusText folderState={status?.state} />
+          <FolderStatusText folder={folder} folderState={status?.state} />
         </div>
       }
     >
@@ -58,8 +58,18 @@ export function Folder({
   )
 }
 
-function FolderStatusText({ folderState }: { folderState: FolderState | undefined }) {
+function FolderStatusText({
+  folderState,
+  folder,
+}: {
+  folderState: FolderState | undefined
+  folder: FolderConfiguration
+}) {
   const commonClasses = 'inline text-xl'
+
+  if (folder.paused) {
+    return <div className={`${commonClasses} text-on-surface-paused`}>Paused</div>
+  }
 
   switch (folderState) {
     case 'idle':
