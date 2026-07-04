@@ -1,13 +1,14 @@
 import { CircularProgress } from './ui/Progress.tsx'
 import { useSyncthingQuery } from '../hooks/useSyncthingQuery.ts'
 import type { Connection } from '../lib/syncthing/types/system.ts'
-import { Card } from './ui/Card.tsx'
 import { ByteSize } from './ByteSize.tsx'
 import type { DeviceConfiguration } from '../lib/syncthing/types/config'
 import type { TransferStatus } from '../lib/TransferStatus.ts'
 import { getTransferStatus } from '../lib/getTransferStatus.ts'
 import type { DeviceStats } from '../lib/syncthing/types/stats.ts'
 import { RelativeTime } from './RelativeTime.tsx'
+import { Accordion } from './ui/Accordion.tsx'
+import { useState } from 'react'
 
 export function Device({
   connection,
@@ -18,6 +19,7 @@ export function Device({
   device: DeviceConfiguration
   stats: DeviceStats
 }) {
+  const [expanded, setExpanded] = useState(false)
   const { data: completion, isLoading: completionIsLoading } = useSyncthingQuery(
     'GET /db/completion',
     { query: { device: device.deviceID } },
@@ -28,33 +30,40 @@ export function Device({
   }
 
   return (
-    <Card>
-      <div className="flex flex-col gap-4">
-        <div className="flex justify-between gap-2">
-          <div className="text-xl">{device.name}</div>
-          <div>
-            <ConnectionStatusText
-              connected={connection.connected}
-              transferStatus={getTransferStatus(completion)}
-            />{' '}
-            <div className="inline">{Math.trunc(completion.completion)}%</div>
+    <div className="rounded-md bg-surface text-on-surface">
+      <Accordion
+        expanded={expanded}
+        setExpanded={setExpanded}
+        buttonBody={
+          <div className="flex justify-between gap-4 p-4 bg-surface rounded-md hover:brightness-80">
+            <div className="text-xl">{device.name}</div>
+            <div>
+              <ConnectionStatusText
+                connected={connection.connected}
+                transferStatus={getTransferStatus(completion)}
+              />{' '}
+              <div className="inline">{Math.trunc(completion.completion)}%</div>
+            </div>
           </div>
-        </div>
-        <ul>
-          {!connection.connected && (
+        }
+      >
+        <div className="pb-4 px-4">
+          <ul>
+            {!connection.connected && (
+              <li>
+                Last seen: <RelativeTime date={stats.lastSeen} />
+              </li>
+            )}
             <li>
-              Last seen: <RelativeTime date={stats.lastSeen} />
+              Upload: <ByteSize bytes={connection.outBytesTotal} />
             </li>
-          )}
-          <li>
-            Upload: <ByteSize bytes={connection.outBytesTotal} />
-          </li>
-          <li>
-            Download: <ByteSize bytes={connection.inBytesTotal} />
-          </li>
-        </ul>
-      </div>
-    </Card>
+            <li>
+              Download: <ByteSize bytes={connection.inBytesTotal} />
+            </li>
+          </ul>
+        </div>
+      </Accordion>
+    </div>
   )
 }
 
