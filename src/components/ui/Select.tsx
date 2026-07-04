@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useId, useRef, useState, type ToggleEvent as ReactToggleEvent } from 'react'
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type ToggleEvent as ReactToggleEvent,
+} from 'react'
 import { usePopoverPosition } from './usePopoverPosition'
 
 export interface SelectOption {
@@ -285,7 +292,10 @@ export function Select({
         </label>
       </div>
       {supportingText && (
-        <p id={supportingId} className={`mt-1 px-4 text-xs ${error ? 'text-error' : 'text-on-surface-variant'}`}>
+        <p
+          id={supportingId}
+          className={`mt-1 px-4 text-xs ${error ? 'text-error' : 'text-on-surface-variant'}`}
+        >
           {supportingText}
         </p>
       )}
@@ -298,7 +308,7 @@ export function Select({
         onToggle={handleToggle}
         onKeyDown={handleListboxKeyDown}
         style={{ position: 'fixed', top, left, margin: 0, minWidth: width }}
-        className="rounded-xs bg-surface-container py-2 shadow-lg"
+        className="rounded-xs bg-surface py-2 shadow-lg"
       >
         {options.map((option, index) => {
           const isSelected = index === selectedIndex
@@ -317,7 +327,9 @@ export function Select({
               tabIndex={isHighlighted ? 0 : -1}
               onClick={() => selectOption(index)}
               className={`flex h-12 w-full cursor-default items-center px-3 text-sm outline-none hover:bg-on-surface/8 active:bg-on-surface/12 focus-visible:bg-on-surface/12 ${
-                option.disabled ? 'pointer-events-none opacity-[0.38] text-on-surface' : 'text-on-surface'
+                option.disabled
+                  ? 'pointer-events-none opacity-[0.38] text-on-surface'
+                  : 'text-on-surface'
               } ${isSelected ? 'bg-secondary-container text-on-secondary-container' : ''}`}
             >
               {option.label}

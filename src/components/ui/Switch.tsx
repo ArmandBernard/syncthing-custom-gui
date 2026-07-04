@@ -40,12 +40,14 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(function Switch(
         <span
           aria-hidden="true"
           className={`flex h-8 w-[52px] items-center rounded-full border-2 transition-colors peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primary ${
-            isChecked ? 'border-primary bg-primary' : 'border-outline bg-surface-container-highest'
+            isChecked ? 'border-primary bg-primary' : 'border-outline bg-surface-high'
           }`}
         >
           <span
             className={`inline-block rounded-full transition-all ${
-              isChecked ? 'h-6 w-6 translate-x-[22px] bg-on-primary' : 'h-4 w-4 translate-x-1 bg-outline'
+              isChecked
+                ? 'h-6 w-6 translate-x-[22px] bg-on-primary'
+                : 'h-4 w-4 translate-x-1 bg-outline'
             }`}
           />
         </span>

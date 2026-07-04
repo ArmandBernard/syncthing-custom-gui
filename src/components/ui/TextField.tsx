@@ -62,7 +62,7 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
           }}
           className={
             variant === 'filled'
-              ? `peer h-14 w-full rounded-t-xs border-b-2 bg-surface-container-highest px-4 pt-5 pb-2 text-base text-on-surface outline-none disabled:opacity-[0.38] ${borderColor}`
+              ? `peer h-14 w-full rounded-t-xs border-b-2 bg-surface-high px-4 pt-5 pb-2 text-base text-on-surface outline-none disabled:opacity-[0.38] ${borderColor}`
               : `peer h-14 w-full rounded-xs bg-transparent px-4 text-base text-on-surface outline-none disabled:opacity-[0.38]`
           }
           {...props}

@@ -7,7 +7,7 @@ function App() {
   const { apiKey, setApiKey } = useApiKey()
 
   return (
-    <div className="flex min-h-screen flex-col bg-surface">
+    <div className="flex min-h-screen flex-col bg-surface-low">
       <Header />
 
       <main className="flex flex-1 flex-col">

@@ -106,7 +106,13 @@ export interface MenuProps {
  * Button" pattern), e.g. a "..." overflow menu. Not to be confused with
  * "Select", a form dropdown built separately.
  */
-export function Menu({ label, triggerClassName = '', anchorOrigin, transformOrigin, children }: MenuProps) {
+export function Menu({
+  label,
+  triggerClassName = '',
+  anchorOrigin,
+  transformOrigin,
+  children,
+}: MenuProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [focusedIndex, setFocusedIndex] = useState(-1)
   const triggerRef = useRef<HTMLButtonElement>(null)
@@ -117,25 +123,27 @@ export function Menu({ label, triggerClassName = '', anchorOrigin, transformOrig
     timeout: null,
   })
 
-  const { top, left } = usePopoverPosition(triggerRef, popoverRef, isOpen, { anchorOrigin, transformOrigin })
+  const { top, left } = usePopoverPosition(triggerRef, popoverRef, isOpen, {
+    anchorOrigin,
+    transformOrigin,
+  })
 
-  const items = Children.toArray(children).reduce<{ index: number; disabled: boolean; label: string }[]>(
-    (acc, child, index) => {
-      if (isMenuItemElement(child)) {
-        acc.push({
-          index,
-          disabled: !!child.props.disabled,
-          label: typeof child.props.children === 'string' ? child.props.children : '',
-        })
-      } else if (isMenuToggleElement(child)) {
-        // No text label to typeahead-match against — that's fine, typeahead
-        // simply never lands on this item, which is the expected behavior.
-        acc.push({ index, disabled: !!child.props.disabled, label: '' })
-      }
-      return acc
-    },
-    [],
-  )
+  const items = Children.toArray(children).reduce<
+    { index: number; disabled: boolean; label: string }[]
+  >((acc, child, index) => {
+    if (isMenuItemElement(child)) {
+      acc.push({
+        index,
+        disabled: !!child.props.disabled,
+        label: typeof child.props.children === 'string' ? child.props.children : '',
+      })
+    } else if (isMenuToggleElement(child)) {
+      // No text label to typeahead-match against — that's fine, typeahead
+      // simply never lands on this item, which is the expected behavior.
+      acc.push({ index, disabled: !!child.props.disabled, label: '' })
+    }
+    return acc
+  }, [])
 
   const enabledIndices = useCallback(() => {
     return items.filter((item) => !item.disabled).map((item) => item.index)
@@ -334,7 +342,7 @@ export function Menu({ label, triggerClassName = '', anchorOrigin, transformOrig
         onToggle={handleToggle}
         onKeyDown={handleMenuKeyDown}
         style={{ position: 'fixed', top, left, margin: 0 }}
-        className="min-w-[112px] rounded-xs bg-surface-container py-2 shadow-lg"
+        className="min-w-[112px] rounded-xs bg-surface py-2 shadow-lg"
       >
         {Children.map(children, (child, index) => {
           if (isMenuItemElement(child)) {

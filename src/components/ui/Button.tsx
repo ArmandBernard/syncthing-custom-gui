@@ -10,9 +10,10 @@ const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   filled: 'bg-primary text-on-primary hover:bg-primary/90 active:bg-primary/80',
   tonal:
     'bg-secondary-container text-on-secondary-container hover:bg-secondary-container/90 active:bg-secondary-container/80',
-  outlined: 'bg-transparent text-primary border border-outline hover:bg-primary/8 active:bg-primary/12',
+  outlined:
+    'bg-transparent text-primary border border-outline hover:bg-primary/8 active:bg-primary/12',
   text: 'bg-transparent text-primary hover:bg-primary/8 active:bg-primary/12',
-  elevated: 'bg-surface-container-low text-primary shadow-sm hover:shadow-md active:shadow-sm',
+  elevated: 'bg-surface-low text-primary shadow-sm hover:shadow-md active:shadow-sm',
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
