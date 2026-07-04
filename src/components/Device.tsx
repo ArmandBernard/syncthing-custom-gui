@@ -60,15 +60,15 @@ function ConnectionStatusText({
   const commonClasses = 'inline text-xl'
 
   if (!connected) {
-    return <div className={`${commonClasses} text-error`}>Disconnected</div>
+    return <div className={`${commonClasses} text-on-surface-disconnected`}>Disconnected</div>
   } else {
     switch (transferStatus) {
       case 'up-to-date':
-        return <div className={`${commonClasses} text-success`}>Up-to-date</div>
+        return <div className={`${commonClasses} text-on-surface-connected`}>Up-to-date</div>
       case 'paused':
-        return <div className={`${commonClasses} text-amber-400`}>Paused</div>
+        return <div className={`${commonClasses} text-on-surface-paused`}>Paused</div>
       case 'syncing':
-        return <div className={`${commonClasses} text-blue-400`}>Syncing</div>
+        return <div className={`${commonClasses} text-on-surface-syncing`}>Syncing</div>
       default:
         return <div className={`${commonClasses} text-gray-400`}>Unknown status</div>
     }

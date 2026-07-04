@@ -27,8 +27,18 @@
   --md-outline: var(--color-neutral-500);
   --md-outline-variant: var(--color-neutral-400);
   --md-scrim: var(--color-neutral-950);
-  --md-success: var(--color-green-400);
-  --md-on-success: var(--color-green-100);
+
+  --md-connected: var(--color-green-400);
+  --md-on-connected: var(--color-green-100);
+  --md-on-surface-connected: var(--color-green-800);
+
+  --md-syncing: var(--color-sky-400);
+  --md-on-syncing: var(--color-sky-100);
+  --md-on-surface-syncing: var(--color-sky-800);
+
+  --md-disconnected: var(--color-red-400);
+  --md-on-disconnected: var(--color-red-100);
+  --md-on-surface-disconnected: var(--color-red-800);
 }
 
 .dark {
@@ -47,13 +57,23 @@
   --md-surface-low: var(--color-neutral-900);
   --md-surface: var(--color-neutral-800);
   --md-surface-high: var(--color-neutral-700);
-  --md-on-surface: var(--color-neutral-950);
-  --md-on-surface-variant: var(--color-neutral-800);
+  --md-on-surface: var(--color-neutral-100);
+  --md-on-surface-variant: var(--color-neutral-300);
   --md-outline: var(--color-neutral-500);
-  --md-outline-variant: var(--color-neutral-400);
+  --md-outline-variant: var(--color-neutral-600);
   --md-scrim: var(--color-neutral-950);
-  --md-success: var(--color-green-300);
-  --md-on-success: var(--color-green-950);
+
+  --md-connected: var(--color-green-300);
+  --md-on-connected: var(--color-green-900);
+  --md-on-surface-connected: var(--color-green-200);
+
+  --md-syncing: var(--color-sky-300);
+  --md-on-syncing: var(--color-sky-900);
+  --md-on-surface-syncing: var(--color-sky-200);
+
+  --md-disconnected: var(--color-red-300);
+  --md-on-disconnected: var(--color-red-900);
+  --md-on-surface-disconnected: var(--color-red-200);
 }
 
 @theme {
@@ -77,8 +97,18 @@
   --color-outline: var(--md-outline);
   --color-outline-variant: var(--md-outline-variant);
   --color-scrim: var(--md-scrim);
-  --color-success: var(--md-success);
-  --color-on-success: var(--md-on-success);
+
+  --color-connected: var(--md-connected);
+  --color-on-connected: var(--md-on-connected);
+  --color-on-surface-connected: var(--md-on-surface-connected);
+
+  --color-syncing: var(--md-syncing);
+  --color-on-syncing: var(--md-on-syncing);
+  --color-on-surface-syncing: var(--md-on-surface-syncing);
+
+  --color-disconnected: var(--md-disconnected);
+  --color-on-disconnected: var(--md-on-disconnected);
+  --color-on-surface-disconnected: var(--md-on-surface-disconnected);
 
   --radius-none: 0px;
   --radius-xs: 4px;
