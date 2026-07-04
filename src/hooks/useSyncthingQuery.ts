@@ -12,20 +12,21 @@ type UseSyncthingQueryOptions<E, TData> = RequestOptions<E> & ReactQueryOptions<
 
 export function useSyncthingQuery<K extends keyof EndpointMap>(
   key: K,
-  ...args: object extends UseSyncthingQueryOptions<EndpointMap[K], EndpointMap[K]['response']>
-    ? [options?: UseSyncthingQueryOptions<EndpointMap[K], EndpointMap[K]['response']>]
-    : [options: UseSyncthingQueryOptions<EndpointMap[K], EndpointMap[K]['response']>]
+  options: UseSyncthingQueryOptions<EndpointMap[K], EndpointMap[K]['response']>,
 ) {
   const { apiKey } = useApiKey()
-  const { params, query, body, enabled, ...reactQueryOptions } = (args[0] ?? {}) as Record<
-    string,
-    unknown
-  >
+  const { enabled, ...reactQueryOptions } = options
+
+  const queryInfo = {
+    ...('params' in options ? { params: options.params } : {}),
+    ...('query' in options ? { query: options.query } : {}),
+    ...('body' in options ? { body: options.body } : {}),
+  }
 
   return useQuery<EndpointMap[K]['response'], SyncthingApiError>({
     ...reactQueryOptions,
-    queryKey: ['syncthing', key, { params, query, body }],
-    queryFn: () => syncthingRequest(key, { params, query, body } as never),
+    queryKey: ['syncthing', key, queryInfo],
+    queryFn: () => syncthingRequest(key, queryInfo),
     enabled: apiKey !== null && ((enabled as boolean | undefined) ?? true),
   })
 }

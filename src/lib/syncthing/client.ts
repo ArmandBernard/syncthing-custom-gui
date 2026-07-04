@@ -11,17 +11,11 @@ export class SyncthingApiError extends Error {
   }
 }
 
-export type RequestOptions<E> = ('params' extends keyof E ? { params: E['params'] } : object) &
-  ('query' extends keyof E
-    ? undefined extends E['query']
-      ? { query?: E['query'] }
-      : { query: E['query'] }
-    : object) &
-  ('body' extends keyof E
-    ? undefined extends E['body']
-      ? { body?: E['body'] }
-      : { body: E['body'] }
-    : object)
+export type RequestOptions<E> = {
+  body?: E[keyof E & 'body'] | undefined
+  query?: E[keyof E & 'query'] | undefined
+  params?: E[keyof E & 'params'] | undefined
+}
 
 // A small fixed set of endpoints don't speak JSON. TS types alone can't drive
 // runtime parsing decisions, so these are tracked as plain lookup tables.
@@ -65,11 +59,7 @@ export async function syncthingRequest<K extends keyof EndpointMap>(
   if (!apiKey) throw new SyncthingApiError(0, 'No Syncthing API key configured')
 
   const [method, pathTemplate] = key.split(' ', 2)
-  const url = buildPath(
-    pathTemplate,
-    'params' in options ? options?.params : undefined,
-    'query' in options ? options?.query : undefined,
-  )
+  const url = buildPath(pathTemplate, options?.params, options?.query)
 
   const isRawTextBody = RAW_TEXT_BODY_KEYS.has(key)
   const hasBody = 'body' in options && options?.body !== undefined
