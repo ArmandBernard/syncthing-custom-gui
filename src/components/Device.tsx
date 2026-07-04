@@ -42,7 +42,7 @@ export function Device({
           </div>
           <div>
             <ConnectionStatusText
-              connected={connection.connected}
+              connection={connection}
               transferStatus={getTransferStatus(completion)}
             />{' '}
             <div className="inline">{Math.trunc(completion.completion)}%</div>
@@ -68,26 +68,30 @@ export function Device({
 }
 
 function ConnectionStatusText({
-  connected,
+  connection,
   transferStatus,
 }: {
-  connected: boolean
+  connection: Connection
   transferStatus: TransferStatus
 }) {
   const commonClasses = 'inline text-xl'
 
-  if (!connected) {
+  if (connection.paused) {
+    return <div className={`${commonClasses} text-on-surface-paused`}>Paused</div>
+  }
+
+  if (!connection.connected) {
     return <div className={`${commonClasses} text-on-surface-disconnected`}>Disconnected</div>
-  } else {
-    switch (transferStatus) {
-      case 'up-to-date':
-        return <div className={`${commonClasses} text-on-surface-connected`}>Up-to-date</div>
-      case 'paused':
-        return <div className={`${commonClasses} text-on-surface-paused`}>Paused</div>
-      case 'syncing':
-        return <div className={`${commonClasses} text-on-surface-syncing`}>Syncing</div>
-      default:
-        return <div className={`${commonClasses} text-gray-400`}>Unknown status</div>
-    }
+  }
+
+  switch (transferStatus) {
+    case 'up-to-date':
+      return <div className={`${commonClasses} text-on-surface-connected`}>Up-to-date</div>
+    case 'paused':
+      return <div className={`${commonClasses} text-on-surface-paused`}>Paused</div>
+    case 'syncing':
+      return <div className={`${commonClasses} text-on-surface-syncing`}>Syncing</div>
+    default:
+      return <div className={`${commonClasses} text-gray-400`}>Unknown status</div>
   }
 }
