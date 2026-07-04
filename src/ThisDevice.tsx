@@ -32,29 +32,32 @@ export function ThisDevice() {
   const myDeviceConfigInfo = config.devices.find((d) => d.deviceID === myId)!
 
   return (
-    <CardAccordion
-      expanded={expanded}
-      setExpanded={setExpanded}
-      buttonBody={
-        <div className="flex items-center gap-4">
-          <Identicon id={myDeviceConfigInfo.deviceID} />
-          <div className="text-xl">{myDeviceConfigInfo.name}</div>
+    <div className="flex flex-col gap-4">
+      <h2 className="text-xl">This device</h2>
+      <CardAccordion
+        expanded={expanded}
+        setExpanded={setExpanded}
+        buttonBody={
+          <div className="flex items-center gap-4">
+            <Identicon id={myDeviceConfigInfo.deviceID} />
+            <div className="text-xl">{myDeviceConfigInfo.name}</div>
+          </div>
+        }
+      >
+        <div className="flex flex-col gap-4">
+          <ul>
+            <li>
+              Uptime: <TimeSpan seconds={status.uptime} />
+            </li>
+            <li>
+              Download: <ByteSize bytes={connections.total.inBytesTotal} />
+            </li>
+            <li>
+              Upload: <ByteSize bytes={connections.total.outBytesTotal} />
+            </li>
+          </ul>
         </div>
-      }
-    >
-      <div className="flex flex-col gap-4">
-        <ul>
-          <li>
-            Uptime: <TimeSpan seconds={status.uptime} />
-          </li>
-          <li>
-            Download: <ByteSize bytes={connections.total.inBytesTotal} />
-          </li>
-          <li>
-            Upload: <ByteSize bytes={connections.total.outBytesTotal} />
-          </li>
-        </ul>
-      </div>
-    </CardAccordion>
+      </CardAccordion>
+    </div>
   )
 }
