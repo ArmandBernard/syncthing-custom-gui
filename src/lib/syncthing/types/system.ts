@@ -52,6 +52,9 @@ export interface Connection {
   inBytesTotal: number
   outBytesTotal: number
   isLocal: boolean
+  /**
+   * This means paused on this devices' side
+   */
   paused: boolean
   startedAt: ISODateTime
   type: ConnectionType
