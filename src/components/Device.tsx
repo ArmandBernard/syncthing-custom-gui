@@ -6,21 +6,24 @@ import { ByteSize } from './ByteSize.tsx'
 import type { DeviceConfiguration } from '../lib/syncthing/types/config'
 import type { TransferStatus } from '../lib/TransferStatus.ts'
 import { getTransferStatus } from '../lib/getTransferStatus.ts'
+import type { DeviceStats } from '../lib/syncthing/types/stats.ts'
+import { RelativeTime } from './RelativeTime.tsx'
 
 export function Device({
   connection,
   device,
+  stats,
 }: {
   connection: Connection
   device: DeviceConfiguration
+  stats: DeviceStats
 }) {
-  const { data: config, isLoading: configIsLoading } = useSyncthingQuery('GET /config')
   const { data: completion, isLoading: completionIsLoading } = useSyncthingQuery(
     'GET /db/completion',
     { query: { device: device.deviceID } },
   )
 
-  if (configIsLoading || !config || completionIsLoading || !completion) {
+  if (completionIsLoading || !completion) {
     return <CircularProgress aria-label="Loading" />
   }
 
@@ -38,6 +41,11 @@ export function Device({
           </div>
         </div>
         <ul>
+          {!connection.connected && (
+            <li>
+              Last seen: <RelativeTime date={stats.lastSeen} />
+            </li>
+          )}
           <li>
             Upload: <ByteSize bytes={connection.outBytesTotal} />
           </li>

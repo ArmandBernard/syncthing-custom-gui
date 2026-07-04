@@ -9,8 +9,18 @@ export function Devices() {
     { refetchInterval: 5000 },
   )
   const { data: config, isLoading: configIsLoading } = useSyncthingQuery('GET /config')
+  const { data: stats, isLoading: statsAreLoading } = useSyncthingQuery('GET /stats/device', {
+    refetchInterval: 30000,
+  })
 
-  if (connectionsAreLoading || !connections || configIsLoading || !config) {
+  if (
+    connectionsAreLoading ||
+    !connections ||
+    configIsLoading ||
+    !config ||
+    statsAreLoading ||
+    !stats
+  ) {
     return <CircularProgress aria-label="Loading" />
   }
 
@@ -20,6 +30,7 @@ export function Devices() {
       <ul className="flex flex-col gap-2">
         {config.devices.map((device) => {
           const connection: Connection | undefined = connections.connections[device.deviceID]
+          const deviceStats = stats[device.deviceID]
 
           // typically happens if this connection is you
           if (!connection) {
@@ -28,7 +39,7 @@ export function Devices() {
 
           return (
             <li key={device.deviceID}>
-              <Device device={device} connection={connection} />
+              <Device device={device} connection={connection} stats={deviceStats} />
             </li>
           )
         })}
