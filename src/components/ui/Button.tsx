@@ -1,4 +1,4 @@
-import { forwardRef, type ButtonHTMLAttributes } from 'react'
+import { type ButtonHTMLAttributes } from 'react'
 
 export type ButtonVariant = 'filled' | 'tonal' | 'outlined' | 'text' | 'elevated'
 
@@ -16,16 +16,20 @@ const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   elevated: 'bg-surface-low text-primary shadow-sm hover:shadow-md active:shadow-sm',
 }
 
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
-  { variant = 'filled', className = '', type = 'button', ...props },
-  ref,
-) {
+export function Button({
+  variant = 'filled',
+  className = '',
+  type = 'button',
+  ...props
+}: ButtonProps) {
   return (
     <button
-      ref={ref}
       type={type}
-      className={`inline-flex h-10 items-center justify-center gap-2 rounded-full px-6 text-sm font-medium transition-colors disabled:pointer-events-none disabled:opacity-[0.38] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${VARIANT_CLASSES[variant]} ${className}`}
+      className={`inline-flex h-10 items-center justify-center gap-2 rounded-full px-6 
+      text-sm font-medium transition-colors cursor-pointer disabled:pointer-events-none disabled:opacity-[0.38] 
+      focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary
+       ${VARIANT_CLASSES[variant]} ${className}`}
       {...props}
     />
   )
-})
+}
