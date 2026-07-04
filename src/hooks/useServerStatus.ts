@@ -2,7 +2,7 @@ import { useSyncthingQuery } from './useSyncthingQuery'
 
 export type ServerStatus = 'checking' | 'online' | 'unauthorized' | 'offline'
 
-const POLL_INTERVAL_MS = 5000
+const POLL_INTERVAL_MS = 30000
 
 export function useServerStatus(): ServerStatus {
   const { error, isPending } = useSyncthingQuery('GET /system/ping', {
