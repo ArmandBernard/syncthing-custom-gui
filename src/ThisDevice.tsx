@@ -1,10 +1,12 @@
 import { CircularProgress } from './components/ui/Progress.tsx'
 import { useSyncthingQuery } from './hooks/useSyncthingQuery.ts'
-import { Card } from './components/ui/Card.tsx'
 import { TimeSpan } from './components/TimeSpan.tsx'
 import { ByteSize } from './components/ByteSize.tsx'
+import { CardAccordion } from './components/ui/CardAccordion.tsx'
+import { useState } from 'react'
 
 export function ThisDevice() {
+  const [expanded, setExpanded] = useState(false)
   const { data: status, isLoading: statusIsLoading } = useSyncthingQuery('GET /system/status', {
     refetchInterval: 10000,
   })
@@ -29,24 +31,24 @@ export function ThisDevice() {
   const myDeviceConfigInfo = config.devices.find((d) => d.deviceID === myId)!
 
   return (
-    <div className="flex flex-col gap-4">
-      <h2 className="text-xl">This device</h2>
-      <Card>
-        <div className="flex flex-col gap-4">
-          <div className="text-xl">{myDeviceConfigInfo.name}</div>
-          <ul>
-            <li>
-              Uptime: <TimeSpan seconds={status.uptime} />
-            </li>
-            <li>
-              Download: <ByteSize bytes={connections.total.inBytesTotal} />
-            </li>
-            <li>
-              Upload: <ByteSize bytes={connections.total.outBytesTotal} />
-            </li>
-          </ul>
-        </div>
-      </Card>
-    </div>
+    <CardAccordion
+      expanded={expanded}
+      setExpanded={setExpanded}
+      buttonBody={<div className="text-xl text-left">{myDeviceConfigInfo.name}</div>}
+    >
+      <div className="flex flex-col gap-4">
+        <ul>
+          <li>
+            Uptime: <TimeSpan seconds={status.uptime} />
+          </li>
+          <li>
+            Download: <ByteSize bytes={connections.total.inBytesTotal} />
+          </li>
+          <li>
+            Upload: <ByteSize bytes={connections.total.outBytesTotal} />
+          </li>
+        </ul>
+      </div>
+    </CardAccordion>
   )
 }
