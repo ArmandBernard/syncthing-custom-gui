@@ -23,12 +23,6 @@ export type RequestOptions<E> = ('params' extends keyof E ? { params: E['params'
       : { body: E['body'] }
     : object)
 
-interface RuntimeOptions {
-  params?: Record<string, string>
-  query?: Record<string, unknown>
-  body?: unknown
-}
-
 // A small fixed set of endpoints don't speak JSON. TS types alone can't drive
 // runtime parsing decisions, so these are tracked as plain lookup tables.
 const RAW_TEXT_BODY_KEYS: ReadonlySet<string> = new Set(['POST /system/error'])
@@ -39,11 +33,7 @@ const BLOB_RESPONSE_KEYS: ReadonlySet<string> = new Set([
   'GET /debug/support',
 ])
 
-function buildPath(
-  pathTemplate: string,
-  params?: Record<string, string>,
-  query?: Record<string, unknown>,
-): string {
+function buildPath(pathTemplate: string, params?: unknown, query?: unknown): string {
   let path = pathTemplate
   if (params) {
     for (const [name, value] of Object.entries(params)) {
@@ -69,19 +59,20 @@ function buildPath(
 
 export async function syncthingRequest<K extends keyof EndpointMap>(
   key: K,
-  ...args: object extends RequestOptions<EndpointMap[K]>
-    ? [options?: RequestOptions<EndpointMap[K]>]
-    : [options: RequestOptions<EndpointMap[K]>]
+  options: RequestOptions<EndpointMap[K]>,
 ): Promise<EndpointMap[K]['response']> {
   const apiKey = getStoredApiKey()
   if (!apiKey) throw new SyncthingApiError(0, 'No Syncthing API key configured')
 
-  const options = args[0] as unknown as RuntimeOptions | undefined
-  const [method, pathTemplate] = (key as string).split(' ', 2)
-  const url = buildPath(pathTemplate, options?.params, options?.query)
+  const [method, pathTemplate] = key.split(' ', 2)
+  const url = buildPath(
+    pathTemplate,
+    'params' in options ? options?.params : undefined,
+    'query' in options ? options?.query : undefined,
+  )
 
-  const isRawTextBody = RAW_TEXT_BODY_KEYS.has(key as string)
-  const hasBody = options?.body !== undefined
+  const isRawTextBody = RAW_TEXT_BODY_KEYS.has(key)
+  const hasBody = 'body' in options && options?.body !== undefined
 
   const response = await fetch(url, {
     method,
@@ -101,10 +92,10 @@ export async function syncthingRequest<K extends keyof EndpointMap>(
     throw new SyncthingApiError(response.status, message || response.statusText)
   }
 
-  if (BLOB_RESPONSE_KEYS.has(key as string)) {
+  if (BLOB_RESPONSE_KEYS.has(key)) {
     return (await response.blob()) as EndpointMap[K]['response']
   }
-  if (RAW_TEXT_RESPONSE_KEYS.has(key as string)) {
+  if (RAW_TEXT_RESPONSE_KEYS.has(key)) {
     return (await response.text()) as EndpointMap[K]['response']
   }
 
