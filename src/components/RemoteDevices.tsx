@@ -1,7 +1,7 @@
-import { CircularProgress } from './ui/Progress.tsx'
 import { useSyncthingQuery } from '../hooks/useSyncthingQuery.ts'
 import type { Connection } from '../lib/syncthing/types/system.ts'
 import { Device } from './Device.tsx'
+import { CircularProgressCentred } from './CircularProgressCentred.tsx'
 
 export function RemoteDevices() {
   const { data: connections, isLoading: connectionsAreLoading } = useSyncthingQuery(
@@ -21,7 +21,7 @@ export function RemoteDevices() {
     statsAreLoading ||
     !stats
   ) {
-    return <CircularProgress aria-label="Loading" />
+    return <CircularProgressCentred name="remote devices" />
   }
 
   return (
