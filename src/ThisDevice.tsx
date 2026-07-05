@@ -1,10 +1,10 @@
-import { CircularProgress } from './components/ui/Progress.tsx'
 import { useSyncthingQuery } from './hooks/useSyncthingQuery.ts'
 import { TimeSpan } from './components/TimeSpan.tsx'
 import { ByteSize } from './components/ByteSize.tsx'
 import { CardAccordion } from './components/ui/CardAccordion.tsx'
 import { useState } from 'react'
 import { Identicon } from './components/ui/Identicon.tsx'
+import { CircularProgressCentred } from './components/CircularProgressCentred.tsx'
 
 export function ThisDevice() {
   const [expanded, setExpanded] = useState(false)
@@ -25,7 +25,7 @@ export function ThisDevice() {
     connectionsAreLoading ||
     !connections
   ) {
-    return <CircularProgress aria-label="Loading" />
+    return <CircularProgressCentred name="device information" />
   }
 
   const myId = status.myID

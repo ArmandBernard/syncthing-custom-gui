@@ -1,12 +1,12 @@
 import { useSyncthingQuery } from './hooks/useSyncthingQuery.ts'
-import { CircularProgress } from './components/ui/Progress.tsx'
 import { Folder } from './Folder.tsx'
+import { CircularProgressCentred } from './components/CircularProgressCentred.tsx'
 
 export function Folders() {
   const { data: config, isLoading: configLoading } = useSyncthingQuery('GET /config')
 
   if (configLoading || !config) {
-    return <CircularProgress aria-label="Loading" />
+    return <CircularProgressCentred name="folders" />
   }
 
   return (
