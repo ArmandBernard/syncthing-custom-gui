@@ -35,10 +35,10 @@
   --md-syncing: var(--color-sky-400);
   --md-on-syncing: var(--color-sky-100);
   --md-on-surface-syncing: var(--color-sky-800);
-
-  --md-disconnected: var(--color-red-400);
-  --md-on-disconnected: var(--color-red-100);
-  --md-on-surface-disconnected: var(--color-red-800);
+  
+  --md-disconnected: var(--color-purple-400);
+  --md-on-disconnected: var(--color-purple-100);
+  --md-on-surface-disconnected: var(--color-purple-800);
 }
 
 .dark {
@@ -70,10 +70,10 @@
   --md-syncing: var(--color-sky-300);
   --md-on-syncing: var(--color-sky-900);
   --md-on-surface-syncing: var(--color-sky-200);
-
-  --md-disconnected: var(--color-red-300);
-  --md-on-disconnected: var(--color-red-900);
-  --md-on-surface-disconnected: var(--color-red-200);
+  
+  --md-disconnected: var(--color-purple-300);
+  --md-on-disconnected: var(--color-purple-900);
+  --md-on-surface-disconnected: var(--color-purple-200);
 }
 
 @theme {
