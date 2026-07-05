@@ -3,8 +3,8 @@ import { type ServerStatus, useServerStatus } from '../hooks/useServerStatus'
 const STATUS_CONFIG: Record<ServerStatus, { label: string; dotColor: string }> = {
   checking: { label: 'Checking...', dotColor: 'bg-on-surface-variant' },
   online: { label: 'Online', dotColor: 'bg-connected' },
-  unauthorized: { label: 'Unauthorized — check your API key', dotColor: 'bg-disconnected' },
-  offline: { label: "Offline — can't reach Syncthing", dotColor: 'bg-disconnected' },
+  unauthorized: { label: 'Unauthorized — check your API key', dotColor: 'bg-error' },
+  offline: { label: "Offline — can't reach Syncthing", dotColor: 'bg-error' },
 }
 
 export function StatusIndicator() {
