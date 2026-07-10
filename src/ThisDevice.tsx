@@ -10,6 +10,7 @@ import { useDeviceTransferHistory } from './context/transfer-history/useDeviceTr
 import { useConnections } from './context/connections/useConnections.ts'
 
 import { useDeviceID } from './context/device-id/useDeviceID.ts'
+import { SpeedInline } from './components/SpeedInline.tsx'
 
 export function ThisDevice() {
   const [expanded, setExpanded] = useState(false)
@@ -35,9 +36,14 @@ export function ThisDevice() {
         expanded={expanded}
         setExpanded={setExpanded}
         buttonBody={
-          <div className="flex items-center gap-4">
-            <Identicon id={myDeviceConfigInfo.deviceID} />
-            <div className="text-xl">{myDeviceConfigInfo.name}</div>
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <Identicon id={myDeviceConfigInfo.deviceID} />
+              <div className="text-xl">{myDeviceConfigInfo.name}</div>
+            </div>
+            <div className="flex items-baseline gap-2">
+              <SpeedInline rates={latestRates} />
+            </div>
           </div>
         }
       >
