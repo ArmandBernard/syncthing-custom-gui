@@ -2,7 +2,7 @@ import { createContext, type ReactNode, useEffect, useRef, useState } from 'reac
 import type { DeviceID } from './syncthing/types/common.ts'
 import { useBeforeUnload } from '../hooks/useBeforeUnload.ts'
 import { useConnections } from '../hooks/useConnections.ts'
-import { useDeviceId } from './DeviceIdContext.tsx'
+import { useDeviceID } from '../hooks/useDeviceID.ts'
 
 const HISTORY_LENGTH = 60
 const STORAGE_KEY = 'syncthing-transfer-history'
@@ -35,7 +35,7 @@ export const TransferHistoryContext = createContext<
  */
 export function TransferHistoryContextProvider({ children }: { children: ReactNode }) {
   const connections = useConnections()
-  const myId = useDeviceId()
+  const myId = useDeviceID()
   const lastSamples = useRef<Record<DeviceID, Sample>>({})
   const [history, setHistory] =
     useState<Record<DeviceID, TransferHistoryPoint[]>>(loadStoredHistory)
