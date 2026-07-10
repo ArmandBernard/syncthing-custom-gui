@@ -4,6 +4,7 @@ import { Header } from './components/Header.tsx'
 import { Dashboard } from './Dashboard.tsx'
 import { ConnectionsContextProvider } from './lib/ConnectionsContext.tsx'
 import { DeviceIDContextProvider } from './lib/DeviceIdContext.tsx'
+import { TransferHistoryContextProvider } from './lib/TransferHistoryContext.tsx'
 
 function App() {
   const { apiKey, setApiKey } = useApiKey()
@@ -15,7 +16,9 @@ function App() {
       <main className="flex flex-1 flex-col">
         <DeviceIDContextProvider>
           <ConnectionsContextProvider>
-            {apiKey ? <Dashboard /> : <ApiKeyForm onSubmit={setApiKey} />}
+            <TransferHistoryContextProvider>
+              {apiKey ? <Dashboard /> : <ApiKeyForm onSubmit={setApiKey} />}
+            </TransferHistoryContextProvider>
           </ConnectionsContextProvider>
         </DeviceIDContextProvider>
       </main>

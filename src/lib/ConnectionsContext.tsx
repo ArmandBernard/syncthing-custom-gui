@@ -1,12 +1,8 @@
-import { createContext, type ReactNode, useContext } from 'react'
+import { createContext, type ReactNode } from 'react'
 import type { SystemConnections } from './syncthing/types/system.ts'
 import { useSyncthingQuery } from '../hooks/useSyncthingQuery.ts'
 
-const ConnectionsContext = createContext<SystemConnections | undefined>(undefined)
-
-export function useConnections() {
-  return useContext(ConnectionsContext)
-}
+export const ConnectionsContext = createContext<SystemConnections | undefined>(undefined)
 
 export function ConnectionsContextProvider({ children }: { children: ReactNode }) {
   const { data: connections } = useSyncthingQuery('GET /system/connections', {
