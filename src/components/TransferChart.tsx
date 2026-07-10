@@ -50,6 +50,7 @@ export function TransferChart({ history }: { history: TransferHistoryPoint[] }) 
               backgroundColor: 'var(--color-surface-high)',
               borderColor: 'var(--color-outline-variant)',
               color: 'var(--color-on-surface)',
+              fontSize: 14,
             }}
           />
           <Legend
