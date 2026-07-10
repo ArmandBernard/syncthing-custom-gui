@@ -1,6 +1,6 @@
-import type { DeviceID } from '../lib/syncthing/types/common.ts'
+import type { DeviceID } from '../../lib/syncthing/types/common.ts'
 import { useContext } from 'react'
-import { DeviceIDContext } from '../lib/DeviceIdContext.tsx'
+import { DeviceIDContext } from './DeviceIdContext.ts'
 
 export function useDeviceID(): DeviceID {
   const context = useContext(DeviceIDContext)

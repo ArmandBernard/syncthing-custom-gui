@@ -1,8 +1,9 @@
-import { createContext, type ReactNode, useEffect, useRef, useState } from 'react'
-import type { DeviceID } from './syncthing/types/common.ts'
-import { useBeforeUnload } from '../hooks/useBeforeUnload.ts'
-import { useConnections } from '../hooks/useConnections.ts'
-import { useDeviceID } from '../hooks/useDeviceID.ts'
+import { type ReactNode, useEffect, useRef, useState } from 'react'
+import { useConnections } from '../connections/useConnections.ts'
+import { useDeviceID } from '../device-id/useDeviceID.ts'
+import type { DeviceID } from '../../lib/syncthing/types/common.ts'
+import { useBeforeUnload } from '../../hooks/useBeforeUnload.ts'
+import { TransferHistoryContext } from './TransferHistoryContext.ts'
 
 const HISTORY_LENGTH = 60
 const STORAGE_KEY = 'syncthing-transfer-history'
@@ -23,10 +24,6 @@ interface Rates {
   inBytesTotal: number
   outBytesTotal: number
 }
-
-export const TransferHistoryContext = createContext<
-  Record<DeviceID, TransferHistoryPoint[]> | undefined
->(undefined)
 
 /**
  * Syncthing's API only reports cumulative transfer totals, not instantaneous

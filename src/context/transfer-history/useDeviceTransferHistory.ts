@@ -1,6 +1,6 @@
 import { useContext } from 'react'
-import type { DeviceID } from '../lib/syncthing/types/common'
-import { TransferHistoryContext } from '../lib/TransferHistoryContext.tsx'
+import type { DeviceID } from '../../lib/syncthing/types/common.ts'
+import { TransferHistoryContext } from './TransferHistoryContext.ts'
 
 export function useDeviceTransferHistory(deviceID: DeviceID) {
   const transferHistory = useContext(TransferHistoryContext)

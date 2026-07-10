@@ -2,9 +2,10 @@ import { ApiKeyForm } from './components/ApiKeyForm'
 import { useApiKey } from './hooks/useApiKey'
 import { Header } from './components/Header.tsx'
 import { Dashboard } from './Dashboard.tsx'
-import { ConnectionsContextProvider } from './lib/ConnectionsContext.tsx'
-import { DeviceIDContextProvider } from './lib/DeviceIdContext.tsx'
-import { TransferHistoryContextProvider } from './lib/TransferHistoryContext.tsx'
+
+import { TransferHistoryContextProvider } from './context/transfer-history/TransferHistoryContextProvider.tsx'
+import { ConnectionsContextProvider } from './context/connections/ConnectionsContextProvider.tsx'
+import { DeviceIDContextProvider } from './context/device-id/DeviceIDContextProvider.tsx'
 
 function App() {
   const { apiKey, setApiKey } = useApiKey()

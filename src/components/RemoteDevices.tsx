@@ -3,7 +3,7 @@ import type { Connection } from '../lib/syncthing/types/system.ts'
 import { Device } from './Device.tsx'
 import { CircularProgressCentred } from './CircularProgressCentred.tsx'
 
-import { useConnections } from '../hooks/useConnections.ts'
+import { useConnections } from '../context/connections/useConnections.ts'
 
 export function RemoteDevices() {
   const { data: config, isLoading: configIsLoading } = useSyncthingQuery('GET /config')
