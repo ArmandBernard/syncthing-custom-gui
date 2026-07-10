@@ -15,6 +15,9 @@ import { useSyncthingInvalidate } from '../hooks/useSyncthingInvalidate.ts'
 import type { TransferHistoryPoint } from '../hooks/useDeviceTransferHistory.ts'
 import { TransferChart } from './TransferChart.tsx'
 import { formatBytes } from '../lib/formatBytes.ts'
+import { formatTransferRate } from '../lib/formatTransferRate.ts'
+
+const TRANSFERRING_THRESHOLD = 0
 
 export function Device({
   connection,
@@ -64,11 +67,12 @@ export function Device({
             <Identicon id={device.deviceID} />
             <div className="text-xl">{device.name}</div>
           </div>
-          <div>
+          <div className="flex items-baseline gap-2">
+            <SpeedInline transferHistory={transferHistory} />
             <ConnectionStatusText
               connection={connection}
               transferStatus={getTransferStatus(completion)}
-            />{' '}
+            />
             <div className="inline">{Math.trunc(completion.completion)}%</div>
           </div>
         </div>
@@ -92,6 +96,40 @@ export function Device({
         </div>
       </div>
     </CardAccordion>
+  )
+}
+
+function SpeedInline({ transferHistory }: { transferHistory: TransferHistoryPoint[] }) {
+  const latest = transferHistory.slice(-1).at(0)
+
+  if (!latest) {
+    return null
+  }
+  return (
+    <span className="text-xs self-center leading-3.5">
+      <div
+        aria-label={`${formatTransferRate(latest.outRate)} up`}
+        className={
+          'text-right ' +
+          (latest.outRate > TRANSFERRING_THRESHOLD
+            ? 'text-on-surface-syncing'
+            : 'text-on-surface-variant')
+        }
+      >
+        {formatTransferRate(latest.outRate)} ⭡
+      </div>
+      <div
+        aria-label={`${formatTransferRate(latest.outRate)} down`}
+        className={
+          'text-right ' +
+          (latest.outRate > TRANSFERRING_THRESHOLD
+            ? 'text-on-surface-syncing'
+            : 'text-on-surface-variant')
+        }
+      >
+        {formatTransferRate(latest.inRate)} ⭣
+      </div>
+    </span>
   )
 }
 
