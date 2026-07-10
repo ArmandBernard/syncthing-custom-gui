@@ -59,6 +59,7 @@ export function TransferChart({ history }: { history: TransferHistoryPoint[] }) 
             dataKey="inRate"
             stroke="var(--color-transfer-download)"
             strokeWidth={2}
+            strokeDasharray="5 5"
             dot={false}
             isAnimationActive={false}
           />
@@ -68,6 +69,7 @@ export function TransferChart({ history }: { history: TransferHistoryPoint[] }) 
             dataKey="outRate"
             stroke="var(--color-transfer-upload)"
             strokeWidth={2}
+            strokeDasharray="2 3"
             dot={false}
             isAnimationActive={false}
           />
