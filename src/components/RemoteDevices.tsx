@@ -7,7 +7,7 @@ import { CircularProgressCentred } from './CircularProgressCentred.tsx'
 export function RemoteDevices() {
   const { data: connections, isLoading: connectionsAreLoading } = useSyncthingQuery(
     'GET /system/connections',
-    { refetchInterval: 5000 },
+    { refetchInterval: 2000 },
   )
   const { data: config, isLoading: configIsLoading } = useSyncthingQuery('GET /config')
   const { data: stats, isLoading: statsAreLoading } = useSyncthingQuery('GET /stats/device', {
