@@ -46,11 +46,12 @@ export function TransferChart({ history }: { history: TransferHistoryPoint[] }) 
             width={64}
           />
           <Tooltip
+            wrapperClassName="rounded-md"
             labelFormatter={(time) => dayJs(Number(time)).format('HH:mm:ss')}
             formatter={(value) => formatTransferRate(Number(value))}
             contentStyle={{
               backgroundColor: 'var(--color-surface-high)',
-              borderColor: 'var(--color-outline-variant)',
+              border: 'none',
               color: 'var(--color-on-surface)',
               fontSize: 14,
             }}
