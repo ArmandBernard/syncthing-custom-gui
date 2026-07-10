@@ -2,6 +2,8 @@
 
 A custom web UI for [Syncthing](https://syncthing.net/), inspired by Material 3.
 
+![Dashboard screenshot](./images/dashboard-screenshot.png)
+
 There is no backend. The app talks directly to Syncthing's REST API (`/rest/...`) using an API key, stored in the
 browser's `localStorage`.
 
