@@ -1,15 +1,16 @@
-# Syncthing GUI
+# syncthing-custom-gui
 
 A custom web UI for [Syncthing](https://syncthing.net/), inspired by Material 3.
-
-This UI does not have feature parity with the original, so while you can replace your UI
 
 There is no backend. The app talks directly to Syncthing's REST API (`/rest/...`) using an API key, stored in the
 browser's `localStorage`.
 
-## Running this project...
+## Running this project
 
-### ...as a replacement
+This UI does not have feature parity with the original, so while you can replace your UI it is not recommended at
+this stage.
+
+### Running as a replacement
 
 ```
 npm install
@@ -26,7 +27,7 @@ replacing its bundled WebUI:
 3. Restart Syncthing and open its GUI URL — the custom UI now loads from the same origin as the REST API, so no proxy or
    CORS configuration is needed in production.
 
-### ...alongside the existing UI
+### Running alongside the existing UI
 
 If you'd prefer to run this UI separately, you can use the following to serve the UI at your preferred port.
 
