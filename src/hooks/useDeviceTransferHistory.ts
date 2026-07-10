@@ -33,10 +33,16 @@ export function useDeviceTransferHistory(
   const lastSamples = useRef<Record<DeviceID, Sample>>({})
   const [history, setHistory] =
     useState<Record<DeviceID, TransferHistoryPoint[]>>(loadStoredHistory)
+  const historyRef = useRef(history)
+  historyRef.current = history
 
   useEffect(() => {
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(history))
-  }, [history])
+    function handleBeforeUnload() {
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(historyRef.current))
+    }
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
+  }, [])
 
   useEffect(() => {
     if (!connections) {
