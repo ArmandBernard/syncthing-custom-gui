@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import type { DeviceID } from '../lib/syncthing/types/common'
-import type { SystemConnections } from '../lib/syncthing/types/system'
+import type { Connection, SystemConnections } from '../lib/syncthing/types/system'
 
 export interface TransferHistoryPoint {
   time: number
@@ -28,33 +28,28 @@ export function useDeviceTransferHistory(
   const [history, setHistory] = useState<Record<DeviceID, TransferHistoryPoint[]>>({})
 
   useEffect(() => {
-    if (!connections) return
+    if (!connections) {
+      return
+    }
 
     // `Connection.at` doesn't advance for idle connections, so the poll's
     // receipt time is used as the sample timestamp instead.
-    const at = Date.now()
+    const sampleTime = Date.now()
     const newPoints: Record<DeviceID, TransferHistoryPoint> = {}
 
     for (const [deviceID, connection] of Object.entries(connections.connections)) {
-      const previous = lastSamples.current[deviceID]
-      lastSamples.current[deviceID] = {
-        at,
-        inBytesTotal: connection.inBytesTotal,
-        outBytesTotal: connection.outBytesTotal,
+      const sample = captureRates(deviceID, connection, sampleTime)
+
+      if (!sample) {
+        continue
       }
 
-      // No baseline yet, or a stale/duplicate sample (e.g. `at` didn't advance).
-      if (!previous || at <= previous.at) continue
-
-      const deltaSeconds = (at - previous.at) / 1000
-      // Byte counters can reset on reconnect; clamp negative deltas to 0.
-      const inRate = Math.max(0, connection.inBytesTotal - previous.inBytesTotal) / deltaSeconds
-      const outRate = Math.max(0, connection.outBytesTotal - previous.outBytesTotal) / deltaSeconds
-
-      newPoints[deviceID] = { time: at, inRate, outRate }
+      newPoints[deviceID] = { time: sampleTime, ...sample }
     }
 
-    if (Object.keys(newPoints).length === 0) return
+    if (Object.keys(newPoints).length === 0) {
+      return
+    }
 
     setHistory((prevHistory) => {
       const nextHistory = { ...prevHistory }
@@ -64,6 +59,30 @@ export function useDeviceTransferHistory(
       return nextHistory
     })
   }, [connections])
+
+  function captureRates(deviceID: DeviceID, connection: Connection, sampleTime: number) {
+    const previous = lastSamples.current[deviceID]
+    lastSamples.current[deviceID] = {
+      at: sampleTime,
+      inBytesTotal: connection.inBytesTotal,
+      outBytesTotal: connection.outBytesTotal,
+    }
+
+    // No baseline yet, or a stale/duplicate sample (e.g. `at` didn't advance).
+    if (!previous || sampleTime <= previous.at) {
+      return null
+    }
+
+    const deltaSeconds = (sampleTime - previous.at) / 1000
+    // Byte counters can reset on reconnect; clamp negative deltas to 0.
+    const inRate = Math.max(0, connection.inBytesTotal - previous.inBytesTotal) / deltaSeconds
+    const outRate = Math.max(0, connection.outBytesTotal - previous.outBytesTotal) / deltaSeconds
+
+    return {
+      inRate,
+      outRate,
+    }
+  }
 
   return history
 }
