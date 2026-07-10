@@ -3,6 +3,10 @@ import { useApiKey } from './hooks/useApiKey'
 import { Header } from './components/Header.tsx'
 import { Dashboard } from './Dashboard.tsx'
 
+import { TransferHistoryContextProvider } from './context/transfer-history/TransferHistoryContextProvider.tsx'
+import { ConnectionsContextProvider } from './context/connections/ConnectionsContextProvider.tsx'
+import { DeviceIDContextProvider } from './context/device-id/DeviceIDContextProvider.tsx'
+
 function App() {
   const { apiKey, setApiKey } = useApiKey()
 
@@ -11,7 +15,13 @@ function App() {
       <Header />
 
       <main className="flex flex-1 flex-col">
-        {apiKey ? <Dashboard /> : <ApiKeyForm onSubmit={setApiKey} />}
+        <DeviceIDContextProvider>
+          <ConnectionsContextProvider>
+            <TransferHistoryContextProvider>
+              {apiKey ? <Dashboard /> : <ApiKeyForm onSubmit={setApiKey} />}
+            </TransferHistoryContextProvider>
+          </ConnectionsContextProvider>
+        </DeviceIDContextProvider>
       </main>
     </div>
   )

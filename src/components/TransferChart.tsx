@@ -8,7 +8,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import type { TransferHistoryPoint } from '../hooks/useDeviceTransferHistory.ts'
+import type { TransferHistoryPoint } from '../context/transfer-history/useDeviceTransferHistory.ts'
 import { formatTransferRate } from '../lib/formatTransferRate.ts'
 
 export function TransferChart({ history }: { history: TransferHistoryPoint[] }) {
