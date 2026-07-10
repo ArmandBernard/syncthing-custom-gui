@@ -1,8 +1,8 @@
 import {
+  Area,
+  AreaChart,
   CartesianGrid,
   Legend,
-  Line,
-  LineChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -26,7 +26,7 @@ export function TransferChart({ history }: { history: TransferHistoryPoint[] }) 
   return (
     <div className="h-40">
       <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={history} margin={{ top: 4, right: 8, bottom: 0, left: 0 }}>
+        <AreaChart data={history} margin={{ top: 4, right: 8, bottom: 0, left: 0 }}>
           <CartesianGrid stroke="var(--color-outline-variant)" vertical={false} />
           <XAxis
             dataKey="time"
@@ -58,27 +58,31 @@ export function TransferChart({ history }: { history: TransferHistoryPoint[] }) 
             iconSize={24}
             wrapperStyle={{ color: 'var(--color-on-surface-variant)', fontSize: 12 }}
           />
-          <Line
+          <Area
             name="Download"
             type="monotone"
             dataKey="inRate"
             stroke="var(--color-transfer-download)"
+            fill="var(--color-transfer-download)"
+            fillOpacity={0.2}
             strokeWidth={2}
             strokeDasharray="5 5"
             dot={false}
             isAnimationActive={false}
           />
-          <Line
+          <Area
             name="Upload"
             type="monotone"
             dataKey="outRate"
             stroke="var(--color-transfer-upload)"
+            fill="var(--color-transfer-upload)"
+            fillOpacity={0.2}
             strokeWidth={2}
             strokeDasharray="2 3"
             dot={false}
             isAnimationActive={false}
           />
-        </LineChart>
+        </AreaChart>
       </ResponsiveContainer>
     </div>
   )
