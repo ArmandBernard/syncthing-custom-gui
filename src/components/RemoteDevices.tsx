@@ -1,4 +1,5 @@
 import { useSyncthingQuery } from '../hooks/useSyncthingQuery.ts'
+import { useDeviceTransferHistory } from '../hooks/useDeviceTransferHistory.ts'
 import type { Connection } from '../lib/syncthing/types/system.ts'
 import { Device } from './Device.tsx'
 import { CircularProgressCentred } from './CircularProgressCentred.tsx'
@@ -6,12 +7,13 @@ import { CircularProgressCentred } from './CircularProgressCentred.tsx'
 export function RemoteDevices() {
   const { data: connections, isLoading: connectionsAreLoading } = useSyncthingQuery(
     'GET /system/connections',
-    { refetchInterval: 5000 },
+    { refetchInterval: 2000 },
   )
   const { data: config, isLoading: configIsLoading } = useSyncthingQuery('GET /config')
   const { data: stats, isLoading: statsAreLoading } = useSyncthingQuery('GET /stats/device', {
     refetchInterval: 30000,
   })
+  const transferHistory = useDeviceTransferHistory(connections)
 
   if (
     connectionsAreLoading ||
@@ -41,7 +43,12 @@ export function RemoteDevices() {
 
             return (
               <li key={device.deviceID}>
-                <Device device={device} connection={connection} stats={deviceStats} />
+                <Device
+                  device={device}
+                  connection={connection}
+                  stats={deviceStats}
+                  transferHistory={transferHistory[device.deviceID] ?? []}
+                />
               </li>
             )
           })}

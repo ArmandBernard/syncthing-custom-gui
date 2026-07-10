@@ -1,10 +1,10 @@
 import { useSyncthingQuery } from './hooks/useSyncthingQuery.ts'
 import { TimeSpan } from './components/TimeSpan.tsx'
-import { ByteSize } from './components/ByteSize.tsx'
 import { CardAccordion } from './components/ui/CardAccordion.tsx'
 import { useState } from 'react'
 import { Identicon } from './components/ui/Identicon.tsx'
 import { CircularProgressCentred } from './components/CircularProgressCentred.tsx'
+import { formatBytes } from './lib/formatBytes.ts'
 
 export function ThisDevice() {
   const [expanded, setExpanded] = useState(false)
@@ -49,12 +49,8 @@ export function ThisDevice() {
             <li>
               Uptime: <TimeSpan seconds={status.uptime} />
             </li>
-            <li>
-              Download: <ByteSize bytes={connections.total.inBytesTotal} />
-            </li>
-            <li>
-              Upload: <ByteSize bytes={connections.total.outBytesTotal} />
-            </li>
+            <li>Download: {formatBytes(connections.total.inBytesTotal)}</li>
+            <li>Upload: {formatBytes(connections.total.outBytesTotal)}</li>
           </ul>
         </div>
       </CardAccordion>

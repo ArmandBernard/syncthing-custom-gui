@@ -1,9 +1,7 @@
 import { CircularProgress } from './ui/Progress.tsx'
 import { useSyncthingQuery } from '../hooks/useSyncthingQuery.ts'
 import type { Connection } from '../lib/syncthing/types/system.ts'
-import { ByteSize } from './ByteSize.tsx'
 import type { DeviceConfiguration } from '../lib/syncthing/types/config'
-import type { TransferStatus } from '../lib/TransferStatus.ts'
 import { getTransferStatus } from '../lib/getTransferStatus.ts'
 import type { DeviceStats } from '../lib/syncthing/types/stats.ts'
 import { RelativeTime } from './RelativeTime.tsx'
@@ -13,20 +11,28 @@ import { Identicon } from './ui/Identicon.tsx'
 import { Button } from './ui/Button.tsx'
 import { useSyncthingMutation } from '../hooks/useSyncthingMutation.ts'
 import { useSyncthingInvalidate } from '../hooks/useSyncthingInvalidate.ts'
+import type { TransferHistoryPoint } from '../hooks/useDeviceTransferHistory.ts'
+import { TransferChart } from './TransferChart.tsx'
+import { formatBytes } from '../lib/formatBytes.ts'
+import { formatTransferRate } from '../lib/formatTransferRate.ts'
+import { SpeedInline } from './SpeedInline.tsx'
+import type { Completion } from '../lib/syncthing/types/db.ts'
 
 export function Device({
   connection,
   device,
   stats,
+  transferHistory,
 }: {
   connection: Connection
   device: DeviceConfiguration
   stats: DeviceStats
+  transferHistory: TransferHistoryPoint[]
 }) {
   const [expanded, setExpanded] = useState(false)
   const { data: completion, isLoading: completionIsLoading } = useSyncthingQuery(
     'GET /db/completion',
-    { query: { device: device.deviceID } },
+    { query: { device: device.deviceID }, refetchInterval: 5000 },
   )
   const { mutateAsync: pauseAsync } = useSyncthingMutation('POST /system/pause', {
     query: { device: device.deviceID },
@@ -50,6 +56,8 @@ export function Device({
     setTimeout(async () => await invalidateConnections(), 200)
   }
 
+  const latestRates = transferHistory.slice(-1).at(0)
+
   return (
     <CardAccordion
       expanded={expanded}
@@ -60,12 +68,9 @@ export function Device({
             <Identicon id={device.deviceID} />
             <div className="text-xl">{device.name}</div>
           </div>
-          <div>
-            <ConnectionStatusText
-              connection={connection}
-              transferStatus={getTransferStatus(completion)}
-            />{' '}
-            <div className="inline">{Math.trunc(completion.completion)}%</div>
+          <div className="flex items-baseline gap-2">
+            <SpeedInline rates={latestRates} />
+            <ConnectionStatusText connection={connection} completion={completion} />
           </div>
         </div>
       }
@@ -78,12 +83,15 @@ export function Device({
             </li>
           )}
           <li>
-            Upload: <ByteSize bytes={connection.outBytesTotal} />
+            Upload: {latestRates && <>{formatTransferRate(latestRates?.outRate)} </>}(
+            {formatBytes(connection.outBytesTotal)} total)
           </li>
           <li>
-            Download: <ByteSize bytes={connection.inBytesTotal} />
+            Download: {latestRates && <>{formatTransferRate(latestRates?.inRate)} </>}(
+            {formatBytes(connection.inBytesTotal)} total)
           </li>
         </ul>
+        <TransferChart history={transferHistory} />
         <div className="flex gap-4 justify-end">
           <Button variant="outlined" onClick={handlePauseOrResume}>
             {connection.paused ? 'Resume' : 'Pause'}
@@ -96,11 +104,13 @@ export function Device({
 
 function ConnectionStatusText({
   connection,
-  transferStatus,
+  completion,
 }: {
   connection: Connection
-  transferStatus: TransferStatus
+  completion: Completion
 }) {
+  const transferStatus = getTransferStatus(completion)
+
   const commonClasses = 'inline text-xl'
 
   if (connection.paused) {
@@ -111,13 +121,16 @@ function ConnectionStatusText({
     return <div className={`${commonClasses} text-on-surface-disconnected`}>Disconnected</div>
   }
 
+  const progressText =
+    completion.completion === 100 ? '' : ` (${Math.trunc(completion.completion)}%)`
+
   switch (transferStatus) {
     case 'up-to-date':
       return <div className={`${commonClasses} text-on-surface-connected`}>Up-to-date</div>
     case 'paused':
-      return <div className={`${commonClasses} text-on-surface-paused`}>Paused</div>
+      return <div className={`${commonClasses} text-on-surface-paused`}>Paused{progressText}</div>
     case 'syncing':
-      return <div className={`${commonClasses} text-on-surface-syncing`}>Syncing</div>
+      return <div className={`${commonClasses} text-on-surface-syncing`}>Syncing{progressText}</div>
     default:
       return <div className={`${commonClasses} text-on-surface-variant`}>Unknown status</div>
   }

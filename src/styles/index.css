@@ -35,10 +35,13 @@
   --md-syncing: var(--color-sky-400);
   --md-on-syncing: var(--color-sky-100);
   --md-on-surface-syncing: var(--color-sky-800);
-  
+
   --md-disconnected: var(--color-purple-400);
   --md-on-disconnected: var(--color-purple-100);
   --md-on-surface-disconnected: var(--color-purple-800);
+
+  --color-transfer-download: var(--color-sky-600);
+  --color-transfer-upload: var(--color-green-600);
 }
 
 .dark {
@@ -70,10 +73,13 @@
   --md-syncing: var(--color-sky-300);
   --md-on-syncing: var(--color-sky-900);
   --md-on-surface-syncing: var(--color-sky-200);
-  
+
   --md-disconnected: var(--color-purple-300);
   --md-on-disconnected: var(--color-purple-900);
   --md-on-surface-disconnected: var(--color-purple-200);
+
+  --color-transfer-download: var(--color-sky-300);
+  --color-transfer-upload: var(--color-green-300);
 }
 
 @theme {
