@@ -7,7 +7,7 @@ export function formatBytes(bytes: number) {
     scale++
   }
 
-  return `${displayValue.toFixed(1)}${units[scale]}`
+  return `${displayValue.toFixed(scale === 0 ? 0 : 1)}${units[scale]}`
 }
 
 const units = ['B', 'KiB', 'MiB', 'GiB', 'TiB']
