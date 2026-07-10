@@ -1,8 +1,8 @@
 import { createContext, type ReactNode, useEffect, useRef, useState } from 'react'
 import type { DeviceID } from './syncthing/types/common.ts'
 import { useBeforeUnload } from '../hooks/useBeforeUnload.ts'
-import type { Connection } from './syncthing/types/system.ts'
 import { useConnections } from '../hooks/useConnections.ts'
+import { useDeviceId } from './DeviceIdContext.tsx'
 
 const HISTORY_LENGTH = 60
 const STORAGE_KEY = 'syncthing-transfer-history'
@@ -19,6 +19,11 @@ interface Sample {
   outBytesTotal: number
 }
 
+interface Rates {
+  inBytesTotal: number
+  outBytesTotal: number
+}
+
 export const TransferHistoryContext = createContext<
   Record<DeviceID, TransferHistoryPoint[]> | undefined
 >(undefined)
@@ -30,6 +35,7 @@ export const TransferHistoryContext = createContext<
  */
 export function TransferHistoryContextProvider({ children }: { children: ReactNode }) {
   const connections = useConnections()
+  const myId = useDeviceId()
   const lastSamples = useRef<Record<DeviceID, Sample>>({})
   const [history, setHistory] =
     useState<Record<DeviceID, TransferHistoryPoint[]>>(loadStoredHistory)
@@ -45,15 +51,19 @@ export function TransferHistoryContextProvider({ children }: { children: ReactNo
     // receipt time is used as the sample timestamp instead.
     const sampleTime = Date.now()
     const newPoints: Record<DeviceID, TransferHistoryPoint> = {}
+    const connectionsAndMe: [DeviceID, Rates][] = [
+      ...Object.entries(connections.connections),
+      [myId, connections.total],
+    ]
 
-    for (const [deviceID, connection] of Object.entries(connections.connections)) {
-      const sample = captureRates(deviceID, connection, sampleTime)
+    for (const [deviceID, connection] of connectionsAndMe) {
+      const rates = captureRates(deviceID, connection, sampleTime)
 
-      if (!sample) {
+      if (!rates) {
         continue
       }
 
-      newPoints[deviceID] = { time: sampleTime, ...sample }
+      newPoints[deviceID] = { time: sampleTime, ...rates }
     }
 
     if (Object.keys(newPoints).length === 0) {
@@ -67,14 +77,14 @@ export function TransferHistoryContextProvider({ children }: { children: ReactNo
       }
       return nextHistory
     })
-  }, [connections])
+  }, [connections, myId])
 
-  function captureRates(deviceID: DeviceID, connection: Connection, sampleTime: number) {
+  function captureRates(deviceID: DeviceID, bytesTotal: Rates, sampleTime: number) {
     const previous = lastSamples.current[deviceID]
     lastSamples.current[deviceID] = {
       at: sampleTime,
-      inBytesTotal: connection.inBytesTotal,
-      outBytesTotal: connection.outBytesTotal,
+      inBytesTotal: bytesTotal.inBytesTotal,
+      outBytesTotal: bytesTotal.outBytesTotal,
     }
 
     // No baseline yet, or a stale/duplicate sample (e.g. `at` didn't advance).
@@ -84,8 +94,8 @@ export function TransferHistoryContextProvider({ children }: { children: ReactNo
 
     const deltaSeconds = (sampleTime - previous.at) / 1000
     // Byte counters can reset on reconnect; clamp negative deltas to 0.
-    const inRate = Math.max(0, connection.inBytesTotal - previous.inBytesTotal) / deltaSeconds
-    const outRate = Math.max(0, connection.outBytesTotal - previous.outBytesTotal) / deltaSeconds
+    const inRate = Math.max(0, bytesTotal.inBytesTotal - previous.inBytesTotal) / deltaSeconds
+    const outRate = Math.max(0, bytesTotal.outBytesTotal - previous.outBytesTotal) / deltaSeconds
 
     return {
       inRate,
