@@ -4,15 +4,10 @@ import { useDeviceID } from '../device-id/useDeviceID.ts'
 import type { DeviceID } from '../../lib/syncthing/types/common.ts'
 import { useBeforeUnload } from '../../hooks/useBeforeUnload.ts'
 import { TransferHistoryContext } from './TransferHistoryContext.ts'
+import type { TransferHistoryPoint } from './useDeviceTransferHistory.ts'
 
 const HISTORY_LENGTH = 60
 const STORAGE_KEY = 'syncthing-transfer-history'
-
-export interface TransferHistoryPoint {
-  time: number
-  inRate: number
-  outRate: number
-}
 
 interface Sample {
   at: number
