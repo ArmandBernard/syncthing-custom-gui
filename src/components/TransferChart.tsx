@@ -41,6 +41,8 @@ export function TransferChart({ history }: { history: TransferHistoryPoint[] }) 
             tickFormatter={(rate: number) => formatTransferRate(rate)}
             stroke="var(--color-outline-variant)"
             tick={{ fill: 'var(--color-on-surface-variant)', fontSize: 12 }}
+            domain={[0, (dataMax: number) => Math.max(1024, dataMax)]}
+            allowDataOverflow
             width={64}
           />
           <Tooltip
