@@ -9,6 +9,12 @@ export interface TransferHistoryPoint {
 }
 
 const HISTORY_LENGTH = 60
+const STORAGE_KEY = 'syncthing-transfer-history'
+
+function loadStoredHistory(): Record<DeviceID, TransferHistoryPoint[]> {
+  const stored = sessionStorage.getItem(STORAGE_KEY)
+  return stored ? JSON.parse(stored) : {}
+}
 
 interface Sample {
   at: number
@@ -25,7 +31,12 @@ export function useDeviceTransferHistory(
   connections: SystemConnections | undefined,
 ): Record<DeviceID, TransferHistoryPoint[]> {
   const lastSamples = useRef<Record<DeviceID, Sample>>({})
-  const [history, setHistory] = useState<Record<DeviceID, TransferHistoryPoint[]>>({})
+  const [history, setHistory] =
+    useState<Record<DeviceID, TransferHistoryPoint[]>>(loadStoredHistory)
+
+  useEffect(() => {
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(history))
+  }, [history])
 
   useEffect(() => {
     if (!connections) {
