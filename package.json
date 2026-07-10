@@ -10,7 +10,8 @@
     "lint": "oxlint",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "analyze": "npx vite-bundle-analyzer"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.2",
