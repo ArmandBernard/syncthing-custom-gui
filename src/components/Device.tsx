@@ -13,15 +13,19 @@ import { Identicon } from './ui/Identicon.tsx'
 import { Button } from './ui/Button.tsx'
 import { useSyncthingMutation } from '../hooks/useSyncthingMutation.ts'
 import { useSyncthingInvalidate } from '../hooks/useSyncthingInvalidate.ts'
+import type { TransferHistoryPoint } from '../hooks/useDeviceTransferHistory.ts'
+import { TransferChart } from './TransferChart.tsx'
 
 export function Device({
   connection,
   device,
   stats,
+  transferHistory,
 }: {
   connection: Connection
   device: DeviceConfiguration
   stats: DeviceStats
+  transferHistory: TransferHistoryPoint[]
 }) {
   const [expanded, setExpanded] = useState(false)
   const { data: completion, isLoading: completionIsLoading } = useSyncthingQuery(
@@ -84,6 +88,7 @@ export function Device({
             Download: <ByteSize bytes={connection.inBytesTotal} />
           </li>
         </ul>
+        <TransferChart history={transferHistory} />
         <div className="flex gap-4 justify-end">
           <Button variant="outlined" onClick={handlePauseOrResume}>
             {connection.paused ? 'Resume' : 'Pause'}
