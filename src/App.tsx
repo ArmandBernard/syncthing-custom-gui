@@ -15,13 +15,17 @@ function App() {
       <Header />
 
       <main className="flex flex-1 flex-col">
-        <DeviceIDContextProvider>
-          <ConnectionsContextProvider>
-            <TransferHistoryContextProvider>
-              {apiKey ? <Dashboard /> : <ApiKeyForm onSubmit={setApiKey} />}
-            </TransferHistoryContextProvider>
-          </ConnectionsContextProvider>
-        </DeviceIDContextProvider>
+        {apiKey ? (
+          <DeviceIDContextProvider>
+            <ConnectionsContextProvider>
+              <TransferHistoryContextProvider>
+                <Dashboard />
+              </TransferHistoryContextProvider>
+            </ConnectionsContextProvider>
+          </DeviceIDContextProvider>
+        ) : (
+          <ApiKeyForm onSubmit={setApiKey} />
+        )}
       </main>
     </div>
   )
