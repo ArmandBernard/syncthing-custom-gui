@@ -57,6 +57,8 @@ export function Device({
     setTimeout(async () => await invalidateConnections(), 200)
   }
 
+  const latestRates = transferHistory.slice(-1).at(0)
+
   return (
     <CardAccordion
       expanded={expanded}
@@ -68,12 +70,12 @@ export function Device({
             <div className="text-xl">{device.name}</div>
           </div>
           <div className="flex items-baseline gap-2">
-            <SpeedInline transferHistory={transferHistory} />
+            <SpeedInline rates={latestRates} />
+            <div className="inline">{Math.trunc(completion.completion)}%</div>
             <ConnectionStatusText
               connection={connection}
               transferStatus={getTransferStatus(completion)}
             />
-            <div className="inline">{Math.trunc(completion.completion)}%</div>
           </div>
         </div>
       }
@@ -85,8 +87,14 @@ export function Device({
               Last seen: <RelativeTime date={stats.lastSeen} />
             </li>
           )}
-          <li>Upload: {formatBytes(connection.outBytesTotal)}</li>
-          <li>Download: {formatBytes(connection.inBytesTotal)}</li>
+          <li>
+            Upload: {latestRates && <>{formatTransferRate(latestRates?.outRate)} </>}(
+            {formatBytes(connection.outBytesTotal)} total)
+          </li>
+          <li>
+            Download: {latestRates && <>{formatTransferRate(latestRates?.inRate)} </>}(
+            {formatBytes(connection.inBytesTotal)} total)
+          </li>
         </ul>
         <TransferChart history={transferHistory} />
         <div className="flex gap-4 justify-end">
@@ -99,35 +107,33 @@ export function Device({
   )
 }
 
-function SpeedInline({ transferHistory }: { transferHistory: TransferHistoryPoint[] }) {
-  const latest = transferHistory.slice(-1).at(0)
-
-  if (!latest) {
+function SpeedInline({ rates }: { rates: TransferHistoryPoint | undefined }) {
+  if (!rates) {
     return null
   }
   return (
     <span className="text-xs self-center leading-3.5">
       <div
-        aria-label={`${formatTransferRate(latest.outRate)} up`}
+        aria-label={`${formatTransferRate(rates.outRate)} up`}
         className={
           'text-right ' +
-          (latest.outRate > TRANSFERRING_THRESHOLD
+          (rates.outRate > TRANSFERRING_THRESHOLD
             ? 'text-on-surface-syncing'
             : 'text-on-surface-variant')
         }
       >
-        {formatTransferRate(latest.outRate)} ⭡
+        {formatTransferRate(rates.outRate)} ⭡
       </div>
       <div
-        aria-label={`${formatTransferRate(latest.outRate)} down`}
+        aria-label={`${formatTransferRate(rates.outRate)} down`}
         className={
           'text-right ' +
-          (latest.outRate > TRANSFERRING_THRESHOLD
+          (rates.outRate > TRANSFERRING_THRESHOLD
             ? 'text-on-surface-syncing'
             : 'text-on-surface-variant')
         }
       >
-        {formatTransferRate(latest.inRate)} ⭣
+        {formatTransferRate(rates.inRate)} ⭣
       </div>
     </span>
   )
