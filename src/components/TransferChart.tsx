@@ -34,7 +34,7 @@ export function TransferChart({ history }: { history: TransferHistoryPoint[] }) 
             domain={[nowUnix - 60 * 1000, nowUnix]}
             allowDataOverflow
             stroke="var(--color-outline-variant)"
-            tick={false}
+            hide={true}
             minTickGap={32}
           />
           <YAxis
