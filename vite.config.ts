@@ -5,7 +5,7 @@ import { analyzer } from 'vite-bundle-analyzer'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), tailwindcss(), analyzer()],
+  plugins: [react(), tailwindcss(), analyzer({ analyzerPort: 8877 })],
   server: {
     proxy: {
       // Syncthing's GUI defaults to HTTPS with a self-signed cert; `secure: false`
