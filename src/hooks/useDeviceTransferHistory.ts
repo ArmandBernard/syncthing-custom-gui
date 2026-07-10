@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { DeviceID } from '../lib/syncthing/types/common'
 import type { Connection, SystemConnections } from '../lib/syncthing/types/system'
+import { useBeforeUnload } from './useBeforeUnload'
 
 export interface TransferHistoryPoint {
   time: number
@@ -33,16 +34,8 @@ export function useDeviceTransferHistory(
   const lastSamples = useRef<Record<DeviceID, Sample>>({})
   const [history, setHistory] =
     useState<Record<DeviceID, TransferHistoryPoint[]>>(loadStoredHistory)
-  const historyRef = useRef(history)
-  historyRef.current = history
 
-  useEffect(() => {
-    function handleBeforeUnload() {
-      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(historyRef.current))
-    }
-    window.addEventListener('beforeunload', handleBeforeUnload)
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
-  }, [])
+  useBeforeUnload(() => sessionStorage.setItem(STORAGE_KEY, JSON.stringify(history)))
 
   useEffect(() => {
     if (!connections) {
