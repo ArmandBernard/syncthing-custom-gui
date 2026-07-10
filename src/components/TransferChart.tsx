@@ -21,6 +21,8 @@ export function TransferChart({ history }: { history: TransferHistoryPoint[] }) 
     )
   }
 
+  const nowUnix = Date.now()
+
   return (
     <div className="h-40">
       <ResponsiveContainer width="100%" height="100%">
@@ -29,10 +31,10 @@ export function TransferChart({ history }: { history: TransferHistoryPoint[] }) 
           <XAxis
             dataKey="time"
             type="number"
-            domain={['dataMin', 'dataMax']}
-            tickFormatter={(time: number) => dayJs(time).format('HH:mm:ss')}
+            domain={[nowUnix - 60 * 1000, nowUnix]}
+            allowDataOverflow
             stroke="var(--color-outline-variant)"
-            tick={{ fill: 'var(--color-on-surface-variant)', fontSize: 12 }}
+            tick={false}
             minTickGap={32}
           />
           <YAxis
