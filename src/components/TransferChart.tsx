@@ -8,7 +8,6 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import dayJs from '../lib/dayJs'
 import type { TransferHistoryPoint } from '../hooks/useDeviceTransferHistory.ts'
 import { formatTransferRate } from '../lib/formatTransferRate.ts'
 
@@ -47,7 +46,7 @@ export function TransferChart({ history }: { history: TransferHistoryPoint[] }) 
           />
           <Tooltip
             wrapperClassName="rounded-md"
-            labelFormatter={(time) => dayJs(Number(time)).format('HH:mm:ss')}
+            labelFormatter={(time) => new Date(time).toLocaleTimeString()}
             formatter={(value) => formatTransferRate(Number(value))}
             contentStyle={{
               backgroundColor: 'var(--color-surface-high)',
