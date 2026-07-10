@@ -30,7 +30,7 @@ export function Device({
   const [expanded, setExpanded] = useState(false)
   const { data: completion, isLoading: completionIsLoading } = useSyncthingQuery(
     'GET /db/completion',
-    { query: { device: device.deviceID } },
+    { query: { device: device.deviceID }, refetchInterval: 5000 },
   )
   const { mutateAsync: pauseAsync } = useSyncthingMutation('POST /system/pause', {
     query: { device: device.deviceID },
