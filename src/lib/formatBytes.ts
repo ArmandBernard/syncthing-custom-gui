@@ -1,4 +1,4 @@
-export function ByteSize({ bytes }: { bytes: number }) {
+export function formatBytes(bytes: number) {
   let scale = 0
   let displayValue = bytes
 
@@ -7,7 +7,7 @@ export function ByteSize({ bytes }: { bytes: number }) {
     scale++
   }
 
-  return `${displayValue.toFixed(1)} ${units[scale]}`
+  return `${displayValue.toFixed(1)}${units[scale]}`
 }
 
 const units = ['B', 'KiB', 'MiB', 'GiB', 'TiB']

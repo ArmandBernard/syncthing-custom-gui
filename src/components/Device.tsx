@@ -1,7 +1,6 @@
 import { CircularProgress } from './ui/Progress.tsx'
 import { useSyncthingQuery } from '../hooks/useSyncthingQuery.ts'
 import type { Connection } from '../lib/syncthing/types/system.ts'
-import { ByteSize } from './ByteSize.tsx'
 import type { DeviceConfiguration } from '../lib/syncthing/types/config'
 import type { TransferStatus } from '../lib/TransferStatus.ts'
 import { getTransferStatus } from '../lib/getTransferStatus.ts'
@@ -15,6 +14,7 @@ import { useSyncthingMutation } from '../hooks/useSyncthingMutation.ts'
 import { useSyncthingInvalidate } from '../hooks/useSyncthingInvalidate.ts'
 import type { TransferHistoryPoint } from '../hooks/useDeviceTransferHistory.ts'
 import { TransferChart } from './TransferChart.tsx'
+import { formatBytes } from '../lib/formatBytes.ts'
 
 export function Device({
   connection,
@@ -81,12 +81,8 @@ export function Device({
               Last seen: <RelativeTime date={stats.lastSeen} />
             </li>
           )}
-          <li>
-            Upload: <ByteSize bytes={connection.outBytesTotal} />
-          </li>
-          <li>
-            Download: <ByteSize bytes={connection.inBytesTotal} />
-          </li>
+          <li>Upload: {formatBytes(connection.outBytesTotal)}</li>
+          <li>Download: {formatBytes(connection.inBytesTotal)}</li>
         </ul>
         <TransferChart history={transferHistory} />
         <div className="flex gap-4 justify-end">
