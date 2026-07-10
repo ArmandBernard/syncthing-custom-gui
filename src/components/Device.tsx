@@ -2,7 +2,6 @@ import { CircularProgress } from './ui/Progress.tsx'
 import { useSyncthingQuery } from '../hooks/useSyncthingQuery.ts'
 import type { Connection } from '../lib/syncthing/types/system.ts'
 import type { DeviceConfiguration } from '../lib/syncthing/types/config'
-import type { TransferStatus } from '../lib/TransferStatus.ts'
 import { getTransferStatus } from '../lib/getTransferStatus.ts'
 import type { DeviceStats } from '../lib/syncthing/types/stats.ts'
 import { RelativeTime } from './RelativeTime.tsx'
@@ -17,6 +16,7 @@ import { TransferChart } from './TransferChart.tsx'
 import { formatBytes } from '../lib/formatBytes.ts'
 import { formatTransferRate } from '../lib/formatTransferRate.ts'
 import { SpeedInline } from './SpeedInline.tsx'
+import type { Completion } from '../lib/syncthing/types/db.ts'
 
 export function Device({
   connection,
@@ -70,11 +70,7 @@ export function Device({
           </div>
           <div className="flex items-baseline gap-2">
             <SpeedInline rates={latestRates} />
-            <div className="inline">{Math.trunc(completion.completion)}%</div>
-            <ConnectionStatusText
-              connection={connection}
-              transferStatus={getTransferStatus(completion)}
-            />
+            <ConnectionStatusText connection={connection} completion={completion} />
           </div>
         </div>
       }
@@ -108,11 +104,13 @@ export function Device({
 
 function ConnectionStatusText({
   connection,
-  transferStatus,
+  completion,
 }: {
   connection: Connection
-  transferStatus: TransferStatus
+  completion: Completion
 }) {
+  const transferStatus = getTransferStatus(completion)
+
   const commonClasses = 'inline text-xl'
 
   if (connection.paused) {
@@ -123,13 +121,16 @@ function ConnectionStatusText({
     return <div className={`${commonClasses} text-on-surface-disconnected`}>Disconnected</div>
   }
 
+  const progressText =
+    completion.completion === 100 ? '' : ` (${Math.trunc(completion.completion)}%)`
+
   switch (transferStatus) {
     case 'up-to-date':
       return <div className={`${commonClasses} text-on-surface-connected`}>Up-to-date</div>
     case 'paused':
-      return <div className={`${commonClasses} text-on-surface-paused`}>Paused</div>
+      return <div className={`${commonClasses} text-on-surface-paused`}>Paused{progressText}</div>
     case 'syncing':
-      return <div className={`${commonClasses} text-on-surface-syncing`}>Syncing</div>
+      return <div className={`${commonClasses} text-on-surface-syncing`}>Syncing{progressText}</div>
     default:
       return <div className={`${commonClasses} text-on-surface-variant`}>Unknown status</div>
   }
