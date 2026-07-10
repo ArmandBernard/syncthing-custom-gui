@@ -52,7 +52,11 @@ export function TransferChart({ history }: { history: TransferHistoryPoint[] }) 
               color: 'var(--color-on-surface)',
             }}
           />
-          <Legend wrapperStyle={{ color: 'var(--color-on-surface-variant)', fontSize: 12 }} />
+          <Legend
+            iconType="plainline"
+            iconSize={24}
+            wrapperStyle={{ color: 'var(--color-on-surface-variant)', fontSize: 12 }}
+          />
           <Line
             name="Download"
             type="monotone"
