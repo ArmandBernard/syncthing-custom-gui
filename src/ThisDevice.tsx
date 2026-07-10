@@ -5,31 +5,28 @@ import { useState } from 'react'
 import { Identicon } from './components/ui/Identicon.tsx'
 import { CircularProgressCentred } from './components/CircularProgressCentred.tsx'
 import { formatBytes } from './lib/formatBytes.ts'
+import { formatTransferRate } from './lib/formatTransferRate.ts'
+import { useDeviceTransferHistory } from './hooks/useDeviceTransferHistory.ts'
+import { useConnections } from './hooks/useConnections.ts'
+
+import { useDeviceID } from './hooks/useDeviceID.ts'
 
 export function ThisDevice() {
   const [expanded, setExpanded] = useState(false)
+  const connections = useConnections()
+  const myId = useDeviceID()
+  const transferHistory = useDeviceTransferHistory(myId)
   const { data: status, isLoading: statusIsLoading } = useSyncthingQuery('GET /system/status', {
     refetchInterval: 10000,
   })
   const { data: config, isLoading: configIsLoading } = useSyncthingQuery('GET /config')
-  const { data: connections, isLoading: connectionsAreLoading } = useSyncthingQuery(
-    'GET /system/connections',
-    { refetchInterval: 5000 },
-  )
 
-  if (
-    statusIsLoading ||
-    !status ||
-    configIsLoading ||
-    !config ||
-    connectionsAreLoading ||
-    !connections
-  ) {
+  if (statusIsLoading || !status || configIsLoading || !config || !connections) {
     return <CircularProgressCentred name="device information" />
   }
 
-  const myId = status.myID
   const myDeviceConfigInfo = config.devices.find((d) => d.deviceID === myId)!
+  const latestRates = transferHistory?.slice(-1).at(0)
 
   return (
     <div className="flex flex-col gap-4">
@@ -49,8 +46,14 @@ export function ThisDevice() {
             <li>
               Uptime: <TimeSpan seconds={status.uptime} />
             </li>
-            <li>Download: {formatBytes(connections.total.inBytesTotal)}</li>
-            <li>Upload: {formatBytes(connections.total.outBytesTotal)}</li>
+            <li>
+              Upload: {latestRates && <>{formatTransferRate(latestRates?.outRate)} </>}(
+              {formatBytes(connections.total.outBytesTotal)} total)
+            </li>
+            <li>
+              Download: {latestRates && <>{formatTransferRate(latestRates?.inRate)} </>}(
+              {formatBytes(connections.total.inBytesTotal)} total)
+            </li>
           </ul>
         </div>
       </CardAccordion>
