@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useId, useMemo } from 'react'
 import { ParentSize } from '@visx/responsive'
 import { scaleLinear } from '@visx/scale'
 import { AreaClosed } from '@visx/shape'
@@ -29,6 +29,7 @@ function findNearest(history: TransferHistoryPoint[], time: number): TransferHis
 
 export default function TransferChartImpl({ history }: { history: TransferHistoryPoint[] }) {
   const nowUnix = Date.now()
+  const clipId = useId()
 
   const dataMax = useMemo(
     () => history.reduce((max, point) => Math.max(max, point.inRate, point.outRate), 0),
@@ -71,30 +72,40 @@ export default function TransferChartImpl({ history }: { history: TransferHistor
                   numTicks={4}
                   stroke="var(--color-outline-variant)"
                 />
-                <AreaClosed
-                  data={history}
-                  x={(d) => xScale(d.time)}
-                  y={(d) => yScale(d.inRate)}
-                  yScale={yScale}
-                  curve={curveMonotoneX}
-                  fill="var(--color-transfer-download)"
-                  fillOpacity={0.2}
-                  stroke="var(--color-transfer-download)"
-                  strokeWidth={2}
-                  strokeDasharray="5 5"
-                />
-                <AreaClosed
-                  data={history}
-                  x={(d) => xScale(d.time)}
-                  y={(d) => yScale(d.outRate)}
-                  yScale={yScale}
-                  curve={curveMonotoneX}
-                  fill="var(--color-transfer-upload)"
-                  fillOpacity={0.2}
-                  stroke="var(--color-transfer-upload)"
-                  strokeWidth={2}
-                  strokeDasharray="2 3"
-                />
+                <clipPath id={clipId}>
+                  <rect
+                    x={margin.left}
+                    y={margin.top}
+                    width={Math.max(0, width - margin.left - margin.right)}
+                    height={Math.max(0, height - margin.top - margin.bottom)}
+                  />
+                </clipPath>
+                <g clipPath={`url(#${clipId})`}>
+                  <AreaClosed
+                    data={history}
+                    x={(d) => xScale(d.time)}
+                    y={(d) => yScale(d.inRate)}
+                    yScale={yScale}
+                    curve={curveMonotoneX}
+                    fill="var(--color-transfer-download)"
+                    fillOpacity={0.2}
+                    stroke="var(--color-transfer-download)"
+                    strokeWidth={2}
+                    strokeDasharray="5 5"
+                  />
+                  <AreaClosed
+                    data={history}
+                    x={(d) => xScale(d.time)}
+                    y={(d) => yScale(d.outRate)}
+                    yScale={yScale}
+                    curve={curveMonotoneX}
+                    fill="var(--color-transfer-upload)"
+                    fillOpacity={0.2}
+                    stroke="var(--color-transfer-upload)"
+                    strokeWidth={2}
+                    strokeDasharray="2 3"
+                  />
+                </g>
                 <AxisLeft
                   scale={yScale}
                   left={margin.left}
