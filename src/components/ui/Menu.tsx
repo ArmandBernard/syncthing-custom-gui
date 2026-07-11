@@ -7,6 +7,7 @@ import {
   useState,
   type ReactElement,
   type ReactNode,
+  useId,
 } from 'react'
 import type {
   ButtonHTMLAttributes,
@@ -86,10 +87,6 @@ function isMenuToggleElement(node: ReactNode): node is ReactElement<MenuTogglePr
 }
 
 export interface MenuProps {
-  /** Label rendered on the trigger button. */
-  label: string
-  /** Additional classes applied to the trigger button. */
-  triggerClassName?: string
   /**
    * Point on the trigger to anchor the popup from. If the caller knows where
    * the trigger sits on screen (e.g. pinned to a corner), setting this
@@ -101,6 +98,8 @@ export interface MenuProps {
   transformOrigin?: PopoverOrigin
   /** `Menu.Item`/`Menu.Toggle` elements only. */
   children: ReactNode
+  /** The Button to render **/
+  button: ReactElement<HTMLButtonElement>
 }
 
 /**
@@ -108,16 +107,11 @@ export interface MenuProps {
  * Button" pattern), e.g. a "..." overflow menu. Not to be confused with
  * "Select", a form dropdown built separately.
  */
-export function Menu({
-  label,
-  triggerClassName = '',
-  anchorOrigin,
-  transformOrigin,
-  children,
-}: MenuProps) {
+export function Menu({ anchorOrigin, transformOrigin, children, button }: MenuProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [focusedIndex, setFocusedIndex] = useState(-1)
   const triggerRef = useRef<HTMLButtonElement>(null)
+  const triggerId = useId()
   const popoverRef = useRef<HTMLDivElement>(null)
   const itemNodesRef = useRef<Map<number, HTMLElement>>(new Map())
   const typeaheadRef = useRef<{ text: string; timeout: ReturnType<typeof setTimeout> | null }>({
@@ -325,22 +319,19 @@ export function Menu({
 
   return (
     <>
-      <button
-        ref={triggerRef}
-        type="button"
-        aria-haspopup="menu"
-        aria-expanded={isOpen}
-        onClick={handleTriggerClick}
-        onKeyDown={handleTriggerKeyDown}
-        className={`inline-flex h-10 items-center justify-center gap-2 rounded-full px-6 text-sm font-medium text-on-surface transition-colors hover:bg-on-surface/8 active:bg-on-surface/12 disabled:pointer-events-none disabled:opacity-[0.38] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${triggerClassName}`}
-      >
-        {label}
-      </button>
+      {cloneElement(button, {
+        id: triggerId,
+        ref: triggerRef,
+        'aria-haspopup': 'menu',
+        'aria-expanded': { isOpen },
+        onClick: handleTriggerClick,
+        onKeyDown: handleTriggerKeyDown,
+      })}
       <div
         ref={popoverRef}
         popover="auto"
         role="menu"
-        aria-label={label}
+        aria-labelledby={triggerId}
         onToggle={handleToggle}
         onKeyDown={handleMenuKeyDown}
         style={{ position: 'fixed', top, left, margin: 0 }}
