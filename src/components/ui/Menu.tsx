@@ -10,8 +10,8 @@ import {
   type KeyboardEvent as ReactKeyboardEvent,
   type ReactElement,
   type ReactNode,
-  type ToggleEvent as ReactToggleEvent,
 } from 'react'
+import type { TargetedToggleEvent } from 'preact'
 import { usePopoverPosition, type PopoverOrigin } from './usePopoverPosition'
 
 export interface MenuItemProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'onSelect'> {
@@ -51,7 +51,7 @@ export function MenuItem({
 }
 
 function isMenuItemElement(node: ReactNode): node is ReactElement<MenuItemProps> {
-  return isValidElement(node) && node.type === MenuItem
+  return isValidElement(node) && (node as ReactElement).type === MenuItem
 }
 
 export interface MenuToggleProps {
@@ -80,7 +80,7 @@ export function MenuToggle({ children, className = '', _itemRef, onFocus }: Menu
 }
 
 function isMenuToggleElement(node: ReactNode): node is ReactElement<MenuToggleProps> {
-  return isValidElement(node) && node.type === MenuToggle
+  return isValidElement(node) && (node as ReactElement).type === MenuToggle
 }
 
 export interface MenuProps {
@@ -310,7 +310,7 @@ export function Menu({
     }
   }
 
-  const handleToggle = (event: ReactToggleEvent<HTMLDivElement>) => {
+  const handleToggle = (event: TargetedToggleEvent<HTMLDivElement>) => {
     // Keep React state in sync when the browser closes/opens the popover
     // for us (native click-outside / Escape light-dismiss).
     if (event.newState === 'closed' && isOpen) {

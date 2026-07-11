@@ -57,7 +57,7 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
             onBlur?.(event)
           }}
           onChange={(event) => {
-            setUncontrolledValue(event.target.value)
+            setUncontrolledValue(event.currentTarget.value)
             onChange?.(event)
           }}
           className={
