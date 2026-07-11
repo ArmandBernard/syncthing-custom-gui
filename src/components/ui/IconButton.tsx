@@ -3,14 +3,18 @@ import type { ButtonHTMLAttributes } from 'preact'
 
 export type IconButtonVariant = 'standard' | 'filled' | 'tonal' | 'outlined'
 
-export interface IconButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'aria-label'> {
+export interface IconButtonProps extends Omit<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  'aria-label'
+> {
   variant?: IconButtonVariant
   /** Icon buttons carry no visible label, so an accessible name is required. */
   'aria-label': string
 }
 
 const VARIANT_CLASSES: Record<IconButtonVariant, string> = {
-  standard: 'bg-transparent text-on-surface-variant hover:bg-on-surface-variant/8 active:bg-on-surface-variant/12',
+  standard:
+    'bg-transparent text-on-surface-variant hover:bg-on-surface-variant/8 active:bg-on-surface-variant/12',
   filled: 'bg-primary text-on-primary hover:bg-primary/90 active:bg-primary/80',
   tonal:
     'bg-secondary-container text-on-secondary-container hover:bg-secondary-container/90 active:bg-secondary-container/80',

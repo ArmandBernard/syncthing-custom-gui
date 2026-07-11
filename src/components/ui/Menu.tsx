@@ -8,7 +8,12 @@ import {
   type ReactElement,
   type ReactNode,
 } from 'react'
-import type { ButtonHTMLAttributes, FocusEventHandler, TargetedKeyboardEvent, TargetedToggleEvent } from 'preact'
+import type {
+  ButtonHTMLAttributes,
+  FocusEventHandler,
+  TargetedKeyboardEvent,
+  TargetedToggleEvent,
+} from 'preact'
 import { usePopoverPosition, type PopoverOrigin } from './usePopoverPosition'
 
 export interface MenuItemProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'onSelect'> {

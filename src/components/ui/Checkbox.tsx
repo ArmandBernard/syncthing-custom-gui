@@ -8,7 +8,17 @@ export interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement
 }
 
 export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Checkbox(
-  { label, indeterminate = false, className = '', disabled, checked, defaultChecked, onChange, id, ...rest },
+  {
+    label,
+    indeterminate = false,
+    className = '',
+    disabled,
+    checked,
+    defaultChecked,
+    onChange,
+    id,
+    ...rest
+  },
   ref,
 ) {
   const generatedId = useId()
@@ -34,7 +44,9 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
     >
       <span
         className={`relative inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-colors ${
-          isFilled ? 'hover:bg-primary/8 active:bg-primary/12' : 'hover:bg-on-surface/8 active:bg-on-surface/12'
+          isFilled
+            ? 'hover:bg-primary/8 active:bg-primary/12'
+            : 'hover:bg-on-surface/8 active:bg-on-surface/12'
         }`}
       >
         <input
@@ -64,7 +76,13 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
             </svg>
           ) : isChecked ? (
             <svg viewBox="0 0 18 18" className="h-3 w-3 text-on-primary" fill="none">
-              <path d="M4 9.5l3 3 7-7" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+              <path
+                d="M4 9.5l3 3 7-7"
+                stroke="currentColor"
+                strokeWidth={2}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
           ) : null}
         </span>

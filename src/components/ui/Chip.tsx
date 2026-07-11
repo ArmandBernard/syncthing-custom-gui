@@ -25,7 +25,13 @@ const FOCUS_CLASSES =
 function CheckIcon() {
   return (
     <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0" fill="none" aria-hidden="true">
-      <path d="M5 13l4 4L19 7" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="M5 13l4 4L19 7"
+        stroke="currentColor"
+        strokeWidth={2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   )
 }
@@ -33,13 +39,28 @@ function CheckIcon() {
 function RemoveIcon() {
   return (
     <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0" fill="none" aria-hidden="true">
-      <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="M6 6l12 12M18 6L6 18"
+        stroke="currentColor"
+        strokeWidth={2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   )
 }
 
 export const Chip = forwardRef<HTMLButtonElement, ChipProps>(function Chip(
-  { label, children, selected = false, onRemove, className = '', type = 'button', disabled, ...props },
+  {
+    label,
+    children,
+    selected = false,
+    onRemove,
+    className = '',
+    type = 'button',
+    disabled,
+    ...props
+  },
   ref,
 ) {
   const content = label ?? children
@@ -63,7 +84,10 @@ export const Chip = forwardRef<HTMLButtonElement, ChipProps>(function Chip(
   }
 
   return (
-    <div role="group" className={`inline-flex h-8 items-center rounded-sm text-sm font-medium ${outlineClasses} ${className}`}>
+    <div
+      role="group"
+      className={`inline-flex h-8 items-center rounded-sm text-sm font-medium ${outlineClasses} ${className}`}
+    >
       <button
         ref={ref}
         type={type}

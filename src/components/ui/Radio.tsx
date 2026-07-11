@@ -23,7 +23,9 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(function Radio(
     >
       <span
         className={`relative inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-colors ${
-          isChecked ? 'hover:bg-primary/8 active:bg-primary/12' : 'hover:bg-on-surface/8 active:bg-on-surface/12'
+          isChecked
+            ? 'hover:bg-primary/8 active:bg-primary/12'
+            : 'hover:bg-on-surface/8 active:bg-on-surface/12'
         }`}
       >
         <input

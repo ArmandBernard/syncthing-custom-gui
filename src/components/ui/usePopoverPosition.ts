@@ -27,10 +27,22 @@ interface Size {
 }
 
 const CANDIDATE_PLACEMENTS: { anchorOrigin: PopoverOrigin; transformOrigin: PopoverOrigin }[] = [
-  { anchorOrigin: { vertical: 'bottom', horizontal: 'left' }, transformOrigin: { vertical: 'top', horizontal: 'left' } },
-  { anchorOrigin: { vertical: 'bottom', horizontal: 'right' }, transformOrigin: { vertical: 'top', horizontal: 'right' } },
-  { anchorOrigin: { vertical: 'top', horizontal: 'left' }, transformOrigin: { vertical: 'bottom', horizontal: 'left' } },
-  { anchorOrigin: { vertical: 'top', horizontal: 'right' }, transformOrigin: { vertical: 'bottom', horizontal: 'right' } },
+  {
+    anchorOrigin: { vertical: 'bottom', horizontal: 'left' },
+    transformOrigin: { vertical: 'top', horizontal: 'left' },
+  },
+  {
+    anchorOrigin: { vertical: 'bottom', horizontal: 'right' },
+    transformOrigin: { vertical: 'top', horizontal: 'right' },
+  },
+  {
+    anchorOrigin: { vertical: 'top', horizontal: 'left' },
+    transformOrigin: { vertical: 'bottom', horizontal: 'left' },
+  },
+  {
+    anchorOrigin: { vertical: 'top', horizontal: 'right' },
+    transformOrigin: { vertical: 'bottom', horizontal: 'right' },
+  },
 ]
 
 function place(
@@ -44,12 +56,18 @@ function place(
   const anchorY = anchorOrigin.vertical === 'top' ? triggerRect.top : triggerRect.bottom
   const left = transformOrigin.horizontal === 'left' ? anchorX : anchorX - popoverSize.width
   const verticalGap = anchorOrigin.vertical === 'bottom' ? gap : -gap
-  const top = (transformOrigin.vertical === 'top' ? anchorY : anchorY - popoverSize.height) + verticalGap
+  const top =
+    (transformOrigin.vertical === 'top' ? anchorY : anchorY - popoverSize.height) + verticalGap
   return { top, left }
 }
 
 function fitsInViewport(top: number, left: number, size: Size): boolean {
-  return top >= 0 && left >= 0 && top + size.height <= window.innerHeight && left + size.width <= window.innerWidth
+  return (
+    top >= 0 &&
+    left >= 0 &&
+    top + size.height <= window.innerHeight &&
+    left + size.width <= window.innerWidth
+  )
 }
 
 /**
@@ -97,15 +115,35 @@ export function usePopoverPosition(
     } else {
       const fitting = CANDIDATE_PLACEMENTS.map((candidate) => ({
         candidate,
-        result: place(triggerRect, popoverSize, candidate.anchorOrigin, candidate.transformOrigin, gap),
+        result: place(
+          triggerRect,
+          popoverSize,
+          candidate.anchorOrigin,
+          candidate.transformOrigin,
+          gap,
+        ),
       })).find(({ result }) => fitsInViewport(result.top, result.left, popoverSize))
 
-      placement = fitting?.result ?? place(triggerRect, popoverSize, CANDIDATE_PLACEMENTS[0].anchorOrigin, CANDIDATE_PLACEMENTS[0].transformOrigin, gap)
+      placement =
+        fitting?.result ??
+        place(
+          triggerRect,
+          popoverSize,
+          CANDIDATE_PLACEMENTS[0].anchorOrigin,
+          CANDIDATE_PLACEMENTS[0].transformOrigin,
+          gap,
+        )
       if (!fitting) {
         // Nothing fit cleanly — clamp on-screen rather than let it overflow.
         placement = {
-          top: Math.min(Math.max(placement.top, 0), Math.max(0, window.innerHeight - popoverSize.height)),
-          left: Math.min(Math.max(placement.left, 0), Math.max(0, window.innerWidth - popoverSize.width)),
+          top: Math.min(
+            Math.max(placement.top, 0),
+            Math.max(0, window.innerHeight - popoverSize.height),
+          ),
+          left: Math.min(
+            Math.max(placement.left, 0),
+            Math.max(0, window.innerWidth - popoverSize.width),
+          ),
         }
       }
     }

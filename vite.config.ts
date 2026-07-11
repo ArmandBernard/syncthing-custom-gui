@@ -12,7 +12,11 @@ const proxy = {
 }
 
 export default defineConfig(({ mode }) => ({
-  plugins: [preact(), tailwindcss(), ...(mode === 'analyze' ? [analyzer({ analyzerPort: 8877 })] : [])],
+  plugins: [
+    preact(),
+    tailwindcss(),
+    ...(mode === 'analyze' ? [analyzer({ analyzerPort: 8877 })] : []),
+  ],
   server: { proxy },
   preview: { proxy },
 }))
