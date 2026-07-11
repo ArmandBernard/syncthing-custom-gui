@@ -87,7 +87,12 @@ export default function FolderDialog({
     <Dialog
       open={isOpen}
       onClose={onClose}
-      title={`${inEditMode ? 'Edit' : 'Create'} folder`}
+      title={
+        <>
+          {inEditMode ? 'Edit' : 'Create'} folder{' '}
+          <span className="text-on-surface-variant">{!inEditMode ? ` (${newFolderId})` : ''}</span>
+        </>
+      }
       actions={
         <div className="flex flex-1 gap-4 justify-between">
           <div>
