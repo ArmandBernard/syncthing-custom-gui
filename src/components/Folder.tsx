@@ -6,6 +6,8 @@ import { TimeSpan } from './TimeSpan.tsx'
 import type { FolderState } from '../lib/syncthing/types/db.ts'
 import { formatBytes } from '../lib/formatBytes.ts'
 import { Button } from './ui/Button.tsx'
+import { useSyncthingMutation } from '../hooks/useSyncthingMutation.ts'
+import { useSyncthingInvalidate } from '../hooks/useSyncthingInvalidate.ts'
 
 export function Folder({
   folder,
@@ -19,9 +21,17 @@ export function Folder({
   const [expanded, setExpanded] = useState<boolean>(false)
 
   const { data: status } = useSyncthingQuery('GET /db/status', { query: { folder: folder.id } })
+  const { mutateAsync: scanAsync, isPending: scanAsyncIsPending } =
+    useSyncthingMutation('POST /db/scan')
+  const invalidate = useSyncthingInvalidate('GET /db/status')
 
   function handleEditClick() {
     onEditClick()
+  }
+
+  async function handleRescanClick() {
+    await scanAsync({ query: { folder: folder.id } })
+    await invalidate()
   }
 
   return (
@@ -62,6 +72,13 @@ export function Folder({
           </li>
         </ul>
         <div className="flex gap-4 justify-end">
+          <Button
+            variant="outlined"
+            disabled={status?.state === 'scanning' || scanAsyncIsPending}
+            onClick={handleRescanClick}
+          >
+            Rescan
+          </Button>
           <Button variant="outlined" onClick={handleEditClick}>
             Edit
           </Button>
