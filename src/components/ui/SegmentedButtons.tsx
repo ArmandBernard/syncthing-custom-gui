@@ -13,6 +13,15 @@ export interface SegmentedButtonsProps {
   disabled?: boolean
   className?: string
   'aria-label': string
+  /**
+   * Set when nesting inside a `role="menu"` (e.g. via `Menu.Toggle`). A plain
+   * `radiogroup`/`radio` pair isn't a valid descendant of `menu` — even
+   * wrapped in `role="group"`, the ARIA required-owned-elements check is
+   * recursive, so every leaf still has to resolve to a `menuitem*` role. This
+   * swaps the container to `group` and each input's role to `menuitemradio`
+   * instead.
+   */
+  asMenuItems?: boolean
 }
 
 function CheckIcon() {
@@ -43,12 +52,17 @@ export function SegmentedButtons({
   disabled = false,
   className = '',
   'aria-label': ariaLabel,
+  asMenuItems = false,
 }: SegmentedButtonsProps) {
   const generatedName = useId()
   const groupName = name ?? generatedName
 
   return (
-    <div role="radiogroup" aria-label={ariaLabel} className={`inline-flex ${className}`}>
+    <div
+      role={asMenuItems ? 'group' : 'radiogroup'}
+      aria-label={ariaLabel}
+      className={`inline-flex ${className}`}
+    >
       {options.map((option, index) => {
         const isSelected = value === option.value
         const isFirst = index === 0
@@ -69,6 +83,8 @@ export function SegmentedButtons({
           >
             <input
               type="radio"
+              role={asMenuItems ? 'menuitemradio' : undefined}
+              aria-checked={asMenuItems ? isSelected : undefined}
               name={groupName}
               value={option.value}
               checked={isSelected}

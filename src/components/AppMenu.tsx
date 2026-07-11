@@ -40,6 +40,7 @@ export function AppMenu() {
           options={THEME_OPTIONS}
           value={theme}
           onChange={(value) => setTheme(value as Theme)}
+          asMenuItems
         />
       </Menu.Toggle>
       {apiKey && <Menu.Item onSelect={clearApiKey}>Log out</Menu.Item>}

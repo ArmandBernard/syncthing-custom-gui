@@ -76,7 +76,7 @@ export interface MenuToggleProps {
  */
 export function MenuToggle({ children, className = '', _itemRef, onFocus }: MenuToggleProps) {
   return (
-    <div ref={_itemRef} onFocus={onFocus} className={`px-3 py-2 ${className}`}>
+    <div role="group" ref={_itemRef} onFocus={onFocus} className={`px-3 py-2 ${className}`}>
       {children}
     </div>
   )
@@ -259,12 +259,16 @@ export function Menu({ anchorOrigin, transformOrigin, children, button }: MenuPr
 
   const handleMenuKeyDown = (event: TargetedKeyboardEvent<HTMLDivElement>) => {
     // Once focus has been delegated into a Menu.Toggle's composite widget
-    // (e.g. a radiogroup), step aside for everything except Escape/Tab and
-    // let the native control handle its own keyboard behavior (arrow-key
-    // cycling between segments, Space to select, etc).
+    // (e.g. a radiogroup, or a group of menuitemradio inputs), step aside for
+    // Left/Right/Space and let the native control handle its own horizontal
+    // keyboard behavior (cycling between segments, Space to select). Up/Down
+    // still move between menu items — without this, a native radio group
+    // swallows all four arrow keys for segment-switching, leaving no way to
+    // reach the rest of the menu.
     const target = event.target as HTMLElement
-    const isInsideComposite = target.closest('[role="radiogroup"]') !== null
-    if (isInsideComposite && event.key !== 'Escape' && event.key !== 'Tab') {
+    const isInsideComposite = target.closest('[role="radiogroup"], [role="group"]') !== null
+    const isCompositeOwnKey = ['ArrowLeft', 'ArrowRight', ' '].includes(event.key)
+    if (isInsideComposite && isCompositeOwnKey) {
       return
     }
 
