@@ -40,7 +40,7 @@ export function Dialog({ open, onClose, title, children, actions }: DialogProps)
       }}
       className="hidden h-full w-full items-center justify-center bg-transparent open:flex backdrop:bg-scrim/30"
     >
-      <div className="min-w-70 max-w-140 rounded-xl bg-surface-high p-6 shadow-lg">
+      <div className="min-w-70 max-w-140 rounded-xl bg-surface-high text-on-surface p-6 shadow-lg">
         <h2 id={titleId} className="mb-4 text-xl font-medium text-on-surface">
           {title}
         </h2>
