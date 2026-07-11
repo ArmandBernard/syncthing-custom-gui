@@ -17,6 +17,7 @@ import { formatBytes } from '@lib/formatBytes.ts'
 import { formatTransferRate } from '@lib/formatTransferRate.ts'
 import { SpeedInline } from '@components/SpeedInline.tsx'
 import type { Completion } from '@lib/syncthing/types/db.ts'
+import ListItem from '@components/ui/ListItem.tsx'
 
 export function Device({
   connection,
@@ -83,18 +84,26 @@ export function Device({
       <div className="flex flex-col gap-4">
         <ul>
           {!connection.connected && (
-            <li>
-              Last seen: <RelativeTime date={stats.lastSeen} />
-            </li>
+            <ListItem leftSlot="Last seen" rightSlot={<RelativeTime date={stats.lastSeen} />} />
           )}
-          <li>
-            Upload: {latestRates && <>{formatTransferRate(latestRates?.outRate)} </>}(
-            {formatBytes(connection.outBytesTotal)} total)
-          </li>
-          <li>
-            Download: {latestRates && <>{formatTransferRate(latestRates?.inRate)} </>}(
-            {formatBytes(connection.inBytesTotal)} total)
-          </li>
+          <ListItem
+            leftSlot="Upload"
+            rightSlot={
+              <>
+                {latestRates && <>{formatTransferRate(latestRates?.outRate)} </>}(
+                {formatBytes(connection.outBytesTotal)} total)
+              </>
+            }
+          />
+          <ListItem
+            leftSlot="Download"
+            rightSlot={
+              <>
+                {latestRates && <>{formatTransferRate(latestRates?.inRate)} </>}(
+                {formatBytes(connection.inBytesTotal)} total)
+              </>
+            }
+          />
         </ul>
         <TransferChart history={transferHistory ?? []} />
         <div className="flex gap-4 justify-end">
