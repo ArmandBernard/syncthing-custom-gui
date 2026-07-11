@@ -18,18 +18,23 @@ export default function FolderDialog({
   isOpen: boolean
   onClose: () => void
 }) {
+  const [folderConfigChanges, setFolderConfigChanges] = useState<Partial<FolderConfiguration>>({})
+  const [confirmingDelete, setConfirmingDelete] = useState(false)
+
   const { data: status } = useSyncthingQuery('GET /system/status')
   const newFolderId = useCreateFolderId()
   const { data: defaultFolderConfig } = useSyncthingQuery('GET /config/defaults/folder')
-  const [folderConfigChanges, setFolderConfigChanges] = useState<Partial<FolderConfiguration>>({})
-  const { mutateAsync: updateFolder, isPending: updateFolderIsPending } = useSyncthingMutation(
+  const { mutateAsync: updateFolderAsync, isPending: updateFolderIsPending } = useSyncthingMutation(
     'PATCH /config/folders/:id',
   )
-  const { mutateAsync: createFolder, isPending: createFolderIsPending } =
+  const { mutateAsync: deleteFolderAsync, isPending: deleteFolderIsPending } = useSyncthingMutation(
+    'DELETE /config/folders/:id',
+  )
+  const { mutateAsync: createFolderAsync, isPending: createFolderIsPending } =
     useSyncthingMutation('POST /config/folders')
   const invalidateFolders = useSyncthingInvalidate('GET /config/folders')
 
-  const isPending = updateFolderIsPending || createFolderIsPending
+  const isPending = updateFolderIsPending || createFolderIsPending || deleteFolderIsPending
   const inEditMode = !!initialFolderConfig
   const effectiveConfig: FolderConfiguration | undefined = mergeConfigurations(
     defaultFolderConfig,
@@ -38,18 +43,33 @@ export default function FolderDialog({
     folderConfigChanges,
   )
 
+  function handleClickDelete() {
+    setConfirmingDelete(true)
+  }
+  function handleCancelConfirmDelete() {
+    setConfirmingDelete(false)
+  }
+  async function handleConfirmDelete() {
+    if (initialFolderConfig) {
+      await deleteFolderAsync({ params: { id: initialFolderConfig.id } })
+      await invalidateFolders()
+      setConfirmingDelete(false)
+      onClose()
+    }
+  }
+
   async function handleSave() {
     if (!effectiveConfig) {
       return
     }
 
     if (inEditMode) {
-      await updateFolder({
+      await updateFolderAsync({
         params: { id: effectiveConfig.id },
         body: effectiveConfig,
       })
     } else if (newFolderId) {
-      await createFolder({
+      await createFolderAsync({
         body: { ...effectiveConfig, id: newFolderId },
       })
     }
@@ -69,9 +89,21 @@ export default function FolderDialog({
       onClose={onClose}
       title={`${inEditMode ? 'Edit' : 'Create'} folder`}
       actions={
-        <Button variant="outlined" disabled={isPending} onClick={handleSave}>
-          Save
-        </Button>
+        <div className="flex flex-1 gap-4 justify-between">
+          <div>
+            <Button variant="tonal" disabled={isPending} onClick={handleClickDelete}>
+              Delete
+            </Button>
+          </div>
+          <div className="flex gap-4">
+            <Button variant="outlined" disabled={isPending} onClick={onClose}>
+              Close
+            </Button>
+            <Button variant="filled" disabled={isPending} onClick={handleSave}>
+              Save
+            </Button>
+          </div>
+        </div>
       }
     >
       {effectiveConfig && (
@@ -105,6 +137,23 @@ export default function FolderDialog({
               </>
             }
           />
+          <Dialog
+            title="Confirm deletion"
+            open={confirmingDelete}
+            onClose={handleCancelConfirmDelete}
+            actions={
+              <>
+                <Button variant="outlined" onClick={handleCancelConfirmDelete}>
+                  Cancel
+                </Button>
+                <Button variant="tonal" onClick={handleConfirmDelete}>
+                  Confirm
+                </Button>
+              </>
+            }
+          >
+            <div>Are you sure you want to delete this folder?</div>
+          </Dialog>
         </div>
       )}
     </Dialog>
