@@ -5,6 +5,9 @@ import { CardAccordion } from './ui/CardAccordion.tsx'
 import { TimeSpan } from './TimeSpan.tsx'
 import type { FolderState } from '../lib/syncthing/types/db.ts'
 import { formatBytes } from '../lib/formatBytes.ts'
+import { Button } from './ui/Button.tsx'
+import { FolderDialog } from './FolderDialog.tsx'
+import type { FolderID } from '../lib/syncthing/types/common.ts'
 
 export function Folder({
   folder,
@@ -14,7 +17,15 @@ export function Folder({
   devices: DeviceConfiguration[]
 }) {
   const [expanded, setExpanded] = useState<boolean>(false)
+  const [editingFolderId, setEditingFolderId] = useState<FolderID | undefined>(undefined)
   const { data: status } = useSyncthingQuery('GET /db/status', { query: { folder: folder.id } })
+
+  function handleEditClick(folderId: FolderID) {
+    setEditingFolderId(folderId)
+  }
+  function handleClose() {
+    setEditingFolderId(undefined)
+  }
 
   return (
     <CardAccordion
@@ -53,6 +64,12 @@ export function Folder({
               .join(', ')}
           </li>
         </ul>
+        <div className="flex gap-4 justify-end">
+          <Button variant="outlined" onClick={() => handleEditClick(folder.id)}>
+            Edit
+          </Button>
+        </div>
+        <FolderDialog folderId={editingFolderId} folder={folder} onClose={handleClose} />
       </div>
     </CardAccordion>
   )
