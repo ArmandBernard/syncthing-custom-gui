@@ -91,9 +91,11 @@ export default function FolderDialog({
       actions={
         <div className="flex flex-1 gap-4 justify-between">
           <div>
-            <Button variant="tonal" disabled={isPending} onClick={handleClickDelete}>
-              Delete
-            </Button>
+            {inEditMode && (
+              <Button variant="tonal" disabled={isPending} onClick={handleClickDelete}>
+                Delete
+              </Button>
+            )}
           </div>
           <div className="flex gap-4">
             <Button variant="outlined" disabled={isPending} onClick={onClose}>
