@@ -20,7 +20,7 @@ export function Folders() {
     setEditingFolderId(folderID)
   }
 
-  function handleClose() {
+  function handleEditClose() {
     setEditingFolderId(undefined)
   }
 
@@ -50,9 +50,10 @@ export function Folders() {
         ))}
       <Suspense fallback={null}>
         <FolderDialog
+          isOpen={!!editingFolder}
           key={editingFolderId}
           initialFolderConfig={editingFolder}
-          onClose={handleClose}
+          onClose={handleEditClose}
         />
       </Suspense>
     </div>
