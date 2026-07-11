@@ -59,16 +59,16 @@ export function SnackbarProvider({ children }: { children: ReactNode }) {
           <div
             role="status"
             aria-live="polite"
-            className={`fixed bottom-4 left-1/2 z-50 flex min-w-[280px] max-w-[560px] -translate-x-1/2 items-center gap-4 rounded-xs bg-surface px-4 py-3 text-on-surface shadow-lg transition-all duration-200 ease-out ${
-              visible ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'
-            }`}
+            className={`fixed bottom-4 left-1/2 z-50 flex min-w-70 max-w-140 -translate-x-1/2 
+              items-center gap-4 rounded-xs bg-surface-high px-4 py-3 text-on-surface shadow-lg 
+              transition-all duration-200 ease-out ${visible ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'}`}
           >
             <span className="flex-1 text-sm">{current.message}</span>
             {current.actionLabel && (
               <button
                 type="button"
                 onClick={handleAction}
-                className="rounded-xs text-sm font-medium text-on-primary-container focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-on-primary"
+                className="rounded-xs text-sm font-medium text-on-primary-container focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-on-primary"
               >
                 {current.actionLabel}
               </button>
