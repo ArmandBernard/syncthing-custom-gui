@@ -6,17 +6,17 @@ import { CircularProgressCentred } from './components/CircularProgressCentred.ts
 import { useConnections } from './context/connections/useConnections.ts'
 
 export function RemoteDevices() {
-  const { data: config, isLoading: configIsLoading } = useSyncthingQuery('GET /config')
+  const { data: devices, isLoading: devicesLoading } = useSyncthingQuery('GET /config/devices')
   const { data: stats, isLoading: statsAreLoading } = useSyncthingQuery('GET /stats/device', {
     refetchInterval: 30000,
   })
   const connections = useConnections()
 
-  if (!connections || configIsLoading || !config || statsAreLoading || !stats) {
+  if (!connections || devicesLoading || !devices || statsAreLoading || !stats) {
     return <CircularProgressCentred name="remote devices" />
   }
 
-  const grouped = Object.groupBy(config.devices, (device) => device.group)
+  const grouped = Object.groupBy(devices, (device) => device.group)
 
   return (
     <div className="flex flex-col gap-4">

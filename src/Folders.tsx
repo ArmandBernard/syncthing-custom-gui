@@ -7,9 +7,10 @@ import { FolderDialog } from './components/FolderDialog.tsx'
 
 export function Folders() {
   const [editingFolderId, setEditingFolderId] = useState<FolderID | undefined>(undefined)
-  const { data: config, isLoading: configLoading } = useSyncthingQuery('GET /config')
+  const { data: folders, isLoading: foldersLoading } = useSyncthingQuery('GET /config/folders')
+  const { data: devices, isLoading: devicesLoading } = useSyncthingQuery('GET /config/devices')
 
-  if (configLoading || !config) {
+  if (foldersLoading || !folders || devicesLoading || !devices) {
     return <CircularProgressCentred name="folders" />
   }
 
@@ -21,8 +22,8 @@ export function Folders() {
     setEditingFolderId(undefined)
   }
 
-  const grouped = Object.groupBy(config.folders, (folder) => folder.group)
-  const editingFolder = config.folders.find((f) => f.id === editingFolderId)
+  const grouped = Object.groupBy(folders, (folder) => folder.group)
+  const editingFolder = folders.find((f) => f.id === editingFolderId)
 
   return (
     <div className="flex flex-col gap-4">
@@ -35,7 +36,7 @@ export function Folders() {
               <li key={folder.id}>
                 <Folder
                   folder={folder}
-                  devices={config.devices}
+                  devices={devices}
                   onEditClick={() => handleEditClick(folder.id)}
                 />
               </li>
