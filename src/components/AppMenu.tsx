@@ -4,7 +4,7 @@ import { useTheme } from '../hooks/useTheme'
 import type { Theme } from '../lib/theme'
 import { useApiKey } from '../hooks/useApiKey.ts'
 import { IconButton } from './ui/IconButton.tsx'
-import { SettingsIcon } from './SettingsIcon.tsx'
+import { SettingsIcon } from './icons/SettingsIcon.tsx'
 
 const THEME_OPTIONS = [
   { value: 'light', label: 'Light' },
