@@ -1,20 +1,17 @@
 import { Dialog } from './ui/Dialog.tsx'
 import { TextField } from './ui/TextField.tsx'
-import type { FolderID } from '../lib/syncthing/types/common.ts'
 import { useState } from 'react'
 import type { FolderConfiguration } from '../lib/syncthing/types/config'
 import { Button } from './ui/Button.tsx'
 
 export function FolderDialog({
-  folderId,
   folder,
   onClose,
 }: {
-  folderId: FolderID | undefined
-  folder: FolderConfiguration
+  folder: FolderConfiguration | undefined
   onClose: () => void
 }) {
-  const [name, setName] = useState<string | undefined>(folder.label)
+  const [name, setName] = useState<string | undefined>(folder?.label)
 
   function handleSave() {
     onClose()
@@ -22,7 +19,7 @@ export function FolderDialog({
 
   return (
     <Dialog
-      open={!!folderId}
+      open={!!folder?.id}
       onClose={onClose}
       title="Edit folder"
       actions={

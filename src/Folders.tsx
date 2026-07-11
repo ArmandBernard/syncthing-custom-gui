@@ -1,15 +1,28 @@
 import { useSyncthingQuery } from './hooks/useSyncthingQuery.ts'
 import { Folder } from './components/Folder.tsx'
 import { CircularProgressCentred } from './components/CircularProgressCentred.tsx'
+import { useState } from 'preact/compat'
+import type { FolderID } from './lib/syncthing/types/common.ts'
+import { FolderDialog } from './components/FolderDialog.tsx'
 
 export function Folders() {
+  const [editingFolderId, setEditingFolderId] = useState<FolderID | undefined>(undefined)
   const { data: config, isLoading: configLoading } = useSyncthingQuery('GET /config')
 
   if (configLoading || !config) {
     return <CircularProgressCentred name="folders" />
   }
 
+  function handleEditClick(folderID: FolderID) {
+    setEditingFolderId(folderID)
+  }
+
+  function handleClose() {
+    setEditingFolderId(undefined)
+  }
+
   const grouped = Object.groupBy(config.folders, (folder) => folder.group)
+  const editingFolder = config.folders.find((f) => f.id === editingFolderId)
 
   return (
     <div className="flex flex-col gap-4">
@@ -20,12 +33,17 @@ export function Folders() {
           <ul className="flex flex-col gap-2">
             {value!.map((folder) => (
               <li key={folder.id}>
-                <Folder folder={folder} devices={config.devices} />
+                <Folder
+                  folder={folder}
+                  devices={config.devices}
+                  onEditClick={() => handleEditClick(folder.id)}
+                />
               </li>
             ))}
           </ul>
         </>
       ))}
+      <FolderDialog key={editingFolderId} folder={editingFolder} onClose={handleClose} />
     </div>
   )
 }
