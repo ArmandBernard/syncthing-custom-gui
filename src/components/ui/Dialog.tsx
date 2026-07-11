@@ -3,7 +3,7 @@ import { useEffect, useId, useRef, type ReactNode } from 'react'
 export interface DialogProps {
   open: boolean
   onClose: () => void
-  title?: string
+  title: ReactNode
   children: ReactNode
   actions?: ReactNode
 }
@@ -32,7 +32,7 @@ export function Dialog({ open, onClose, title, children, actions }: DialogProps)
     <dialog
       ref={dialogRef}
       aria-modal="true"
-      aria-labelledby={title ? titleId : undefined}
+      aria-labelledby={titleId}
       onClick={(event) => {
         if (event.target === dialogRef.current) {
           onClose()
@@ -41,11 +41,9 @@ export function Dialog({ open, onClose, title, children, actions }: DialogProps)
       className="hidden h-full w-full items-center justify-center bg-transparent open:flex backdrop:bg-scrim/30"
     >
       <div className="min-w-70 max-w-140 rounded-xl bg-surface-high p-6 shadow-lg">
-        {title && (
-          <h2 id={titleId} className="mb-4 text-xl font-medium text-on-surface">
-            {title}
-          </h2>
-        )}
+        <h2 id={titleId} className="mb-4 text-xl font-medium text-on-surface">
+          {title}
+        </h2>
         {children}
         {actions && <div className="mt-6 flex justify-end gap-2">{actions}</div>}
       </div>
