@@ -5,6 +5,7 @@ import type { FolderConfiguration } from '../lib/syncthing/types/config'
 import { Button } from './ui/Button.tsx'
 import { useSyncthingMutation } from '../hooks/useSyncthingMutation.ts'
 import { useSyncthingInvalidate } from '../hooks/useSyncthingInvalidate.ts'
+import { useSyncthingQuery } from '../hooks/useSyncthingQuery.ts'
 
 export function FolderDialog({
   initialFolderConfig,
@@ -13,6 +14,7 @@ export function FolderDialog({
   initialFolderConfig: FolderConfiguration | undefined
   onClose: () => void
 }) {
+  const { data: status } = useSyncthingQuery('GET /system/status')
   const [folderConfig, setFolderConfig] = useState<FolderConfiguration | undefined>(
     initialFolderConfig,
   )
@@ -65,6 +67,23 @@ export function FolderDialog({
             value={folderConfig.group}
             onChange={(e) => updateFolder({ group: e.currentTarget?.value })}
             supportingText="Optional group for the folder."
+          />
+          <TextField
+            label="Path"
+            value={folderConfig.path}
+            onChange={(e) => updateFolder({ path: e.currentTarget?.value })}
+            supportingText={
+              <>
+                Path to the folder on the local computer. Will be created if it does not exist.
+                {status && (
+                  <>
+                    {' '}
+                    The tilde character (~) can be used as a shortcut for{' '}
+                    <code className="bg-surface p-0.5 rounded-xs">{status.tilde}</code>.
+                  </>
+                )}
+              </>
+            }
           />
         </div>
       )}
