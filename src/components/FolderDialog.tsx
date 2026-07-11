@@ -150,10 +150,10 @@ export default function FolderDialog({
             onClose={handleCancelConfirmDelete}
             actions={
               <>
-                <Button variant="outlined" onClick={handleCancelConfirmDelete}>
+                <Button variant="outlined" disabled={isPending} onClick={handleCancelConfirmDelete}>
                   Cancel
                 </Button>
-                <Button variant="tonal" onClick={handleConfirmDelete}>
+                <Button variant="tonal" disabled={isPending} onClick={handleConfirmDelete}>
                   Confirm
                 </Button>
               </>
