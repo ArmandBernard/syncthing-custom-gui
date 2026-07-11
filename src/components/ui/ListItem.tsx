@@ -8,7 +8,7 @@ export default function ListItem({
   rightSlot: ReactNode
 }) {
   return (
-    <li className="flex justify-between">
+    <li className="flex justify-between py-0.5">
       <div>{leftSlot}</div>
       <div>{rightSlot}</div>
     </li>
