@@ -1,4 +1,5 @@
-import { useState, type JSX } from 'react'
+import { useState } from 'react'
+import type { TargetedEvent } from 'preact'
 import { Card } from './ui/Card'
 import { TextField } from './ui/TextField'
 import { Button } from './ui/Button'
@@ -10,7 +11,7 @@ type ApiKeyFormProps = {
 export function ApiKeyForm({ onSubmit }: ApiKeyFormProps) {
   const [value, setValue] = useState('')
 
-  const handleSubmit = (event: JSX.TargetedEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: TargetedEvent<HTMLFormElement>) => {
     event.preventDefault()
     const trimmed = value.trim()
     if (trimmed) onSubmit(trimmed)
