@@ -34,6 +34,8 @@ replacing its bundled WebUI:
 If you'd prefer to run this UI separately, you can use the following to serve the UI at your preferred port.
 
 ```bash
+npm install
+npm run build
 npm run preview -- --port 1234
 ```
 
