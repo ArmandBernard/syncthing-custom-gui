@@ -3,6 +3,7 @@ import {
   cloneElement,
   isValidElement,
   useCallback,
+  useEffect,
   useRef,
   useState,
   type ReactElement,
@@ -11,7 +12,6 @@ import {
 } from 'react'
 import type {
   ButtonHTMLAttributes,
-  FocusEventHandler,
   TargetedKeyboardEvent,
   TargetedToggleEvent,
 } from 'preact'
@@ -63,8 +63,6 @@ export interface MenuToggleProps {
   className?: string
   /** Internal: injected by Menu via cloneElement, do not pass directly. */
   _itemRef?: (node: HTMLElement | null) => void
-  /** Internal: injected by Menu via cloneElement, do not pass directly. */
-  onFocus?: FocusEventHandler<HTMLDivElement>
 }
 
 /**
@@ -74,9 +72,9 @@ export interface MenuToggleProps {
  * may hold other items above/below that the user likely wants to keep using.
  * Must be a direct child of `Menu`.
  */
-export function MenuToggle({ children, className = '', _itemRef, onFocus }: MenuToggleProps) {
+export function MenuToggle({ children, className = '', _itemRef }: MenuToggleProps) {
   return (
-    <div role="group" ref={_itemRef} onFocus={onFocus} className={`px-3 py-2 ${className}`}>
+    <div role="group" ref={_itemRef} className={`px-3 py-2 ${className}`}>
       {children}
     </div>
   )
@@ -144,6 +142,30 @@ export function Menu({ anchorOrigin, transformOrigin, children, button }: MenuPr
   const enabledIndices = useCallback(() => {
     return items.filter((item) => !item.disabled).map((item) => item.index)
   }, [items])
+
+  // Preact's onFocus is a plain, non-bubbling native `focus` listener, unlike
+  // React's document-level `focusin`-backed simulated bubbling. A Menu.Toggle
+  // delegates focus to a nested radio input rather than its own wrapper div,
+  // so an onFocus prop on that div would never fire. Track focus with a real
+  // `focusin` listener instead, which bubbles regardless — this also keeps
+  // focusedIndex in sync when the user mouse-clicks a segment directly.
+  useEffect(() => {
+    const container = popoverRef.current
+    if (!container) return
+
+    const handleFocusIn = (event: FocusEvent) => {
+      const target = event.target as HTMLElement
+      for (const [index, node] of itemNodesRef.current) {
+        if (node === target || node.contains(target)) {
+          setFocusedIndex(index)
+          return
+        }
+      }
+    }
+
+    container.addEventListener('focusin', handleFocusIn)
+    return () => container.removeEventListener('focusin', handleFocusIn)
+  }, [])
 
   const focusItemByIndex = useCallback((index: number) => {
     const node = itemNodesRef.current.get(index)
@@ -349,7 +371,6 @@ export function Menu({ anchorOrigin, transformOrigin, children, button }: MenuPr
                 if (node) itemNodesRef.current.set(index, node)
                 else itemNodesRef.current.delete(index)
               },
-              onFocus: () => setFocusedIndex(index),
               onSelect: () => {
                 child.props.onSelect()
                 requestClose(true)
@@ -362,7 +383,6 @@ export function Menu({ anchorOrigin, transformOrigin, children, button }: MenuPr
                 if (node) itemNodesRef.current.set(index, node)
                 else itemNodesRef.current.delete(index)
               },
-              onFocus: () => setFocusedIndex(index),
             })
           }
           return child
