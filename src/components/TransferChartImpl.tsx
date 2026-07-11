@@ -143,7 +143,7 @@ export default function TransferChartImpl({ history }: { history: TransferHistor
           <TooltipWithBounds left={tooltipLeft} top={tooltipTop} style={tooltipStyles}>
             <div className="font-medium">{new Date(tooltipData.time).toLocaleTimeString()}</div>
             {lines.map((line) => (
-              <div key={line.field} color={line.color}>
+              <div key={line.field} style={{ color: line.color }}>
                 {line.label}: {formatTransferRate(tooltipData[line.field])}
               </div>
             ))}
