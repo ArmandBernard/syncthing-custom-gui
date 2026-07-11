@@ -56,7 +56,9 @@ export async function syncthingRequest<K extends keyof EndpointMap>(
   options: RequestOptions<EndpointMap[K]>,
 ): Promise<EndpointMap[K]['response']> {
   const apiKey = getStoredApiKey()
-  if (!apiKey) throw new SyncthingApiError(0, 'No Syncthing API key configured')
+  if (!apiKey) {
+    throw new SyncthingApiError(0, 'No Syncthing API key configured')
+  }
 
   const [method, pathTemplate] = key.split(' ', 2)
   const url = buildPath(pathTemplate, options?.params, options?.query)
@@ -92,4 +94,23 @@ export async function syncthingRequest<K extends keyof EndpointMap>(
   if (response.status === 204) return undefined as EndpointMap[K]['response']
   const text = await response.text()
   return (text ? JSON.parse(text) : undefined) as EndpointMap[K]['response']
+}
+
+// Syncthing serves QR codes from /qr/, outside the /rest namespace, but it
+// still requires the same X-API-Key auth, which an <img src> can't provide.
+export async function fetchQrCode(text: string): Promise<Blob> {
+  const apiKey = getStoredApiKey()
+  if (!apiKey) {
+    throw new SyncthingApiError(0, 'No Syncthing API key configured')
+  }
+
+  const url = `/qr/?text=${encodeURIComponent(text)}`
+  const response = await fetch(url, { headers: { 'X-API-Key': apiKey } })
+
+  if (!response.ok) {
+    const message = await response.text().catch(() => '')
+    throw new SyncthingApiError(response.status, message || response.statusText)
+  }
+
+  return response.blob()
 }
