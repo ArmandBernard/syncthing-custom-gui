@@ -1,3 +1,4 @@
+import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vite'
 import preact from '@preact/preset-vite'
 import tailwindcss from '@tailwindcss/vite'
@@ -11,12 +12,24 @@ const proxy = {
   '/meta.js': { target: 'https://127.0.0.1:8384', changeOrigin: true, secure: false },
 }
 
+// Keep in sync with the "paths" entries in tsconfig.app.json.
+const alias = (path: string) => fileURLToPath(new URL(path, import.meta.url))
+
 export default defineConfig(({ mode }) => ({
   plugins: [
     preact(),
     tailwindcss(),
     ...(mode === 'analyze' ? [analyzer({ analyzerPort: 8877 })] : []),
   ],
+  resolve: {
+    alias: {
+      '@components': alias('./src/components'),
+      '@hooks': alias('./src/hooks'),
+      '@lib': alias('./src/lib'),
+      '@context': alias('./src/context'),
+      '@styles': alias('./src/styles'),
+    },
+  },
   server: { proxy },
   preview: { proxy },
 }))

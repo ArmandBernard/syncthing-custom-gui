@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { useSyncthingQuery } from '../../hooks/useSyncthingQuery.ts'
+import { useSyncthingQuery } from '@hooks/useSyncthingQuery.ts'
 import { DeviceIDContext } from './DeviceIdContext.ts'
 
 export function DeviceIDContextProvider({ children }: { children: ReactNode }) {

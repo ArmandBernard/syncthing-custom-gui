@@ -1,4 +1,4 @@
-import dayJs from '../lib/dayJs'
+import dayJs from '@lib/dayJs'
 
 export function TimeSpan({ seconds }: { seconds: number }) {
   const duration = dayJs.duration(seconds, 'seconds')

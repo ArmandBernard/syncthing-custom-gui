@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { useSyncthingQuery } from '../../hooks/useSyncthingQuery.ts'
+import { useSyncthingQuery } from '@hooks/useSyncthingQuery.ts'
 import { ConnectionsContext } from './ConnectionsContext.ts'
 
 export function ConnectionsContextProvider({ children }: { children: ReactNode }) {

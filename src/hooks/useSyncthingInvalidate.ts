@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query'
-import type { EndpointMap } from '../lib/syncthing/endpoints'
+import type { EndpointMap } from '@lib/syncthing/endpoints'
 import { useCallback } from 'react'
 
 export function useSyncthingInvalidate<K extends keyof EndpointMap>(

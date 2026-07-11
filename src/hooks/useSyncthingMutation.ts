@@ -1,6 +1,6 @@
 import { useMutation, type UseMutationOptions } from '@tanstack/react-query'
-import { syncthingRequest, SyncthingApiError, type RequestOptions } from '../lib/syncthing/client'
-import type { EndpointMap } from '../lib/syncthing/endpoints'
+import { syncthingRequest, SyncthingApiError, type RequestOptions } from '@lib/syncthing/client'
+import type { EndpointMap } from '@lib/syncthing/endpoints'
 import { useCallback } from 'react'
 
 type ReactMutationOptions<TData, TVariables> = Omit<

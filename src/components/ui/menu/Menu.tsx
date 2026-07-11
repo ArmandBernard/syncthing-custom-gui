@@ -8,8 +8,8 @@ import {
   type ReactNode,
 } from 'react'
 import type { TargetedKeyboardEvent, TargetedToggleEvent } from 'preact'
-import { usePopoverPosition, type PopoverOrigin } from '../../../hooks/usePopoverPosition.ts'
-import { useRovingMenuFocus } from '../../../hooks/useRovingMenuFocus.ts'
+import { usePopoverPosition, type PopoverOrigin } from '@hooks/usePopoverPosition.ts'
+import { useRovingMenuFocus } from '@hooks/useRovingMenuFocus.ts'
 import { MenuItem } from './MenuItem.tsx'
 import { MenuGroup } from './MenuGroup.tsx'
 import { isMenuItemElement, isMenuGroupElement } from './menuChildGuards.ts'

@@ -1,11 +1,11 @@
 import { Dialog } from './ui/Dialog.tsx'
 import { TextField } from './ui/TextField.tsx'
 import { useState } from 'react'
-import type { FolderConfiguration } from '../lib/syncthing/types/config'
+import type { FolderConfiguration } from '@lib/syncthing/types/config'
 import { Button } from './ui/Button.tsx'
-import { useSyncthingMutation } from '../hooks/useSyncthingMutation.ts'
-import { useSyncthingInvalidate } from '../hooks/useSyncthingInvalidate.ts'
-import { useSyncthingQuery } from '../hooks/useSyncthingQuery.ts'
+import { useSyncthingMutation } from '@hooks/useSyncthingMutation.ts'
+import { useSyncthingInvalidate } from '@hooks/useSyncthingInvalidate.ts'
+import { useSyncthingQuery } from '@hooks/useSyncthingQuery.ts'
 
 export default function FolderDialog({
   initialFolderConfig,
