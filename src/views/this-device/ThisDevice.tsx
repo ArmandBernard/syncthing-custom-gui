@@ -13,6 +13,7 @@ import { useDeviceID } from '@context/device-id/useDeviceID.ts'
 import { SpeedInline } from '@components/SpeedInline.tsx'
 import { Button } from '@components/ui/Button.tsx'
 import ShareDeviceDialog from './ShareDeviceDialog.tsx'
+import ListItem from '@components/ui/ListItem.tsx'
 
 export function ThisDevice() {
   const [expanded, setExpanded] = useState(false)
@@ -60,17 +61,25 @@ export function ThisDevice() {
       >
         <div className="flex flex-col gap-4">
           <ul>
-            <li>
-              Uptime: <TimeSpan seconds={status.uptime} />
-            </li>
-            <li>
-              Upload: {latestRates && <>{formatTransferRate(latestRates?.outRate)} </>}(
-              {formatBytes(connections.total.outBytesTotal)} total)
-            </li>
-            <li>
-              Download: {latestRates && <>{formatTransferRate(latestRates?.inRate)} </>}(
-              {formatBytes(connections.total.inBytesTotal)} total)
-            </li>
+            <ListItem leftSlot="Uptime" rightSlot={<TimeSpan seconds={status.uptime} />} />
+            <ListItem
+              leftSlot="Upload"
+              rightSlot={
+                <>
+                  {latestRates && <>{formatTransferRate(latestRates?.outRate)} </>}(
+                  {formatBytes(connections.total.outBytesTotal)} total)
+                </>
+              }
+            />
+            <ListItem
+              leftSlot="Download"
+              rightSlot={
+                <>
+                  {latestRates && <>{formatTransferRate(latestRates?.inRate)} </>}(
+                  {formatBytes(connections.total.inBytesTotal)} total)
+                </>
+              }
+            />
           </ul>
           <div className="flex gap-4 justify-end">
             <Button variant="outlined" onClick={handleShareClick}>
