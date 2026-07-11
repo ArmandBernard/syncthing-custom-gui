@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import type { TargetedEvent } from 'preact'
-import { Card } from './ui/Card'
-import { TextField } from './ui/TextField'
-import { Button } from './ui/Button'
+import { Card } from '@components/ui/Card.tsx'
+import { TextField } from '@components/ui/TextField.tsx'
+import { Button } from '@components/ui/Button.tsx'
 
 type ApiKeyFormProps = {
   onSubmit: (apiKey: string) => void

@@ -1,6 +1,6 @@
 import { AppMenu } from './AppMenu.tsx'
-import { StatusIndicator } from './StatusIndicator.tsx'
-import { SyncthingIconDark } from './SyncthingIconDark.tsx'
+import { StatusIndicator } from '@components/StatusIndicator.tsx'
+import { SyncthingIconDark } from '@components/icons/SyncthingIconDark.tsx'
 
 export function Header() {
   return (

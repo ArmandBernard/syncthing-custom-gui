@@ -1,10 +1,10 @@
-import { Menu } from './ui/menu/Menu.tsx'
-import { SegmentedButtons } from './ui/SegmentedButtons'
-import { useTheme } from '@hooks/useTheme'
-import type { Theme } from '@lib/theme'
+import { Menu } from '@components/ui/menu/Menu.tsx'
+import { SegmentedButtons } from '@components/ui/SegmentedButtons.tsx'
+import { useTheme } from '@hooks/useTheme.ts'
+import type { Theme } from '@lib/theme.ts'
 import { useApiKey } from '@hooks/useApiKey.ts'
-import { IconButton } from './ui/IconButton.tsx'
-import { SettingsIcon } from './icons/SettingsIcon.tsx'
+import { IconButton } from '@components/ui/IconButton.tsx'
+import { SettingsIcon } from '@components/icons/SettingsIcon.tsx'
 
 const THEME_OPTIONS = [
   { value: 'light', label: 'Light' },
