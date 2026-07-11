@@ -8,6 +8,7 @@ import { formatBytes } from '@lib/formatBytes.ts'
 import { Button } from '@components/ui/Button.tsx'
 import { useSyncthingMutation } from '@hooks/useSyncthingMutation.ts'
 import { useSyncthingInvalidate } from '@hooks/useSyncthingInvalidate.ts'
+import ListItem from '@components/ui/ListItem.tsx'
 
 export function Folder({
   folder,
@@ -51,25 +52,39 @@ export function Folder({
         <ul>
           <li>Path: {folder.path}</li>
           {status && (
-            <li>
-              Contents: {status.localFiles} files, {status.localDirectories} directories,{' '}
-              {formatBytes(status.localBytes)}
-            </li>
+            <ListItem
+              leftSlot="Contents"
+              rightSlot={
+                <>
+                  {status.localFiles} files, {status.localDirectories} directories,{' '}
+                  {formatBytes(status.localBytes)}
+                </>
+              }
+            />
           )}
-          <li>
-            Rescan: <TimeSpan seconds={folder.rescanIntervalS} />{' '}
-            {folder.fsWatcherEnabled ? '(enabled)' : '(disabled)'}
-          </li>
-          <li>
-            Devices:{' '}
-            {folder.devices
-              .map((device) => {
-                const deviceConfig = devices.find((d) => d.deviceID === device.deviceID)
+          <ListItem
+            leftSlot="Rescan interval"
+            rightSlot={
+              <>
+                <TimeSpan seconds={folder.rescanIntervalS} />{' '}
+                {folder.fsWatcherEnabled ? '(enabled)' : '(disabled)'}
+              </>
+            }
+          />
+          <ListItem
+            leftSlot="Devices"
+            rightSlot={
+              <>
+                {folder.devices
+                  .map((device) => {
+                    const deviceConfig = devices.find((d) => d.deviceID === device.deviceID)
 
-                return deviceConfig?.name
-              })
-              .join(', ')}
-          </li>
+                    return deviceConfig?.name
+                  })
+                  .join(', ')}
+              </>
+            }
+          />
         </ul>
         <div className="flex gap-4 justify-end">
           <Button
