@@ -1,5 +1,5 @@
 import { useSyncthingQuery } from './hooks/useSyncthingQuery.ts'
-import { Folder } from './Folder.tsx'
+import { Folder } from './components/Folder.tsx'
 import { CircularProgressCentred } from './components/CircularProgressCentred.tsx'
 
 export function Folders() {

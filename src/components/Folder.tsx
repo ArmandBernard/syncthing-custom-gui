@@ -1,10 +1,10 @@
-import type { DeviceConfiguration, FolderConfiguration } from './lib/syncthing/types/config'
+import type { DeviceConfiguration, FolderConfiguration } from '../lib/syncthing/types/config'
 import { useState } from 'react'
-import { useSyncthingQuery } from './hooks/useSyncthingQuery.ts'
-import { CardAccordion } from './components/ui/CardAccordion.tsx'
-import { TimeSpan } from './components/TimeSpan.tsx'
-import type { FolderState } from './lib/syncthing/types/db.ts'
-import { formatBytes } from './lib/formatBytes.ts'
+import { useSyncthingQuery } from '../hooks/useSyncthingQuery.ts'
+import { CardAccordion } from './ui/CardAccordion.tsx'
+import { TimeSpan } from './TimeSpan.tsx'
+import type { FolderState } from '../lib/syncthing/types/db.ts'
+import { formatBytes } from '../lib/formatBytes.ts'
 
 export function Folder({
   folder,
