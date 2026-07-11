@@ -33,7 +33,7 @@ export function FolderDialog({
 
   return (
     <Dialog
-      open={!!folder?.id}
+      open={!!folder}
       onClose={onClose}
       title="Edit folder"
       actions={
