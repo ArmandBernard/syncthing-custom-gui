@@ -43,9 +43,9 @@ export function MenuItem({
       type="button"
       role="menuitem"
       tabIndex={_focused ? 0 : -1}
-      disabled={disabled}
-      onClick={onSelect}
-      className={`flex h-12 w-full items-center px-3 text-left text-sm text-on-surface hover:bg-on-surface/8 active:bg-on-surface/12 focus-visible:bg-on-surface/12 focus:outline-none disabled:pointer-events-none disabled:opacity-[0.38] ${className}`}
+      aria-disabled={disabled}
+      onClick={disabled ? undefined : onSelect}
+      className={`flex h-12 w-full items-center px-3 text-left text-sm text-on-surface hover:bg-on-surface/8 active:bg-on-surface/12 focus-visible:bg-on-surface/12 focus:outline-none aria-disabled:pointer-events-none aria-disabled:opacity-[0.38] ${className}`}
       {...props}
     >
       {children}
