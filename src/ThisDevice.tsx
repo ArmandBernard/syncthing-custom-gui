@@ -31,7 +31,7 @@ export function ThisDevice() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-xl">This device</h2>
+      <h2 className="text-2xl">This device</h2>
       <CardAccordion
         expanded={expanded}
         setExpanded={setExpanded}
