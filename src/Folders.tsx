@@ -28,22 +28,24 @@ export function Folders() {
   return (
     <div className="flex flex-col gap-4">
       <h2 className="text-2xl">Folders</h2>
-      {Object.entries(grouped).map(([group, value]) => (
-        <>
-          {group && <h3 className="text-xl">{group}</h3>}
-          <ul className="flex flex-col gap-2">
-            {value!.map((folder) => (
-              <li key={folder.id}>
-                <Folder
-                  folder={folder}
-                  devices={devices}
-                  onEditClick={() => handleEditClick(folder.id)}
-                />
-              </li>
-            ))}
-          </ul>
-        </>
-      ))}
+      {Object.entries(grouped)
+        .toSorted((a, b) => a[0].localeCompare(b[0]))
+        .map(([group, value]) => (
+          <>
+            {group && <h3 className="text-xl">{group}</h3>}
+            <ul className="flex flex-col gap-2">
+              {value!.map((folder) => (
+                <li key={folder.id}>
+                  <Folder
+                    folder={folder}
+                    devices={devices}
+                    onEditClick={() => handleEditClick(folder.id)}
+                  />
+                </li>
+              ))}
+            </ul>
+          </>
+        ))}
       <FolderDialog
         key={editingFolderId}
         initialFolderConfig={editingFolder}
