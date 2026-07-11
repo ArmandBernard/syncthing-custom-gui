@@ -1,4 +1,5 @@
-import { forwardRef, type ButtonHTMLAttributes, type HTMLAttributes, type Ref } from 'react'
+import { forwardRef, type Ref } from 'react'
+import type { ButtonHTMLAttributes, HTMLAttributes } from 'preact'
 
 export type CardVariant = 'elevated' | 'filled' | 'outlined'
 

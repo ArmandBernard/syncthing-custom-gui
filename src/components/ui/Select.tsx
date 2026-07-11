@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useId, useRef, useState } from 'react'
-import type { TargetedToggleEvent } from 'preact'
+import type { TargetedKeyboardEvent, TargetedToggleEvent } from 'preact'
 import { usePopoverPosition } from './usePopoverPosition'
 
 export interface SelectOption {
@@ -167,7 +167,7 @@ export function Select({
     [options, onChange, requestClose],
   )
 
-  const handleTriggerKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
+  const handleTriggerKeyDown = (event: TargetedKeyboardEvent<HTMLButtonElement>) => {
     switch (event.key) {
       case 'ArrowDown':
       case 'ArrowUp':
@@ -186,7 +186,7 @@ export function Select({
     else openListbox()
   }
 
-  const handleListboxKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+  const handleListboxKeyDown = (event: TargetedKeyboardEvent<HTMLDivElement>) => {
     switch (event.key) {
       case 'ArrowDown':
         event.preventDefault()

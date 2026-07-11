@@ -1,4 +1,5 @@
-import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from 'react'
+import { forwardRef, type ReactNode } from 'react'
+import type { ButtonHTMLAttributes } from 'preact'
 
 export interface ChipProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   label?: ReactNode

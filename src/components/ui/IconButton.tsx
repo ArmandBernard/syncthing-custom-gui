@@ -1,4 +1,5 @@
-import { forwardRef, type ButtonHTMLAttributes } from 'react'
+import { forwardRef } from 'react'
+import type { ButtonHTMLAttributes } from 'preact'
 
 export type IconButtonVariant = 'standard' | 'filled' | 'tonal' | 'outlined'
 

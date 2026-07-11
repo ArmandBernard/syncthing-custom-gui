@@ -5,13 +5,10 @@ import {
   useCallback,
   useRef,
   useState,
-  type ButtonHTMLAttributes,
-  type FocusEventHandler,
-  type KeyboardEvent as ReactKeyboardEvent,
   type ReactElement,
   type ReactNode,
 } from 'react'
-import type { TargetedToggleEvent } from 'preact'
+import type { ButtonHTMLAttributes, FocusEventHandler, TargetedKeyboardEvent, TargetedToggleEvent } from 'preact'
 import { usePopoverPosition, type PopoverOrigin } from './usePopoverPosition'
 
 export interface MenuItemProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'onSelect'> {
@@ -233,7 +230,7 @@ export function Menu({
     [enabledIndices, focusedIndex, focusItemByIndex, items],
   )
 
-  const handleTriggerKeyDown = (event: ReactKeyboardEvent<HTMLButtonElement>) => {
+  const handleTriggerKeyDown = (event: TargetedKeyboardEvent<HTMLButtonElement>) => {
     switch (event.key) {
       case 'ArrowDown':
         event.preventDefault()
@@ -261,7 +258,7 @@ export function Menu({
     }
   }
 
-  const handleMenuKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+  const handleMenuKeyDown = (event: TargetedKeyboardEvent<HTMLDivElement>) => {
     // Once focus has been delegated into a Menu.Toggle's composite widget
     // (e.g. a radiogroup), step aside for everything except Escape/Tab and
     // let the native control handle its own keyboard behavior (arrow-key

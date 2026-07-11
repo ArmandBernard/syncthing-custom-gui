@@ -1,4 +1,4 @@
-import { type ButtonHTMLAttributes } from 'react'
+import type { ButtonHTMLAttributes } from 'preact'
 
 export type ButtonVariant = 'filled' | 'tonal' | 'outlined' | 'text' | 'elevated'
 

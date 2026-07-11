@@ -1,4 +1,5 @@
-import { forwardRef, useId, useState, type InputHTMLAttributes } from 'react'
+import { forwardRef, useId, useState } from 'react'
+import type { InputHTMLAttributes } from 'preact'
 
 export interface SwitchProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'role'> {
   label?: string

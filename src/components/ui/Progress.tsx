@@ -1,4 +1,5 @@
-import { forwardRef, type HTMLAttributes } from 'react'
+import { forwardRef } from 'react'
+import type { HTMLAttributes } from 'preact'
 
 export interface LinearProgressProps extends HTMLAttributes<HTMLDivElement> {
   /** 0-100. Omit for an indeterminate progress bar. */

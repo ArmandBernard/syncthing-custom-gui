@@ -1,4 +1,5 @@
-import { useId, useMemo, type PointerEvent } from 'react'
+import { useId, useMemo } from 'react'
+import type { TargetedPointerEvent } from 'preact'
 import { ParentSize } from '@visx/responsive'
 import { scaleLinear } from '@visx/scale'
 import { AreaClosed } from '@visx/shape'
@@ -66,7 +67,7 @@ export default function TransferChartImpl({ history }: { history: TransferHistor
               range: [height - margin.bottom, margin.top],
             })
 
-            function handlePointerMove(event: PointerEvent<SVGRectElement>) {
+            function handlePointerMove(event: TargetedPointerEvent<SVGRectElement>) {
               const point = localPoint(event)
               if (history.length === 0 || !point) {
                 return
