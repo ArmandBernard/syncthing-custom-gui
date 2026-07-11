@@ -7,7 +7,7 @@ import { useSyncthingMutation } from '../hooks/useSyncthingMutation.ts'
 import { useSyncthingInvalidate } from '../hooks/useSyncthingInvalidate.ts'
 import { useSyncthingQuery } from '../hooks/useSyncthingQuery.ts'
 
-export function FolderDialog({
+export default function FolderDialog({
   initialFolderConfig,
   onClose,
 }: {
