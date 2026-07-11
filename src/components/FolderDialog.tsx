@@ -14,16 +14,19 @@ export function FolderDialog({
   onClose: () => void
 }) {
   const [name, setName] = useState<string | undefined>(folder?.label)
-  const { mutateAsync, isPending } = useSyncthingMutation('PATCH /config/folders/:id', {
-    params: { id: folder?.id! },
-    body: {
-      label: name,
-    },
-  })
+  const { mutateAsync, isPending } = useSyncthingMutation('PATCH /config/folders/:id')
   const invalidateFolders = useSyncthingInvalidate('GET /config/folders')
 
   async function handleSave() {
-    await mutateAsync()
+    if (!folder) {
+      return
+    }
+    await mutateAsync({
+      params: { id: folder.id },
+      body: {
+        label: name,
+      },
+    })
     await invalidateFolders()
     onClose()
   }
