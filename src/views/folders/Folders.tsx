@@ -74,12 +74,12 @@ export function Folders() {
         <FolderDialog
           isOpen={!!editingFolder}
           key={editingFolderId}
-          initialFolderConfig={editingFolder}
+          initialConfig={editingFolder}
           onClose={handleEditClose}
         />
         <FolderDialog
           isOpen={creatingFolder}
-          initialFolderConfig={undefined}
+          initialConfig={undefined}
           onClose={handleCreateClose}
         />
       </Suspense>

@@ -10,11 +10,11 @@ import { useCreateFolderId } from '@hooks/useCreateFolderId.ts'
 import { mergeConfigurations } from '@lib/mergeConfigurations.ts'
 
 export default function FolderDialog({
-  initialFolderConfig,
+  initialConfig,
   isOpen,
   onClose,
 }: {
-  initialFolderConfig: FolderConfiguration | undefined
+  initialConfig: FolderConfiguration | undefined
   isOpen: boolean
   onClose: () => void
 }) {
@@ -35,11 +35,11 @@ export default function FolderDialog({
   const invalidateFolders = useSyncthingInvalidate('GET /config/folders')
 
   const isPending = updateFolderIsPending || createFolderIsPending || deleteFolderIsPending
-  const inEditMode = !!initialFolderConfig
+  const inEditMode = !!initialConfig
   const effectiveConfig: FolderConfiguration | undefined = mergeConfigurations(
     defaultFolderConfig,
     newFolderId ? { id: newFolderId } : undefined,
-    initialFolderConfig,
+    initialConfig,
     folderConfigChanges,
   )
 
@@ -50,8 +50,8 @@ export default function FolderDialog({
     setConfirmingDelete(false)
   }
   async function handleConfirmDelete() {
-    if (initialFolderConfig) {
-      await deleteFolderAsync({ params: { id: initialFolderConfig.id } })
+    if (initialConfig) {
+      await deleteFolderAsync({ params: { id: initialConfig.id } })
       await invalidateFolders()
       setConfirmingDelete(false)
       onClose()
