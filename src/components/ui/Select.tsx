@@ -1,11 +1,4 @@
-import {
-  useCallback,
-  useEffect,
-  useId,
-  useRef,
-  useState,
-  type ToggleEvent as ReactToggleEvent,
-} from 'react'
+import { useCallback, useEffect, useId, useRef, useState, type JSX } from 'react'
 import { usePopoverPosition } from './usePopoverPosition'
 
 export interface SelectOption {
@@ -232,7 +225,7 @@ export function Select({
     }
   }
 
-  const handleToggle = (event: ReactToggleEvent<HTMLDivElement>) => {
+  const handleToggle = (event: JSX.TargetedToggleEvent<HTMLDivElement>) => {
     // Keep React state in sync when the browser closes the popover for us
     // (native click-outside / Escape light-dismiss).
     if (event.newState === 'closed' && isOpen) {
