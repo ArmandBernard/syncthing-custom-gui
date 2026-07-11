@@ -36,9 +36,9 @@ export function Dialog({ open, onClose, title, children, actions }: DialogProps)
       onClick={(event) => {
         if (event.target === dialogRef.current) onClose()
       }}
-      className="m-0 border-0 bg-transparent p-0 [&::backdrop]:bg-scrim/50"
+      className="m-0 border-0 bg-transparent p-0 backdrop:bg-scrim/50"
     >
-      <div className="min-w-[280px] max-w-[560px] rounded-xl bg-surface-high p-6 shadow-lg">
+      <div className="min-w-70 max-w-140 rounded-xl bg-surface-high p-6 shadow-lg">
         {title && (
           <h2 id={titleId} className="mb-4 text-xl font-medium text-on-surface">
             {title}
