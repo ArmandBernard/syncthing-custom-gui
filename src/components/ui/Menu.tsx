@@ -323,7 +323,7 @@ export function Menu({ anchorOrigin, transformOrigin, children, button }: MenuPr
         id: triggerId,
         ref: triggerRef,
         'aria-haspopup': 'menu',
-        'aria-expanded': { isOpen },
+        'aria-expanded': isOpen,
         onClick: handleTriggerClick,
         onKeyDown: handleTriggerKeyDown,
       })}
