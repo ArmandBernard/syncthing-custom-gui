@@ -186,7 +186,7 @@ export function Menu({ anchorOrigin, transformOrigin, children, button }: MenuPr
         onToggle={handleToggle}
         onKeyDown={handleMenuKeyDown}
         style={{ position: 'fixed', top, left, margin: 0 }}
-        className="min-w-28 rounded-xs bg-surface py-2 shadow-lg"
+        className="min-w-28 rounded-xs bg-surface-high py-2 shadow-xl"
       >
         {Children.map(children, (child, index) => {
           if (isMenuItemElement(child)) {
