@@ -5,6 +5,9 @@ import type { Theme } from '@lib/theme.ts'
 import { useApiKey } from '@hooks/useApiKey.ts'
 import { IconButton } from '@components/ui/IconButton.tsx'
 import { SettingsIcon } from '@components/icons/SettingsIcon.tsx'
+import { useSyncthingQuery } from '@hooks/useSyncthingQuery.ts'
+import ShareDeviceDialog from '../this-device/ShareDeviceDialog.tsx'
+import { useState } from 'react'
 
 const THEME_OPTIONS = [
   { value: 'light', label: 'Light' },
@@ -17,33 +20,51 @@ const THEME_OPTIONS = [
  * but is meant to grow more items above/below it over time.
  */
 export function AppMenu() {
+  const [showShare, setShowShare] = useState(false)
   const { theme, setTheme } = useTheme()
   const { apiKey, clearApiKey } = useApiKey()
 
+  const { data: status } = useSyncthingQuery('GET /system/status')
+  const { data: device } = useSyncthingQuery('GET /config/devices/:id', {
+    enabled: !!status,
+    // @ts-ignore
+    params: { id: status?.myID },
+  })
+
+  function handleCloseShare() {
+    setShowShare(false)
+  }
+
+  function handleItemClick() {
+    setShowShare(true)
+  }
+
   return (
-    // AppMenu is pinned to the top-right of the screen (see App.tsx), so the
-    // popup should hang below the trigger's right edge, right-aligned to it
-    // — set explicitly rather than left to usePopoverPosition's runtime
-    // auto-fit, since this component already knows where it lives on screen.
-    <Menu
-      anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      button={
-        <IconButton aria-label="Settings">
-          <SettingsIcon />
-        </IconButton>
-      }
-    >
-      <Menu.Toggle>
-        <SegmentedButtons
-          aria-label="Theme"
-          options={THEME_OPTIONS}
-          value={theme}
-          onChange={(value) => setTheme(value as Theme)}
-          asMenuItems
-        />
-      </Menu.Toggle>
-      {apiKey && <Menu.Item onSelect={clearApiKey}>Log out</Menu.Item>}
-    </Menu>
+    <>
+      <Menu
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        button={
+          <IconButton aria-label="Settings">
+            <SettingsIcon />
+          </IconButton>
+        }
+      >
+        <Menu.Toggle>
+          <SegmentedButtons
+            aria-label="Theme"
+            options={THEME_OPTIONS}
+            value={theme}
+            onChange={(value) => setTheme(value as Theme)}
+            asMenuItems
+          />
+        </Menu.Toggle>
+        {status && device && <Menu.Item onSelect={handleItemClick}>Share device ID</Menu.Item>}
+        {apiKey && <Menu.Item onSelect={clearApiKey}>Log out</Menu.Item>}
+      </Menu>
+      {device && (
+        <ShareDeviceDialog isOpen={showShare} onClose={handleCloseShare} device={device} />
+      )}
+    </>
   )
 }
