@@ -110,6 +110,7 @@ export function Menu({ anchorOrigin, transformOrigin, children, button }: MenuPr
   const [focusedIndex, setFocusedIndex] = useState(-1)
   const triggerRef = useRef<HTMLButtonElement>(null)
   const triggerId = useId()
+  const popoverId = useId()
   const popoverRef = useRef<HTMLDivElement>(null)
   const itemNodesRef = useRef<Map<number, HTMLElement>>(new Map())
   const typeaheadRef = useRef<{ text: string; timeout: ReturnType<typeof setTimeout> | null }>({
@@ -350,11 +351,13 @@ export function Menu({ anchorOrigin, transformOrigin, children, button }: MenuPr
         ref: triggerRef,
         'aria-haspopup': 'menu',
         'aria-expanded': isOpen,
+        'aria-controls': popoverId,
         onClick: handleTriggerClick,
         onKeyDown: handleTriggerKeyDown,
       })}
       <div
         ref={popoverRef}
+        id={popoverId}
         popover="auto"
         role="menu"
         aria-labelledby={triggerId}
