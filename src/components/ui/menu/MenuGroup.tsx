@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 
-export interface MenuToggleProps {
+export interface MenuGroupProps {
   children: ReactNode
   disabled?: boolean
   className?: string
@@ -15,7 +15,7 @@ export interface MenuToggleProps {
  * may hold other items above/below that the user likely wants to keep using.
  * Must be a direct child of `Menu`.
  */
-export function MenuToggle({ children, className = '', _itemRef }: MenuToggleProps) {
+export function MenuGroup({ children, className = '', _itemRef }: MenuGroupProps) {
   return (
     <div role="group" ref={_itemRef} className={`px-3 py-2 ${className}`}>
       {children}

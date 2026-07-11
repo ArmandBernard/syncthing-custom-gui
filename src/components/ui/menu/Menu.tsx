@@ -11,8 +11,8 @@ import type { TargetedKeyboardEvent, TargetedToggleEvent } from 'preact'
 import { usePopoverPosition, type PopoverOrigin } from '../../../hooks/usePopoverPosition.ts'
 import { useRovingMenuFocus } from '../../../hooks/useRovingMenuFocus.ts'
 import { MenuItem } from './MenuItem.tsx'
-import { MenuToggle } from './MenuToggle.tsx'
-import { isMenuItemElement, isMenuToggleElement } from './menuChildGuards.ts'
+import { MenuGroup } from './MenuGroup.tsx'
+import { isMenuItemElement, isMenuGroupElement } from './menuChildGuards.ts'
 
 export interface MenuProps {
   /**
@@ -202,7 +202,7 @@ export function Menu({ anchorOrigin, transformOrigin, children, button }: MenuPr
               },
             })
           }
-          if (isMenuToggleElement(child)) {
+          if (isMenuGroupElement(child)) {
             return cloneElement(child, {
               _itemRef: (node: HTMLElement | null) => {
                 if (node) itemNodesRef.current.set(index, node)
@@ -218,4 +218,4 @@ export function Menu({ anchorOrigin, transformOrigin, children, button }: MenuPr
 }
 
 Menu.Item = MenuItem
-Menu.Toggle = MenuToggle
+Menu.Toggle = MenuGroup

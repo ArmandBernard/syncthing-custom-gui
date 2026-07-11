@@ -7,7 +7,7 @@ import {
   type ReactNode,
   type RefObject,
 } from 'react'
-import { isMenuItemElement, isMenuToggleElement } from '../components/ui/menu/menuChildGuards.ts'
+import { isMenuItemElement, isMenuGroupElement } from '../components/ui/menu/menuChildGuards.ts'
 
 interface MenuFocusItem {
   index: number
@@ -47,7 +47,7 @@ export function useRovingMenuFocus(
         disabled: !!child.props.disabled,
         label: typeof child.props.children === 'string' ? child.props.children : '',
       })
-    } else if (isMenuToggleElement(child)) {
+    } else if (isMenuGroupElement(child)) {
       // No text label to typeahead-match against — that's fine, typeahead
       // simply never lands on this item, which is the expected behavior.
       acc.push({ index, disabled: !!child.props.disabled, label: '' })
