@@ -22,10 +22,12 @@ export function Device({
   connection,
   device,
   stats,
+  onEditClick,
 }: {
   connection: Connection
   device: DeviceConfiguration
   stats: DeviceStats
+  onEditClick: () => void
 }) {
   const [expanded, setExpanded] = useState(false)
   const { data: completion, isLoading: completionIsLoading } = useSyncthingQuery(
@@ -39,6 +41,10 @@ export function Device({
 
   if (completionIsLoading || !completion) {
     return <CircularProgress aria-label="Loading" />
+  }
+
+  function handleEditClick() {
+    onEditClick()
   }
 
   async function handlePauseOrResume() {
@@ -94,6 +100,9 @@ export function Device({
         <div className="flex gap-4 justify-end">
           <Button variant="outlined" onClick={handlePauseOrResume}>
             {connection.paused ? 'Resume' : 'Pause'}
+          </Button>
+          <Button variant="outlined" onClick={handleEditClick}>
+            Edit
           </Button>
         </div>
       </div>
