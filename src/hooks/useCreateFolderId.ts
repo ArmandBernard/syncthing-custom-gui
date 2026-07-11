@@ -7,5 +7,5 @@ export function useCreateFolderId() {
     return null
   }
 
-  return (data.random.substring(0, 5) + '-' + data.random.substring(5, 5)).toLowerCase()
+  return (data.random.substring(0, 5) + '-' + data.random.substring(5)).toLowerCase()
 }
