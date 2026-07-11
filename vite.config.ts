@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import preact from '@preact/preset-vite'
 import tailwindcss from '@tailwindcss/vite'
 import { analyzer } from 'vite-bundle-analyzer'
 
@@ -12,7 +12,7 @@ const proxy = {
 }
 
 export default defineConfig(({ mode }) => ({
-  plugins: [react(), tailwindcss(), ...(mode === 'analyze' ? [analyzer({ analyzerPort: 8877 })] : [])],
+  plugins: [preact(), tailwindcss(), ...(mode === 'analyze' ? [analyzer({ analyzerPort: 8877 })] : [])],
   server: { proxy },
   preview: { proxy },
 }))
