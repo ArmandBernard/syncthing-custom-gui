@@ -1,4 +1,4 @@
-import { ThisDevice } from './views/ThisDevice.tsx'
+import { ThisDevice } from './views/this-device/ThisDevice.tsx'
 import { RemoteDevices } from './views/remote-devices/RemoteDevices.tsx'
 import { Folders } from './views/folders/Folders.tsx'
 

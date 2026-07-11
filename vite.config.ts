@@ -10,6 +10,7 @@ import { analyzer } from 'vite-bundle-analyzer'
 const proxy = {
   '/rest': { target: 'https://127.0.0.1:8384', changeOrigin: true, secure: false },
   '/meta.js': { target: 'https://127.0.0.1:8384', changeOrigin: true, secure: false },
+  '/qr': { target: 'https://127.0.0.1:8384', changeOrigin: true, secure: false },
 }
 
 // Keep in sync with the "paths" entries in tsconfig.app.json.
