@@ -197,7 +197,7 @@ export function Menu({ anchorOrigin, transformOrigin, children, button }: MenuPr
                 else itemNodesRef.current.delete(index)
               },
               onSelect: () => {
-                child.props.onSelect()
+                child.props.onClick()
                 requestClose(true)
               },
             })
