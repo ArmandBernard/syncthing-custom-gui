@@ -54,7 +54,7 @@ export function RemoteDevices() {
           anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
           transformOrigin={{ vertical: 'top', horizontal: 'right' }}
         >
-          <Menu.Item onSelect={handleAddClick}>Add device</Menu.Item>
+          <Menu.Item onClick={handleAddClick}>Add device</Menu.Item>
         </Menu>
       </div>
       {Object.entries(grouped)

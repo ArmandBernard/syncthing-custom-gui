@@ -49,7 +49,7 @@ export function Folders() {
           anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
           transformOrigin={{ vertical: 'top', horizontal: 'right' }}
         >
-          <Menu.Item onSelect={handleAddClick}>Add folder</Menu.Item>
+          <Menu.Item onClick={handleAddClick}>Add folder</Menu.Item>
         </Menu>
       </div>
       {Object.entries(grouped)

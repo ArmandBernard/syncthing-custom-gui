@@ -59,8 +59,16 @@ export function AppMenu() {
             asMenuItems
           />
         </Menu.Toggle>
-        {status && device && <Menu.Item onSelect={handleItemClick}>Share device ID</Menu.Item>}
-        {apiKey && <Menu.Item onSelect={clearApiKey}>Log out</Menu.Item>}
+        {status && device && <Menu.Item onClick={handleItemClick}>Share device ID</Menu.Item>}
+        <Menu.Item
+          href="https://github.com/ArmandBernard/syncthing-custom-gui"
+          target="_blank"
+          rel="noopener"
+          onClick={() => {}}
+        >
+          View code on GitHub
+        </Menu.Item>
+        {apiKey && <Menu.Item onClick={clearApiKey}>Log out</Menu.Item>}
       </Menu>
       {device && (
         <ShareDeviceDialog isOpen={showShare} onClose={handleCloseShare} device={device} />
