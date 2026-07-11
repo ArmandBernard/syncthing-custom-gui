@@ -3,7 +3,9 @@ import { Folder } from './components/Folder.tsx'
 import { CircularProgressCentred } from './components/CircularProgressCentred.tsx'
 import { useState } from 'preact/compat'
 import type { FolderID } from './lib/syncthing/types/common.ts'
-import { FolderDialog } from './components/FolderDialog.tsx'
+import { lazy, Suspense } from 'react'
+
+const FolderDialog = lazy(() => import('./components/FolderDialog.tsx'))
 
 export function Folders() {
   const [editingFolderId, setEditingFolderId] = useState<FolderID | undefined>(undefined)
@@ -46,11 +48,13 @@ export function Folders() {
             </ul>
           </>
         ))}
-      <FolderDialog
-        key={editingFolderId}
-        initialFolderConfig={editingFolder}
-        onClose={handleClose}
-      />
+      <Suspense fallback={null}>
+        <FolderDialog
+          key={editingFolderId}
+          initialFolderConfig={editingFolder}
+          onClose={handleClose}
+        />
+      </Suspense>
     </div>
   )
 }
