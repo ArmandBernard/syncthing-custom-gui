@@ -7,33 +7,43 @@ import { useSyncthingMutation } from '../hooks/useSyncthingMutation.ts'
 import { useSyncthingInvalidate } from '../hooks/useSyncthingInvalidate.ts'
 
 export function FolderDialog({
-  folder,
+  initialFolderConfig,
   onClose,
 }: {
-  folder: FolderConfiguration | undefined
+  initialFolderConfig: FolderConfiguration | undefined
   onClose: () => void
 }) {
-  const [name, setName] = useState<string | undefined>(folder?.label)
+  const [folderConfig, setFolderConfig] = useState<FolderConfiguration | undefined>(
+    initialFolderConfig,
+  )
   const { mutateAsync, isPending } = useSyncthingMutation('PATCH /config/folders/:id')
   const invalidateFolders = useSyncthingInvalidate('GET /config/folders')
 
   async function handleSave() {
-    if (!folder) {
+    if (!initialFolderConfig) {
       return
     }
     await mutateAsync({
-      params: { id: folder.id },
-      body: {
-        label: name,
-      },
+      params: { id: initialFolderConfig.id },
+      body: folderConfig,
     })
     await invalidateFolders()
     onClose()
   }
 
+  function updateFolder(folder: Partial<FolderConfiguration>) {
+    setFolderConfig((old) => {
+      if (!old) {
+        return old
+      }
+
+      return { ...old, ...folder }
+    })
+  }
+
   return (
     <Dialog
-      open={!!folder}
+      open={!!initialFolderConfig}
       onClose={onClose}
       title="Edit folder"
       actions={
@@ -42,9 +52,20 @@ export function FolderDialog({
         </Button>
       }
     >
-      <div className="flex flex-col gap-4">
-        <TextField label="Label" value={name} onChange={(e) => setName(e.currentTarget?.value)} />
-      </div>
+      {folderConfig && (
+        <div className="flex flex-col gap-4">
+          <TextField
+            label="Label"
+            value={folderConfig.label}
+            onChange={(e) => updateFolder({ label: e.currentTarget?.value })}
+          />
+          <TextField
+            label="Group"
+            value={folderConfig.group}
+            onChange={(e) => updateFolder({ group: e.currentTarget?.value })}
+          />
+        </div>
+      )}
     </Dialog>
   )
 }

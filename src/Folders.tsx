@@ -44,7 +44,11 @@ export function Folders() {
           </ul>
         </>
       ))}
-      <FolderDialog key={editingFolderId} folder={editingFolder} onClose={handleClose} />
+      <FolderDialog
+        key={editingFolderId}
+        initialFolderConfig={editingFolder}
+        onClose={handleClose}
+      />
     </div>
   )
 }
