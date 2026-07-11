@@ -1,45 +1,41 @@
-import { Dialog } from './ui/Dialog.tsx'
-import { TextField } from './ui/TextField.tsx'
+import { Dialog } from '@components/ui/Dialog.tsx'
+import { TextField } from '@components/ui/TextField.tsx'
 import { useState } from 'react'
-import type { FolderConfiguration } from '@lib/syncthing/types/config'
-import { Button } from './ui/Button.tsx'
+import type { DeviceConfiguration, FolderConfiguration } from '@lib/syncthing/types/config'
+import { Button } from '@components/ui/Button.tsx'
 import { useSyncthingMutation } from '@hooks/useSyncthingMutation.ts'
 import { useSyncthingInvalidate } from '@hooks/useSyncthingInvalidate.ts'
 import { useSyncthingQuery } from '@hooks/useSyncthingQuery.ts'
-import { useCreateFolderId } from '@hooks/useCreateFolderId.ts'
 import { mergeConfigurations } from '@lib/mergeConfigurations.ts'
 
-export default function FolderDialog({
-  initialFolderConfig,
+export default function DeviceDialog({
+  initialConfig,
   isOpen,
   onClose,
 }: {
-  initialFolderConfig: FolderConfiguration | undefined
+  initialConfig: DeviceConfiguration | undefined
   isOpen: boolean
   onClose: () => void
 }) {
   const [folderConfigChanges, setFolderConfigChanges] = useState<Partial<FolderConfiguration>>({})
   const [confirmingDelete, setConfirmingDelete] = useState(false)
 
-  const { data: status } = useSyncthingQuery('GET /system/status')
-  const newFolderId = useCreateFolderId()
-  const { data: defaultFolderConfig } = useSyncthingQuery('GET /config/defaults/folder')
+  const { data: defaultDeviceConfig } = useSyncthingQuery('GET /config/defaults/device')
   const { mutateAsync: updateFolderAsync, isPending: updateFolderIsPending } = useSyncthingMutation(
-    'PATCH /config/folders/:id',
+    'PATCH /config/devices/:id',
   )
   const { mutateAsync: deleteFolderAsync, isPending: deleteFolderIsPending } = useSyncthingMutation(
-    'DELETE /config/folders/:id',
+    'DELETE /config/devices/:id',
   )
   const { mutateAsync: createFolderAsync, isPending: createFolderIsPending } =
-    useSyncthingMutation('POST /config/folders')
-  const invalidateFolders = useSyncthingInvalidate('GET /config/folders')
+    useSyncthingMutation('POST /config/devices')
+  const invalidateFolders = useSyncthingInvalidate('GET /config/devices')
 
   const isPending = updateFolderIsPending || createFolderIsPending || deleteFolderIsPending
-  const inEditMode = !!initialFolderConfig
-  const effectiveConfig: FolderConfiguration | undefined = mergeConfigurations(
-    defaultFolderConfig,
-    newFolderId ? { id: newFolderId } : undefined,
-    initialFolderConfig,
+  const inEditMode = !!initialConfig
+  const effectiveConfig: DeviceConfiguration | undefined = mergeConfigurations(
+    defaultDeviceConfig,
+    initialConfig,
     folderConfigChanges,
   )
 
@@ -50,8 +46,8 @@ export default function FolderDialog({
     setConfirmingDelete(false)
   }
   async function handleConfirmDelete() {
-    if (initialFolderConfig) {
-      await deleteFolderAsync({ params: { id: initialFolderConfig.id } })
+    if (initialConfig) {
+      await deleteFolderAsync({ params: { id: initialConfig.deviceID } })
       await invalidateFolders()
       setConfirmingDelete(false)
       onClose()
@@ -65,19 +61,19 @@ export default function FolderDialog({
 
     if (inEditMode) {
       await updateFolderAsync({
-        params: { id: effectiveConfig.id },
+        params: { id: effectiveConfig.deviceID },
         body: effectiveConfig,
       })
-    } else if (newFolderId) {
+    } else {
       await createFolderAsync({
-        body: { ...effectiveConfig, id: newFolderId },
+        body: { ...effectiveConfig },
       })
     }
     await invalidateFolders()
     onClose()
   }
 
-  function handleUpdateField(configUpdates: Partial<FolderConfiguration>) {
+  function handleUpdateField(configUpdates: Partial<DeviceConfiguration>) {
     setFolderConfigChanges((old) => {
       return { ...old, ...configUpdates }
     })
@@ -87,12 +83,7 @@ export default function FolderDialog({
     <Dialog
       open={isOpen}
       onClose={onClose}
-      title={
-        <>
-          {inEditMode ? 'Edit' : 'Create'} folder{' '}
-          <span className="text-on-surface-variant">{!inEditMode ? ` (${newFolderId})` : ''}</span>
-        </>
-      }
+      title={<>{inEditMode ? 'Edit' : 'Add remote'} device</>}
       actions={
         <div className="flex flex-1 gap-4 justify-between">
           <div>
@@ -116,33 +107,22 @@ export default function FolderDialog({
       {effectiveConfig && (
         <div className="flex flex-col gap-4">
           <TextField
-            label="Label"
-            value={effectiveConfig.label}
-            onChange={(e) => handleUpdateField({ label: e.currentTarget?.value })}
-            supportingText="Optional descriptive label for the folder."
+            label="ID"
+            value={effectiveConfig.deviceID}
+            onChange={(e) => handleUpdateField({ deviceID: e.currentTarget?.value })}
+            supportingText="The device ID to enter here can be found in the 'Actions > Show ID' dialog on the other device. Spaces and dashes are optional (ignored). When adding a new device, keep in mind that this device must be added on the other side too."
+          />
+          <TextField
+            label="Name"
+            value={effectiveConfig.name}
+            onChange={(e) => handleUpdateField({ name: e.currentTarget?.value })}
+            supportingText="Shown instead of Device ID in the cluster status. Will be updated to the name the device advertises if left empty."
           />
           <TextField
             label="Group"
             value={effectiveConfig.group}
             onChange={(e) => handleUpdateField({ group: e.currentTarget?.value })}
-            supportingText="Optional group for the folder."
-          />
-          <TextField
-            label="Path"
-            value={effectiveConfig.path}
-            onChange={(e) => handleUpdateField({ path: e.currentTarget?.value })}
-            supportingText={
-              <>
-                Path to the folder on the local computer. Will be created if it does not exist.
-                {status && (
-                  <>
-                    {' '}
-                    The tilde character (~) can be used as a shortcut for{' '}
-                    <code className="bg-surface p-0.5 rounded-xs">{status.tilde}</code>.
-                  </>
-                )}
-              </>
-            }
+            supportingText="Optional group for the device."
           />
           <Dialog
             title="Confirm deletion"

@@ -1,16 +1,16 @@
-import { useSyncthingQuery } from './hooks/useSyncthingQuery.ts'
-import { TimeSpan } from './components/TimeSpan.tsx'
-import { CardAccordion } from './components/ui/CardAccordion.tsx'
+import { useSyncthingQuery } from '@hooks/useSyncthingQuery.ts'
+import { TimeSpan } from '@components/TimeSpan.tsx'
+import { CardAccordion } from '@components/ui/CardAccordion.tsx'
 import { useState } from 'react'
-import { Identicon } from './components/ui/Identicon.tsx'
-import { CircularProgressCentred } from './components/CircularProgressCentred.tsx'
-import { formatBytes } from './lib/formatBytes.ts'
-import { formatTransferRate } from './lib/formatTransferRate.ts'
-import { useDeviceTransferHistory } from './context/transfer-history/useDeviceTransferHistory.ts'
-import { useConnections } from './context/connections/useConnections.ts'
+import { Identicon } from '@components/ui/Identicon.tsx'
+import { CircularProgressCentred } from '@components/CircularProgressCentred.tsx'
+import { formatBytes } from '@lib/formatBytes.ts'
+import { formatTransferRate } from '@lib/formatTransferRate.ts'
+import { useDeviceTransferHistory } from '@context/transfer-history/useDeviceTransferHistory.ts'
+import { useConnections } from '@context/connections/useConnections.ts'
 
-import { useDeviceID } from './context/device-id/useDeviceID.ts'
-import { SpeedInline } from './components/SpeedInline.tsx'
+import { useDeviceID } from '@context/device-id/useDeviceID.ts'
+import { SpeedInline } from '@components/SpeedInline.tsx'
 
 export function ThisDevice() {
   const [expanded, setExpanded] = useState(false)

@@ -1,6 +1,6 @@
-import { ThisDevice } from './ThisDevice.tsx'
-import { RemoteDevices } from './RemoteDevices.tsx'
-import { Folders } from './Folders.tsx'
+import { ThisDevice } from './views/ThisDevice.tsx'
+import { RemoteDevices } from './views/remote-devices/RemoteDevices.tsx'
+import { Folders } from './views/folders/Folders.tsx'
 
 export function Dashboard() {
   return (

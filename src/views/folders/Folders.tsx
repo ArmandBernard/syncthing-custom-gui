@@ -1,14 +1,14 @@
-import { useSyncthingQuery } from './hooks/useSyncthingQuery.ts'
-import { Folder } from './components/Folder.tsx'
-import { CircularProgressCentred } from './components/CircularProgressCentred.tsx'
+import { useSyncthingQuery } from '@hooks/useSyncthingQuery.ts'
+import { Folder } from './Folder.tsx'
+import { CircularProgressCentred } from '@components/CircularProgressCentred.tsx'
 import { useState } from 'preact/compat'
-import type { FolderID } from './lib/syncthing/types/common.ts'
+import type { FolderID } from '@lib/syncthing/types/common.ts'
 import { lazy, Suspense } from 'react'
 import { IconButton } from '@components/ui/IconButton.tsx'
 import { MoreVertIcon } from '@components/icons/MoreVertIcon.tsx'
 import { Menu } from '@components/ui/menu/Menu.tsx'
 
-const FolderDialog = lazy(() => import('./components/FolderDialog.tsx'))
+const FolderDialog = lazy(() => import('./FolderDialog.tsx'))
 
 export function Folders() {
   const [editingFolderId, setEditingFolderId] = useState<FolderID | undefined>(undefined)
@@ -74,12 +74,12 @@ export function Folders() {
         <FolderDialog
           isOpen={!!editingFolder}
           key={editingFolderId}
-          initialFolderConfig={editingFolder}
+          initialConfig={editingFolder}
           onClose={handleEditClose}
         />
         <FolderDialog
           isOpen={creatingFolder}
-          initialFolderConfig={undefined}
+          initialConfig={undefined}
           onClose={handleCreateClose}
         />
       </Suspense>

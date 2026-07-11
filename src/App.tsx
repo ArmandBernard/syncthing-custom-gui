@@ -1,6 +1,6 @@
-import { ApiKeyForm } from './components/ApiKeyForm'
+import { ApiKeyForm } from './views/ApiKeyForm.tsx'
 import { useApiKey } from './hooks/useApiKey'
-import { Header } from './components/Header.tsx'
+import { Header } from './views/header/Header.tsx'
 import { Dashboard } from './Dashboard.tsx'
 
 import { TransferHistoryContextProvider } from './context/transfer-history/TransferHistoryContextProvider.tsx'

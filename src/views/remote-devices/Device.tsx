@@ -1,31 +1,33 @@
-import { CircularProgress } from './ui/Progress.tsx'
+import { CircularProgress } from '@components/ui/Progress.tsx'
 import { useSyncthingQuery } from '@hooks/useSyncthingQuery.ts'
 import type { Connection } from '@lib/syncthing/types/system.ts'
 import type { DeviceConfiguration } from '@lib/syncthing/types/config'
 import { getTransferStatus } from '@lib/getTransferStatus.ts'
 import type { DeviceStats } from '@lib/syncthing/types/stats.ts'
-import { RelativeTime } from './RelativeTime.tsx'
+import { RelativeTime } from '@components/RelativeTime.tsx'
 import { useState } from 'react'
-import { CardAccordion } from './ui/CardAccordion.tsx'
-import { Identicon } from './ui/Identicon.tsx'
-import { Button } from './ui/Button.tsx'
+import { CardAccordion } from '@components/ui/CardAccordion.tsx'
+import { Identicon } from '@components/ui/Identicon.tsx'
+import { Button } from '@components/ui/Button.tsx'
 import { useSyncthingMutation } from '@hooks/useSyncthingMutation.ts'
 import { useSyncthingInvalidate } from '@hooks/useSyncthingInvalidate.ts'
 import { useDeviceTransferHistory } from '@context/transfer-history/useDeviceTransferHistory.ts'
-import { TransferChart } from './TransferChart.tsx'
+import { TransferChart } from '@components/TransferChart.tsx'
 import { formatBytes } from '@lib/formatBytes.ts'
 import { formatTransferRate } from '@lib/formatTransferRate.ts'
-import { SpeedInline } from './SpeedInline.tsx'
+import { SpeedInline } from '@components/SpeedInline.tsx'
 import type { Completion } from '@lib/syncthing/types/db.ts'
 
 export function Device({
   connection,
   device,
   stats,
+  onEditClick,
 }: {
   connection: Connection
   device: DeviceConfiguration
   stats: DeviceStats
+  onEditClick: () => void
 }) {
   const [expanded, setExpanded] = useState(false)
   const { data: completion, isLoading: completionIsLoading } = useSyncthingQuery(
@@ -39,6 +41,10 @@ export function Device({
 
   if (completionIsLoading || !completion) {
     return <CircularProgress aria-label="Loading" />
+  }
+
+  function handleEditClick() {
+    onEditClick()
   }
 
   async function handlePauseOrResume() {
@@ -94,6 +100,9 @@ export function Device({
         <div className="flex gap-4 justify-end">
           <Button variant="outlined" onClick={handlePauseOrResume}>
             {connection.paused ? 'Resume' : 'Pause'}
+          </Button>
+          <Button variant="outlined" onClick={handleEditClick}>
+            Edit
           </Button>
         </div>
       </div>
