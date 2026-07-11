@@ -25,6 +25,7 @@ export function RemoteDevices() {
           .map((device) => {
             const connection: Connection | undefined = connections.connections[device.deviceID]
             const deviceStats = stats[device.deviceID]
+      <h2 className="text-2xl">Remote devices</h2>
 
             // typically happens if this connection is you
             if (!connection) {

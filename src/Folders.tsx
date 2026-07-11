@@ -11,7 +11,7 @@ export function Folders() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-xl">Folders</h2>
+      <h2 className="text-2xl">Folders</h2>
       <ul className="flex flex-col gap-2">
         {config.folders.map((folder) => (
           <li key={folder.id}>
