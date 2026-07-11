@@ -58,11 +58,13 @@ export function FolderDialog({
             label="Label"
             value={folderConfig.label}
             onChange={(e) => updateFolder({ label: e.currentTarget?.value })}
+            supportingText="Optional descriptive label for the folder."
           />
           <TextField
             label="Group"
             value={folderConfig.group}
             onChange={(e) => updateFolder({ group: e.currentTarget?.value })}
+            supportingText="Optional group for the folder."
           />
         </div>
       )}
