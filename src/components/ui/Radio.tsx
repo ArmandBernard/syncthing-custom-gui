@@ -33,7 +33,7 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(function Radio(
           defaultChecked={checked === undefined ? defaultChecked : undefined}
           disabled={disabled}
           onChange={(event) => {
-            if (!isControlled) setUncontrolledChecked(event.target.checked)
+            if (!isControlled) setUncontrolledChecked(event.currentTarget.checked)
             onChange?.(event)
           }}
           className="peer absolute -m-px h-px w-px overflow-hidden whitespace-nowrap border-0 p-0 [clip:rect(0,0,0,0)]"

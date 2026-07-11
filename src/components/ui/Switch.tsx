@@ -31,7 +31,7 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(function Switch(
           disabled={disabled}
           aria-checked={isChecked}
           onChange={(event) => {
-            if (!isControlled) setUncontrolledChecked(event.target.checked)
+            if (!isControlled) setUncontrolledChecked(event.currentTarget.checked)
             onChange?.(event)
           }}
           className="peer absolute -m-px h-px w-px overflow-hidden whitespace-nowrap border-0 p-0 [clip:rect(0,0,0,0)]"

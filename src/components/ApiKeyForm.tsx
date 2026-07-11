@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, type JSX } from 'react'
 import { Card } from './ui/Card'
 import { TextField } from './ui/TextField'
 import { Button } from './ui/Button'
@@ -10,7 +10,7 @@ type ApiKeyFormProps = {
 export function ApiKeyForm({ onSubmit }: ApiKeyFormProps) {
   const [value, setValue] = useState('')
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = (event: JSX.TargetedEvent<HTMLFormElement>) => {
     event.preventDefault()
     const trimmed = value.trim()
     if (trimmed) onSubmit(trimmed)
@@ -30,7 +30,7 @@ export function ApiKeyForm({ onSubmit }: ApiKeyFormProps) {
             type="password"
             label="API key"
             value={value}
-            onChange={(event) => setValue(event.target.value)}
+            onChange={(event) => setValue(event.currentTarget.value)}
             autoFocus
           />
           <Button type="submit" variant="filled" disabled={!value.trim()}>
