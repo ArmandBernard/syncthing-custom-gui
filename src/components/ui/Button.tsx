@@ -1,3 +1,4 @@
+import { forwardRef } from 'react'
 import type { ButtonHTMLAttributes } from 'preact'
 
 export type ButtonVariant = 'filled' | 'tonal' | 'outlined' | 'text' | 'elevated'
@@ -16,21 +17,25 @@ const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   elevated: 'bg-surface-low text-primary shadow-sm hover:shadow-md active:shadow-sm',
 }
 
-export function Button({
-  variant = 'filled',
-  className = '',
-  type = 'button',
-  disabled,
-  onClick,
-  onKeyDown,
-  ...props
-}: ButtonProps) {
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
+  {
+    variant = 'filled',
+    className = '',
+    type = 'button',
+    disabled,
+    onClick,
+    onKeyDown,
+    ...props
+  },
+  ref,
+) {
   return (
     <button
+      ref={ref}
       type={type}
       aria-disabled={disabled}
-      className={`inline-flex h-10 items-center justify-center gap-2 rounded-full px-6 
-      text-sm font-medium transition-colors cursor-pointer aria-disabled:pointer-events-none aria-disabled:opacity-[0.38] 
+      className={`inline-flex h-10 items-center justify-center gap-2 rounded-full px-6
+      text-sm font-medium transition-colors cursor-pointer aria-disabled:pointer-events-none aria-disabled:opacity-[0.38]
       focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary
        ${VARIANT_CLASSES[variant]} ${className}`}
       onClick={disabled ? undefined : onClick}
@@ -38,4 +43,4 @@ export function Button({
       {...props}
     />
   )
-}
+})

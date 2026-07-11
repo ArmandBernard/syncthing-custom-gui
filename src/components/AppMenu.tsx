@@ -1,8 +1,10 @@
-import { Menu } from './ui/Menu'
+import { Menu } from './ui/menu/Menu.tsx'
 import { SegmentedButtons } from './ui/SegmentedButtons'
 import { useTheme } from '../hooks/useTheme'
 import type { Theme } from '../lib/theme'
 import { useApiKey } from '../hooks/useApiKey.ts'
+import { IconButton } from './ui/IconButton.tsx'
+import { SettingsIcon } from './icons/SettingsIcon.tsx'
 
 const THEME_OPTIONS = [
   { value: 'light', label: 'Light' },
@@ -24,9 +26,13 @@ export function AppMenu() {
     // — set explicitly rather than left to usePopoverPosition's runtime
     // auto-fit, since this component already knows where it lives on screen.
     <Menu
-      label="Actions"
       anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+      button={
+        <IconButton aria-label="Settings">
+          <SettingsIcon />
+        </IconButton>
+      }
     >
       <Menu.Toggle>
         <SegmentedButtons
@@ -34,6 +40,7 @@ export function AppMenu() {
           options={THEME_OPTIONS}
           value={theme}
           onChange={(value) => setTheme(value as Theme)}
+          asMenuItems
         />
       </Menu.Toggle>
       {apiKey && <Menu.Item onSelect={clearApiKey}>Log out</Menu.Item>}
