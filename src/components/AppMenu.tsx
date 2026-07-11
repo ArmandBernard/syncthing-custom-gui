@@ -1,4 +1,4 @@
-import { Menu } from './ui/Menu'
+import { Menu } from './ui/menu/Menu.tsx'
 import { SegmentedButtons } from './ui/SegmentedButtons'
 import { useTheme } from '../hooks/useTheme'
 import type { Theme } from '../lib/theme'

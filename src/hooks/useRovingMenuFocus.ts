@@ -7,7 +7,7 @@ import {
   type ReactNode,
   type RefObject,
 } from 'react'
-import { isMenuItemElement, isMenuToggleElement } from './menuChildGuards.ts'
+import { isMenuItemElement, isMenuToggleElement } from '../components/ui/menu/menuChildGuards.ts'
 
 interface MenuFocusItem {
   index: number
