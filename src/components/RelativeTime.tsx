@@ -1,4 +1,4 @@
-import dayJs from '../lib/dayJs'
+import dayJs from '@lib/dayJs'
 
 export function RelativeTime({ date }: { date: string }) {
   const dateObj = dayJs(date)

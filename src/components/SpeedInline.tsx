@@ -1,5 +1,5 @@
-import { formatTransferRate } from '../lib/formatTransferRate.ts'
-import type { TransferHistoryPoint } from '../context/transfer-history/useDeviceTransferHistory.ts'
+import { formatTransferRate } from '@lib/formatTransferRate.ts'
+import type { TransferHistoryPoint } from '@context/transfer-history/useDeviceTransferHistory.ts'
 
 const TRANSFERRING_THRESHOLD = 0
 

@@ -8,8 +8,8 @@ import { GridRows } from '@visx/grid'
 import { AxisLeft } from '@visx/axis'
 import { useTooltip, TooltipWithBounds, defaultStyles } from '@visx/tooltip'
 import { localPoint } from '@visx/event'
-import type { TransferHistoryPoint } from '../context/transfer-history/useDeviceTransferHistory.ts'
-import { formatTransferRate } from '../lib/formatTransferRate.ts'
+import type { TransferHistoryPoint } from '@context/transfer-history/useDeviceTransferHistory.ts'
+import { formatTransferRate } from '@lib/formatTransferRate.ts'
 
 const margin = { top: 4, right: 8, bottom: 4, left: 56 }
 const NUM_TICKS = 4

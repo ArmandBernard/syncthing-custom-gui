@@ -8,8 +8,8 @@ import {
   type ReactNode,
 } from 'react'
 import type { TargetedKeyboardEvent, TargetedToggleEvent } from 'preact'
-import { usePopoverPosition, type PopoverOrigin } from '../../../hooks/usePopoverPosition.ts'
-import { useRovingMenuFocus } from '../../../hooks/useRovingMenuFocus.ts'
+import { usePopoverPosition, type PopoverOrigin } from '@hooks/usePopoverPosition.ts'
+import { useRovingMenuFocus } from '@hooks/useRovingMenuFocus.ts'
 import { MenuItem } from './MenuItem.tsx'
 import { MenuGroup } from './MenuGroup.tsx'
 import { isMenuItemElement, isMenuGroupElement } from './menuChildGuards.ts'
@@ -186,7 +186,7 @@ export function Menu({ anchorOrigin, transformOrigin, children, button }: MenuPr
         onToggle={handleToggle}
         onKeyDown={handleMenuKeyDown}
         style={{ position: 'fixed', top, left, margin: 0 }}
-        className="min-w-[112px] rounded-xs bg-surface py-2 shadow-lg"
+        className="min-w-28 rounded-xs bg-surface py-2 shadow-lg"
       >
         {Children.map(children, (child, index) => {
           if (isMenuItemElement(child)) {

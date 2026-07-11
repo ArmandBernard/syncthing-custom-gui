@@ -1,5 +1,5 @@
 import { useCallback, useState, type ReactNode } from 'react'
-import { clearStoredApiKey, getStoredApiKey, setStoredApiKey } from '../lib/apiKey'
+import { clearStoredApiKey, getStoredApiKey, setStoredApiKey } from '@lib/apiKey'
 import { ApiKeyContext } from './ApiKeyContext'
 
 export function ApiKeyProvider({ children }: { children: ReactNode }) {

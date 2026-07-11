@@ -1,8 +1,8 @@
 import { Menu } from './ui/menu/Menu.tsx'
 import { SegmentedButtons } from './ui/SegmentedButtons'
-import { useTheme } from '../hooks/useTheme'
-import type { Theme } from '../lib/theme'
-import { useApiKey } from '../hooks/useApiKey.ts'
+import { useTheme } from '@hooks/useTheme'
+import type { Theme } from '@lib/theme'
+import { useApiKey } from '@hooks/useApiKey.ts'
 import { IconButton } from './ui/IconButton.tsx'
 import { SettingsIcon } from './icons/SettingsIcon.tsx'
 

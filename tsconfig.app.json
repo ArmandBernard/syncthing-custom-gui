@@ -22,7 +22,12 @@
       "react-dom": ["./node_modules/preact/compat/"],
       "react/jsx-runtime": ["./node_modules/preact/jsx-runtime"],
       "react-dom/*": ["./node_modules/preact/compat/*"],
-      "react/*": ["./node_modules/preact/compat/*"]
+      "react/*": ["./node_modules/preact/compat/*"],
+      "@components/*": ["./src/components/*"],
+      "@hooks/*": ["./src/hooks/*"],
+      "@lib/*": ["./src/lib/*"],
+      "@context/*": ["./src/context/*"],
+      "@styles/*": ["./src/styles/*"]
     },
 
     /* Linting */

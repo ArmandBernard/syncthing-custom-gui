@@ -1,4 +1,4 @@
-import { type ServerStatus, useServerStatus } from '../hooks/useServerStatus'
+import { type ServerStatus, useServerStatus } from '@hooks/useServerStatus'
 
 const STATUS_CONFIG: Record<ServerStatus, { label: string; dotColor: string }> = {
   checking: { label: 'Checking...', dotColor: 'bg-on-surface-variant' },

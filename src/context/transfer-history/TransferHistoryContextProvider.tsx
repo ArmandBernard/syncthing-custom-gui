@@ -1,8 +1,8 @@
 import { type ReactNode, useEffect, useRef, useState } from 'react'
 import { useConnections } from '../connections/useConnections.ts'
 import { useDeviceID } from '../device-id/useDeviceID.ts'
-import type { DeviceID } from '../../lib/syncthing/types/common.ts'
-import { useBeforeUnload } from '../../hooks/useBeforeUnload.ts'
+import type { DeviceID } from '@lib/syncthing/types/common.ts'
+import { useBeforeUnload } from '@hooks/useBeforeUnload.ts'
 import { TransferHistoryContext } from './TransferHistoryContext.ts'
 import type { TransferHistoryPoint } from './useDeviceTransferHistory.ts'
 
