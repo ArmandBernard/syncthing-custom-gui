@@ -61,6 +61,7 @@ export function SegmentedButtons({
     <div
       role={asMenuItems ? 'group' : 'radiogroup'}
       aria-label={ariaLabel}
+      aria-orientation="horizontal"
       className={`inline-flex ${className}`}
     >
       {options.map((option, index) => {
