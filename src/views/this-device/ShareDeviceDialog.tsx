@@ -4,6 +4,7 @@ import DeviceQRCode from '@components/ui/DeviceQRCode.tsx'
 import { IconButton } from '@components/ui/IconButton.tsx'
 import { CopyIcon } from '@components/icons/CopyIcon.tsx'
 import copyToClipboard from '@lib/copyToClipboard.ts'
+import { useSnackbar } from '@hooks/useSnackbar.ts'
 
 export default function ShareDeviceDialog({
   isOpen,
@@ -14,8 +15,10 @@ export default function ShareDeviceDialog({
   onClose: () => void
   device: DeviceConfiguration
 }) {
+  const snackbar = useSnackbar()
   async function onCopyClick() {
     await copyToClipboard(device.deviceID)
+    snackbar.show('Device id copied to clipboard')
   }
 
   return (
