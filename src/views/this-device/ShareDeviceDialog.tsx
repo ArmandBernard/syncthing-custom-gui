@@ -1,6 +1,9 @@
 import { Dialog } from '@components/ui/Dialog.tsx'
 import type { DeviceConfiguration } from '@lib/syncthing/types/config'
 import DeviceQRCode from '@components/ui/DeviceQRCode.tsx'
+import { IconButton } from '@components/ui/IconButton.tsx'
+import { CopyIcon } from '@components/icons/CopyIcon.tsx'
+import copyToClipboard from '@lib/copyToClipboard.ts'
 
 export default function ShareDeviceDialog({
   isOpen,
@@ -11,10 +14,31 @@ export default function ShareDeviceDialog({
   onClose: () => void
   device: DeviceConfiguration
 }) {
+  async function onCopyClick() {
+    await copyToClipboard(device.deviceID)
+  }
+
   return (
-    <Dialog open={isOpen} onClose={onClose} title={`Device Identification - ${device.name}`}>
-      <div className="flex flex-col items-center">
-        <DeviceQRCode deviceId={device.deviceID} enabled={isOpen} className="h-96 w-96" />
+    <Dialog
+      open={isOpen}
+      onClose={onClose}
+      title={`Device identification - ${device.name}`}
+      className="w-full max-w-xl"
+    >
+      <div className="flex flex-col gap-4">
+        <div className="flex gap-2 items-center">
+          <div className="text flex-1 truncate">ID: {device.deviceID}</div>
+          <IconButton aria-label="Copy ID" onClick={onCopyClick}>
+            <CopyIcon />
+          </IconButton>
+        </div>
+        <div className="flex flex-col items-center">
+          <DeviceQRCode
+            deviceId={device.deviceID}
+            enabled={isOpen}
+            className="aspect-square w-full"
+          />
+        </div>
       </div>
     </Dialog>
   )
