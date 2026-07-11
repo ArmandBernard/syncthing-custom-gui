@@ -11,9 +11,12 @@ import { useConnections } from '@context/connections/useConnections.ts'
 
 import { useDeviceID } from '@context/device-id/useDeviceID.ts'
 import { SpeedInline } from '@components/SpeedInline.tsx'
+import { Button } from '@components/ui/Button.tsx'
+import ShareDeviceDialog from './ShareDeviceDialog.tsx'
 
 export function ThisDevice() {
   const [expanded, setExpanded] = useState(false)
+  const [sharingDevice, setSharingDevice] = useState<boolean>(false)
   const connections = useConnections()
   const myId = useDeviceID()
   const transferHistory = useDeviceTransferHistory(myId)
@@ -24,6 +27,14 @@ export function ThisDevice() {
 
   if (statusIsLoading || !status || configIsLoading || !config || !connections) {
     return <CircularProgressCentred name="device information" />
+  }
+
+  function handleShareClick() {
+    setSharingDevice(true)
+  }
+
+  function handleCancelShare() {
+    setSharingDevice(false)
   }
 
   const myDeviceConfigInfo = config.devices.find((d) => d.deviceID === myId)!
@@ -61,6 +72,16 @@ export function ThisDevice() {
               {formatBytes(connections.total.inBytesTotal)} total)
             </li>
           </ul>
+          <div className="flex gap-4 justify-end">
+            <Button variant="outlined" onClick={handleShareClick}>
+              Share
+            </Button>
+            <ShareDeviceDialog
+              isOpen={sharingDevice}
+              onClose={handleCancelShare}
+              device={myDeviceConfigInfo}
+            />
+          </div>
         </div>
       </CardAccordion>
     </div>
