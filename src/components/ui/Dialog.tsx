@@ -34,11 +34,13 @@ export function Dialog({ open, onClose, title, children, actions }: DialogProps)
       aria-modal="true"
       aria-labelledby={title ? titleId : undefined}
       onClick={(event) => {
-        if (event.target === dialogRef.current) onClose()
+        if (event.target === dialogRef.current) {
+          onClose()
+        }
       }}
-      className="m-0 border-0 bg-transparent p-0 [&::backdrop]:bg-scrim/50"
+      className="hidden h-full w-full items-center justify-center bg-transparent open:flex backdrop:bg-scrim/30"
     >
-      <div className="min-w-[280px] max-w-[560px] rounded-xl bg-surface-high p-6 shadow-lg">
+      <div className="min-w-70 max-w-140 rounded-xl bg-surface-high p-6 shadow-lg">
         {title && (
           <h2 id={titleId} className="mb-4 text-xl font-medium text-on-surface">
             {title}

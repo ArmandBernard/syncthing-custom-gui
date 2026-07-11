@@ -32,12 +32,8 @@ export function Device({
     'GET /db/completion',
     { query: { device: device.deviceID }, refetchInterval: 5000 },
   )
-  const { mutateAsync: pauseAsync } = useSyncthingMutation('POST /system/pause', {
-    query: { device: device.deviceID },
-  })
-  const { mutateAsync: resumeAsync } = useSyncthingMutation('POST /system/resume', {
-    query: { device: device.deviceID },
-  })
+  const { mutateAsync: pauseAsync } = useSyncthingMutation('POST /system/pause')
+  const { mutateAsync: resumeAsync } = useSyncthingMutation('POST /system/resume')
   const invalidateConnections = useSyncthingInvalidate('GET /system/connections')
   const transferHistory = useDeviceTransferHistory(device.deviceID)
 
@@ -47,9 +43,13 @@ export function Device({
 
   async function handlePauseOrResume() {
     if (connection.paused) {
-      await resumeAsync()
+      await resumeAsync({
+        query: { device: device.deviceID },
+      })
     } else {
-      await pauseAsync()
+      await pauseAsync({
+        query: { device: device.deviceID },
+      })
     }
     // It can take a little time to unpause
     setTimeout(async () => await invalidateConnections(), 200)

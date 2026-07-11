@@ -20,15 +20,21 @@ export function Button({
   variant = 'filled',
   className = '',
   type = 'button',
+  disabled,
+  onClick,
+  onKeyDown,
   ...props
 }: ButtonProps) {
   return (
     <button
       type={type}
+      aria-disabled={disabled}
       className={`inline-flex h-10 items-center justify-center gap-2 rounded-full px-6 
-      text-sm font-medium transition-colors cursor-pointer disabled:pointer-events-none disabled:opacity-[0.38] 
+      text-sm font-medium transition-colors cursor-pointer aria-disabled:pointer-events-none aria-disabled:opacity-[0.38] 
       focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary
        ${VARIANT_CLASSES[variant]} ${className}`}
+      onClick={disabled ? undefined : onClick}
+      onKeyDown={disabled ? undefined : onKeyDown}
       {...props}
     />
   )
