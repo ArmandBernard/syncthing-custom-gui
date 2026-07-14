@@ -50,7 +50,7 @@ export function Folder({
     >
       <div className="flex flex-col gap-4">
         <ul>
-          <li>Path: {folder.path}</li>
+          <ListItem leftSlot="Path" rightSlot={folder.path} />
           {status && (
             <ListItem
               leftSlot="Contents"
