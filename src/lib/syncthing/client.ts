@@ -1,5 +1,6 @@
 import { getStoredApiKey } from '../apiKey'
 import type { EndpointMap } from './endpoints'
+import type { RequestOptions } from '@lib/syncthing/RequestOptions.ts'
 
 export class SyncthingApiError extends Error {
   readonly status: number
@@ -9,12 +10,6 @@ export class SyncthingApiError extends Error {
     this.name = 'SyncthingApiError'
     this.status = status
   }
-}
-
-export type RequestOptions<E> = {
-  body?: E[keyof E & 'body'] | undefined
-  query?: E[keyof E & 'query'] | undefined
-  params?: E[keyof E & 'params'] | undefined
 }
 
 // A small fixed set of endpoints don't speak JSON. TS types alone can't drive
