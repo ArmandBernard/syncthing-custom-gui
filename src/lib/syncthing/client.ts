@@ -48,7 +48,7 @@ function buildPath(pathTemplate: string, params?: unknown, query?: unknown): str
 
 export async function syncthingRequest<K extends keyof EndpointMap>(
   key: K,
-  options: RequestOptions<EndpointMap[K]>,
+  options: RequestOptions<EndpointMap[K]> & { signal?: AbortSignal },
 ): Promise<EndpointMap[K]['response']> {
   const apiKey = getStoredApiKey()
   if (!apiKey) {
@@ -72,6 +72,7 @@ export async function syncthingRequest<K extends keyof EndpointMap>(
         ? String(options?.body)
         : JSON.stringify(options?.body)
       : undefined,
+    signal: options.signal,
   })
 
   if (!response.ok) {
