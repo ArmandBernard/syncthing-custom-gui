@@ -8,6 +8,7 @@ export interface TextFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string
   supportingText?: ReactNode
   error?: boolean
+  endAdornment?: ReactNode
 }
 
 export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function TextField(
@@ -23,6 +24,7 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
     onChange,
     defaultValue,
     value,
+    endAdornment,
     ...props
   },
   ref,
@@ -42,32 +44,43 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
   return (
     <div className={className}>
       <div className="relative">
-        <input
-          ref={ref}
-          id={inputId}
-          value={value}
-          defaultValue={value === undefined ? defaultValue : undefined}
-          aria-invalid={error || undefined}
-          aria-describedby={supportingText ? supportingId : undefined}
-          onFocus={(event) => {
-            setIsFocused(true)
-            onFocus?.(event)
-          }}
-          onBlur={(event) => {
-            setIsFocused(false)
-            onBlur?.(event)
-          }}
-          onChange={(event) => {
-            setUncontrolledValue(event.currentTarget.value)
-            onChange?.(event)
-          }}
+        <div
           className={
-            variant === 'filled'
-              ? `peer h-14 w-full rounded-t-xs border-b-2 bg-surface-high px-4 pt-5 pb-2 text-base text-on-surface outline-none disabled:opacity-[0.38] ${borderColor}`
-              : `peer h-14 w-full rounded-xs bg-transparent px-4 text-base text-on-surface outline-none disabled:opacity-[0.38]`
+            'flex items-center justify-between' +
+            (variant === 'filled'
+              ? ` h-14 px-4 pt-4 rounded-t-xs border-b-2 bg-surface-high text-base text-on-surface outline-none  ${borderColor}`
+              : ` h-14 px-4 pt-1 rounded-xs bg-transparent text-base text-on-surface outline-none`)
           }
-          {...props}
-        />
+        >
+          <input
+            ref={ref}
+            id={inputId}
+            value={value}
+            defaultValue={value === undefined ? defaultValue : undefined}
+            aria-invalid={error || undefined}
+            aria-describedby={supportingText ? supportingId : undefined}
+            onFocus={(event) => {
+              setIsFocused(true)
+              onFocus?.(event)
+            }}
+            onBlur={(event) => {
+              setIsFocused(false)
+              onBlur?.(event)
+            }}
+            onChange={(event) => {
+              setUncontrolledValue(event.currentTarget.value)
+              onChange?.(event)
+            }}
+            className={
+              variant === 'filled'
+                ? `flex-1 disabled:opacity-[0.38]`
+                : `w-full disabled:opacity-[0.38]`
+            }
+            {...props}
+          />
+          {endAdornment && <div className="-mr-4">{endAdornment}</div>}
+        </div>
+
         {variant === 'outlined' && (
           // The border lives on this fieldset rather than the input. A <legend> inside a
           // <fieldset> border punches a real gap in the border stroke around itself, which is
@@ -75,7 +88,7 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
           // field's surroundings, unlike patching a colored box over the border line.
           <fieldset
             aria-hidden="true"
-            className={`pointer-events-none absolute inset-0 m-0 min-w-0 rounded-xs border px-3 transition-colors ${borderColor}`}
+            className={`pointer-events-none absolute inset-0 m-0 min-w-0 rounded-xs top-0 border px-3 transition-colors ${borderColor}`}
           >
             <legend
               className="invisible overflow-hidden whitespace-nowrap text-xs leading-none transition-[max-width] duration-150"
