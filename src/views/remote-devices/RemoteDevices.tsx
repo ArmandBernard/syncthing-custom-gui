@@ -1,11 +1,11 @@
 import { useSyncthingQuery } from '@hooks/useSyncthingQuery.ts'
-import type { Connection } from '@lib/syncthing/types/system.ts'
 import { Device } from './Device.tsx'
 import { CircularProgressCentred } from '@components/CircularProgressCentred.tsx'
 
 import { useConnections } from '@context/connections/useConnections.ts'
+import { useDeviceID } from '@context/device-id/useDeviceID.ts'
 import { lazy, Suspense, useState } from 'preact/compat'
-import type { DeviceID, FolderID } from '@lib/syncthing/types/common.ts'
+import type { DeviceID } from '@lib/syncthing/types/common.ts'
 import { IconButton } from '@components/ui/IconButton.tsx'
 import { MoreVertIcon } from '@components/icons/MoreVertIcon.tsx'
 import { Menu } from '@components/ui/menu/Menu.tsx'
@@ -18,12 +18,13 @@ export function RemoteDevices() {
   const { data: devices, isLoading: devicesLoading } = useSyncthingQuery('GET /config/devices')
   const { data: stats, isLoading: statsAreLoading } = useSyncthingQuery('GET /stats/device')
   const connections = useConnections()
+  const myDeviceID = useDeviceID()
 
   if (!connections || devicesLoading || !devices || statsAreLoading || !stats) {
     return <CircularProgressCentred name="remote devices" />
   }
 
-  function handleEditClick(deviceID: FolderID) {
+  function handleEditClick(deviceID: DeviceID) {
     setEditingDeviceId(deviceID)
   }
   function handleAddClick() {
@@ -36,7 +37,8 @@ export function RemoteDevices() {
     setCreatingDevice(false)
   }
 
-  const grouped = Object.groupBy(devices, (device) => device.group)
+  const remoteDevices = devices.filter((device) => device.deviceID !== myDeviceID)
+  const grouped = Object.groupBy(remoteDevices, (device) => device.group)
   const editingDevice = devices.find((f) => f.deviceID === editingDeviceId)
 
   return (
@@ -64,14 +66,8 @@ export function RemoteDevices() {
               {value!
                 .toSorted((da, db) => da.name.localeCompare(db.name))
                 .map((device) => {
-                  const connection: Connection | undefined =
-                    connections.connections[device.deviceID]
+                  const connection = connections.connections[device.deviceID]
                   const deviceStats = stats[device.deviceID]
-
-                  // typically happens if this connection is you
-                  if (!connection) {
-                    return null
-                  }
 
                   return (
                     <li key={device.deviceID}>
