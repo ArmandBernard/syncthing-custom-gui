@@ -1,4 +1,4 @@
-import { useId, useMemo } from 'react'
+import { useEffect, useId, useMemo, useState } from 'react'
 import type { TargetedPointerEvent } from 'preact'
 import { ParentSize } from '@visx/responsive'
 import { scaleLinear } from '@visx/scale'
@@ -38,8 +38,14 @@ const lines: LineOptions[] = [
 ]
 
 export default function TransferChartImpl({ history }: { history: TransferHistoryPoint[] }) {
-  const nowUnix = Date.now()
+  const [nowUnix, setNowUnix] = useState(Date.now())
   const clipId = useId()
+
+  useEffect(() => {
+    const timeout = setTimeout(() => setNowUnix(Date.now()), 2000)
+
+    return () => clearTimeout(timeout)
+  }, [nowUnix])
 
   const dataMax = useMemo(() => {
     const visible = history.filter((point) => point.time >= nowUnix - 60 * 1000)
