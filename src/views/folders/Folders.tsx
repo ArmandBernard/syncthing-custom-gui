@@ -58,15 +58,17 @@ export function Folders() {
           <>
             {group && <h3 className="text-xl">{group}</h3>}
             <ul className="flex flex-col gap-2">
-              {value!.map((folder) => (
-                <li key={folder.id}>
-                  <Folder
-                    folder={folder}
-                    devices={devices}
-                    onEditClick={() => handleEditClick(folder.id)}
-                  />
-                </li>
-              ))}
+              {value!
+                .toSorted((a, b) => a.label.localeCompare(b.label))
+                .map((folder) => (
+                  <li key={folder.id}>
+                    <Folder
+                      folder={folder}
+                      devices={devices}
+                      onEditClick={() => handleEditClick(folder.id)}
+                    />
+                  </li>
+                ))}
             </ul>
           </>
         ))}
