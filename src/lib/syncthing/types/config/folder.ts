@@ -1,4 +1,4 @@
-import type { DeviceID } from '../common'
+import type { DeviceID, FolderID } from '../common'
 import type { Size } from './common'
 
 export type FolderType = 'sendreceive' | 'sendonly' | 'receiveonly' | 'receiveencrypted'
@@ -41,7 +41,7 @@ export interface XattrFilter {
 }
 
 export interface FolderConfiguration {
-  id: string
+  id: FolderID
   label: string
   group: string
   filesystemType: FilesystemType
