@@ -1,7 +1,7 @@
 import { Dialog } from '@components/ui/Dialog.tsx'
 import { TextField } from '@components/ui/TextField.tsx'
 import { useState } from 'react'
-import type { FolderConfiguration } from '@lib/syncthing/types/config'
+import type { FolderConfiguration, FolderDeviceConfiguration } from '@lib/syncthing/types/config'
 import { Button } from '@components/ui/Button.tsx'
 import { useSyncthingMutation } from '@hooks/useSyncthingMutation.ts'
 import { useSyncthingQuery } from '@hooks/useSyncthingQuery.ts'
@@ -11,6 +11,10 @@ import { Tabs } from '@components/ui/tabs/Tabs.tsx'
 import { TabPanel } from '@components/ui/tabs/TabPanel.tsx'
 import { TabsContextProvider } from '@components/ui/tabs/TabsContextProvider.tsx'
 import { Tab } from '@components/ui/tabs/Tab.tsx'
+import type { DeviceID } from '@lib/syncthing/types/common.ts'
+import { Checkbox } from '@components/ui/Checkbox.tsx'
+import { useDeviceID } from '@context/device-id/useDeviceID.ts'
+import { CircularProgressCentred } from '@components/CircularProgressCentred.tsx'
 
 type FolderDialogTabs = 'general' | 'sharing'
 
@@ -89,6 +93,7 @@ export default function FolderDialog({
     <Dialog
       open={isOpen}
       onClose={onClose}
+      className="max-w-lg"
       title={
         <>
           {inEditMode ? 'Edit' : 'Create'} folder{' '}
@@ -127,7 +132,12 @@ export default function FolderDialog({
               onUpdateConfiguration={handleUpdateConfiguration}
             />
           </TabPanel>
-          <TabPanel value="sharing" className="pt-4"></TabPanel>
+          <TabPanel value="sharing" className="pt-4">
+            <SharingForm
+              effectiveConfig={effectiveConfig}
+              onUpdateConfiguration={handleUpdateConfiguration}
+            />
+          </TabPanel>
         </TabsContextProvider>
       )}
       <Dialog
@@ -191,6 +201,66 @@ function GeneralForm({
           </>
         }
       />
+    </div>
+  )
+}
+
+function SharingForm({
+  effectiveConfig,
+  onUpdateConfiguration,
+}: {
+  effectiveConfig: FolderConfiguration
+  onUpdateConfiguration: (configUpdates: Partial<FolderConfiguration>) => void
+}) {
+  const myDeviceId = useDeviceID()
+  const { data: devicesIncludingMe, isLoading: devicesLoading } =
+    useSyncthingQuery('GET /config/devices')
+
+  if (devicesLoading || !devicesIncludingMe) {
+    return <CircularProgressCentred name="devices" />
+  }
+
+  function handleShareDevice(device: FolderDeviceConfiguration) {
+    onUpdateConfiguration({ devices: [...effectiveConfig.devices, device] })
+  }
+
+  function handleUnshareDevice(deviceId: DeviceID) {
+    onUpdateConfiguration({
+      devices: effectiveConfig.devices.filter((d) => d.deviceID !== deviceId),
+    })
+  }
+
+  const devices = devicesIncludingMe.filter((d) => d.deviceID !== myDeviceId)
+  const sharedDeviceIds = new Set<DeviceID>(effectiveConfig.devices.map((d) => d.deviceID))
+
+  return (
+    <div className="flex flex-col gap-4">
+      Devices
+      <ul>
+        {devices.map((device) => {
+          const shared = sharedDeviceIds.has(device.deviceID)
+
+          return (
+            <li key={device.deviceID} className="flex gap-4 justify-between items-center">
+              <span>{device.name}</span>
+              <Checkbox
+                checked={shared}
+                onChange={(event) => {
+                  if (event.currentTarget.checked) {
+                    handleShareDevice({
+                      deviceID: device.deviceID,
+                      encryptionPassword: '',
+                      introducedBy: '',
+                    })
+                  } else {
+                    handleUnshareDevice(device.deviceID)
+                  }
+                }}
+              />
+            </li>
+          )
+        })}
+      </ul>
     </div>
   )
 }
