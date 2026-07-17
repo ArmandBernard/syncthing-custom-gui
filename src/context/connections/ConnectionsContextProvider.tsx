@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useQueries } from '@tanstack/react-query'
 import { useSyncthingQuery } from '@hooks/useSyncthingQuery.ts'
 import { syncthingRequest } from '@lib/syncthing/client.ts'
@@ -8,9 +8,12 @@ import { ConnectionsContext } from './ConnectionsContext.ts'
 
 const TRANSFERRING_POLL_INTERVAL = 2000
 const IDLE_POLL_INTERVAL = 15000
+// How long to keep polling fast after a transfer stops
+const TRANSFERRING_COOLDOWN = 10000
 
 export function ConnectionsContextProvider({ children }: { children: ReactNode }) {
   const [isTransferring, setIsTransferring] = useState(false)
+  const cooldownTimeout = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
   const { data: devices } = useSyncthingQuery('GET /config/devices')
   const { data: connections } = useSyncthingQuery('GET /system/connections', {
@@ -44,8 +47,23 @@ export function ConnectionsContextProvider({ children }: { children: ReactNode }
   )
 
   useEffect(() => {
-    setIsTransferring(anyDeviceStillTransferring)
-  }, [anyDeviceStillTransferring])
+    // Immediately increase polling speed.
+    if (anyDeviceStillTransferring) {
+      clearTimeout(cooldownTimeout.current)
+      cooldownTimeout.current = undefined
+      setIsTransferring(true)
+      return
+    }
+
+    if (isTransferring && cooldownTimeout.current === undefined) {
+      cooldownTimeout.current = setTimeout(() => {
+        cooldownTimeout.current = undefined
+        setIsTransferring(false)
+      }, TRANSFERRING_COOLDOWN)
+    }
+
+    return () => clearTimeout(cooldownTimeout.current)
+  }, [anyDeviceStillTransferring, isTransferring])
 
   return <ConnectionsContext.Provider value={connections}>{children}</ConnectionsContext.Provider>
 }
