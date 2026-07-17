@@ -14,6 +14,7 @@ import { formatTransferRate } from '@lib/formatTransferRate.ts'
 const margin = { top: 4, right: 8, bottom: 4, left: 72 }
 const NUM_TICKS = 4
 const STROKE_WIDTH = 2
+const DRAW_INTERVAL = 2000
 
 type LineOptions = {
   label: string
@@ -42,7 +43,7 @@ export default function TransferChartImpl({ history }: { history: TransferHistor
   const clipId = useId()
 
   useEffect(() => {
-    const timeout = setTimeout(() => setNowUnix(Date.now()), 2000)
+    const timeout = setTimeout(() => setNowUnix(Date.now()), DRAW_INTERVAL)
 
     return () => clearTimeout(timeout)
   }, [nowUnix])
@@ -64,7 +65,10 @@ export default function TransferChartImpl({ history }: { history: TransferHistor
               return null
             }
             const lastPoint = history.at(-1)!
-            const renderedPoints = [...history, { ...lastPoint, time: nowUnix }]
+            const renderedPoints =
+              lastPoint.time < nowUnix - DRAW_INTERVAL
+                ? [...history, { ...lastPoint, time: nowUnix }]
+                : history
 
             const xScale = scaleLinear({
               domain: [nowUnix - 60 * 1000, nowUnix],
