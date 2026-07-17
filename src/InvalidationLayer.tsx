@@ -3,7 +3,11 @@ import { type PropsWithChildren, useCallback } from 'react'
 import { useSyncthingEvent } from '@hooks/useSyncthingEvent.ts'
 import { getEnumKeys } from '@lib/getEnumKeys.ts'
 import { getEnumEntries } from '@lib/getEnumEntries.ts'
-import type { StateChangedEvent, SyncthingEvent } from '@lib/syncthing/types/events'
+import type {
+  FolderScanProgressEvent,
+  StateChangedEvent,
+  SyncthingEvent,
+} from '@lib/syncthing/types/events'
 import type { EndpointMap } from '@lib/syncthing/endpoints.ts'
 import type { RequestOptions } from '@lib/syncthing/RequestOptions.ts'
 import createQueryKey from '@hooks/createQueryKey.ts'
@@ -51,9 +55,13 @@ type SyncthingEventDictionary = {
 
 const eventsToInvalidationsDictionary: SyncthingEventDictionary = {
   StateChanged: handleFolderStateUpdate,
+  FolderScanProgress: handleFolderStateUpdate,
 }
 
-async function handleFolderStateUpdate(events: StateChangedEvent[], queryClient: QueryClient) {
+async function handleFolderStateUpdate(
+  events: (StateChangedEvent | FolderScanProgressEvent)[],
+  queryClient: QueryClient,
+) {
   const uniqueAffectedFolderIds = new Set(events.flatMap((e) => e.data.folder))
 
   for (const folderId of uniqueAffectedFolderIds) {
