@@ -11,7 +11,7 @@ import { localPoint } from '@visx/event'
 import type { TransferHistoryPoint } from '@context/transfer-history/useDeviceTransferHistory.ts'
 import { formatTransferRate } from '@lib/formatTransferRate.ts'
 
-const margin = { top: 4, right: 8, bottom: 4, left: 56 }
+const margin = { top: 4, right: 8, bottom: 4, left: 72 }
 const NUM_TICKS = 4
 const STROKE_WIDTH = 2
 
