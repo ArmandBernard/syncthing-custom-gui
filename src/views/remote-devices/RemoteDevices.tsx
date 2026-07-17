@@ -16,9 +16,7 @@ export function RemoteDevices() {
   const [editingDeviceId, setEditingDeviceId] = useState<DeviceID | undefined>(undefined)
   const [creatingDevice, setCreatingDevice] = useState<boolean>(false)
   const { data: devices, isLoading: devicesLoading } = useSyncthingQuery('GET /config/devices')
-  const { data: stats, isLoading: statsAreLoading } = useSyncthingQuery('GET /stats/device', {
-    refetchInterval: 30000,
-  })
+  const { data: stats, isLoading: statsAreLoading } = useSyncthingQuery('GET /stats/device')
   const connections = useConnections()
 
   if (!connections || devicesLoading || !devices || statsAreLoading || !stats) {
