@@ -21,15 +21,25 @@ interface Rates {
   outBytesTotal: number
 }
 
+interface ComputedRates {
+  inRate: number
+  outRate: number
+}
+
 /**
  * Syncthing's API only reports cumulative transfer totals, not instantaneous
- * speed, so this derives a rolling in/out bytes-per-second history by diffing
- * successive `/system/connections` polls.
+ * speed, so this derives in/out bytes-per-second rates by diffing successive
+ * `/system/connections` polls. Emitting a chart point straight from that poll
+ * would make the chart's density track the poll interval (which varies, e.g.
+ * 2s while transferring vs 15s while idle), so the rolling history is instead
+ * emitted on its own fixed 1s ticker, replaying the most recently computed
+ * rate for any device on ticks where no fresh poll data has arrived yet.
  */
 export function TransferHistoryContextProvider({ children }: { children: ReactNode }) {
   const connections = useConnections()
   const myId = useDeviceID()
   const lastSamples = useRef<Record<DeviceID, Sample>>({})
+  const latestRates = useRef<Record<DeviceID, ComputedRates>>({})
   const [history, setHistory] =
     useState<Record<DeviceID, TransferHistoryPoint[]>>(loadStoredHistory)
 
@@ -43,7 +53,6 @@ export function TransferHistoryContextProvider({ children }: { children: ReactNo
     // `Connection.at` doesn't advance for idle connections, so the poll's
     // receipt time is used as the sample timestamp instead.
     const sampleTime = Date.now()
-    const newPoints: Record<DeviceID, TransferHistoryPoint> = {}
     const connectionsAndMe: [DeviceID, Rates][] = [
       ...getEnumEntries(connections.connections),
       [myId, connections.total],
@@ -52,25 +61,28 @@ export function TransferHistoryContextProvider({ children }: { children: ReactNo
     for (const [deviceID, connection] of connectionsAndMe) {
       const rates = captureRates(deviceID, connection, sampleTime)
 
-      if (!rates) {
-        continue
+      if (rates) {
+        latestRates.current[deviceID] = rates
       }
-
-      newPoints[deviceID] = { time: sampleTime, ...rates }
     }
-
-    if (Object.keys(newPoints).length === 0) {
-      return
-    }
-
-    setHistory((prevHistory) => {
-      const nextHistory = { ...prevHistory }
-      for (const [deviceID, point] of getEnumEntries(newPoints)) {
-        nextHistory[deviceID] = [...(nextHistory[deviceID] ?? []), point].slice(-HISTORY_LENGTH)
-      }
-      return nextHistory
-    })
   }, [connections, myId])
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const tickTime = Date.now()
+
+      setHistory((prevHistory) => {
+        const nextHistory = { ...prevHistory }
+        for (const [deviceID, rates] of getEnumEntries(latestRates.current)) {
+          const point = { time: tickTime, ...rates }
+          nextHistory[deviceID] = [...(nextHistory[deviceID] ?? []), point].slice(-HISTORY_LENGTH)
+        }
+        return nextHistory
+      })
+    }, 1000)
+
+    return () => clearInterval(interval)
+  }, [])
 
   function captureRates(deviceID: DeviceID, bytesTotal: Rates, sampleTime: number) {
     const previous = lastSamples.current[deviceID]
