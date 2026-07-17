@@ -4,7 +4,6 @@ import { useState } from 'react'
 import type { FolderConfiguration } from '@lib/syncthing/types/config'
 import { Button } from '@components/ui/Button.tsx'
 import { useSyncthingMutation } from '@hooks/useSyncthingMutation.ts'
-import { useSyncthingInvalidate } from '@hooks/useSyncthingInvalidate.ts'
 import { useSyncthingQuery } from '@hooks/useSyncthingQuery.ts'
 import { useCreateFolderId } from '@hooks/useCreateFolderId.ts'
 import { mergeConfigurations } from '@lib/mergeConfigurations.ts'
@@ -32,7 +31,6 @@ export default function FolderDialog({
   )
   const { mutateAsync: createFolderAsync, isPending: createFolderIsPending } =
     useSyncthingMutation('POST /config/folders')
-  const invalidateFolders = useSyncthingInvalidate('GET /config/folders')
 
   const isPending = updateFolderIsPending || createFolderIsPending || deleteFolderIsPending
   const inEditMode = !!initialConfig
@@ -52,7 +50,6 @@ export default function FolderDialog({
   async function handleConfirmDelete() {
     if (initialConfig) {
       await deleteFolderAsync({ params: { id: initialConfig.id } })
-      await invalidateFolders()
       setConfirmingDelete(false)
       onClose()
     }
@@ -73,7 +70,6 @@ export default function FolderDialog({
         body: { ...effectiveConfig, id: newFolderId },
       })
     }
-    await invalidateFolders()
     onClose()
   }
 
