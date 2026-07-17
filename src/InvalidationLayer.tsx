@@ -79,10 +79,11 @@ async function handleFolderStateUpdate(
   }
 }
 
-async function handleFolderCompletion(events: FolderCompletionEvent[], queryClient: QueryClient) {
+async function handleFolderCompletion(
+  events: FolderCompletionEvent[],
+  queryClient: QueryClient,
+) {
   const uniqueAffectedDeviceIds = new Set(events.map((e) => e.data.device))
-
-  await typeSafeInvalidate(queryClient, 'GET /db/completion')
 
   for (const deviceId of uniqueAffectedDeviceIds) {
     await typeSafeInvalidate(queryClient, 'GET /db/completion', { query: { device: deviceId } })
