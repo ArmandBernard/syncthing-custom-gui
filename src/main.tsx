@@ -6,6 +6,7 @@ import { ThemeProvider } from './hooks/ThemeProvider.tsx'
 import { SnackbarProvider } from './hooks/SnackbarProvider.tsx'
 import './styles/index.css'
 import App from './App.tsx'
+import { InvalidationLayer } from './InvalidationLayer.tsx'
 
 const queryClient = new QueryClient({
   // Most queries here are already interval-polled and hit a local Syncthing
@@ -20,7 +21,9 @@ createRoot(document.getElementById('root')!).render(
       <ThemeProvider>
         <SnackbarProvider>
           <ApiKeyProvider>
-            <App />
+            <InvalidationLayer>
+              <App />
+            </InvalidationLayer>
           </ApiKeyProvider>
         </SnackbarProvider>
       </ThemeProvider>
