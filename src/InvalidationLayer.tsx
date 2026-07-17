@@ -4,6 +4,11 @@ import { useSyncthingEvent } from '@hooks/useSyncthingEvent.ts'
 import { getEnumKeys } from '@lib/getEnumKeys.ts'
 import { getEnumEntries } from '@lib/getEnumEntries.ts'
 import type {
+  ConfigSavedEvent,
+  DeviceConnectedEvent,
+  DeviceDisconnectedEvent,
+  FolderCompletionEvent,
+  FolderErrorsEvent,
   FolderScanProgressEvent,
   StateChangedEvent,
   SyncthingEvent,
@@ -56,10 +61,15 @@ type SyncthingEventDictionary = {
 const eventsToInvalidationsDictionary: SyncthingEventDictionary = {
   StateChanged: handleFolderStateUpdate,
   FolderScanProgress: handleFolderStateUpdate,
+  FolderErrors: handleFolderStateUpdate,
+  FolderCompletion: handleFolderCompletion,
+  DeviceConnected: handleDeviceConnectionChange,
+  DeviceDisconnected: handleDeviceConnectionChange,
+  ConfigSaved: handleConfigSaved,
 }
 
 async function handleFolderStateUpdate(
-  events: (StateChangedEvent | FolderScanProgressEvent)[],
+  events: (StateChangedEvent | FolderScanProgressEvent | FolderErrorsEvent)[],
   queryClient: QueryClient,
 ) {
   const uniqueAffectedFolderIds = new Set(events.flatMap((e) => e.data.folder))
@@ -67,6 +77,31 @@ async function handleFolderStateUpdate(
   for (const folderId of uniqueAffectedFolderIds) {
     await typeSafeInvalidate(queryClient, 'GET /db/status', { query: { folder: folderId } })
   }
+}
+
+async function handleFolderCompletion(
+  events: FolderCompletionEvent[],
+  queryClient: QueryClient,
+) {
+  const uniqueAffectedDeviceIds = new Set(events.map((e) => e.data.device))
+
+  for (const deviceId of uniqueAffectedDeviceIds) {
+    await typeSafeInvalidate(queryClient, 'GET /db/completion', { query: { device: deviceId } })
+  }
+}
+
+async function handleDeviceConnectionChange(
+  _events: (DeviceConnectedEvent | DeviceDisconnectedEvent)[],
+  queryClient: QueryClient,
+) {
+  await typeSafeInvalidate(queryClient, 'GET /system/connections')
+  await typeSafeInvalidate(queryClient, 'GET /stats/device')
+}
+
+async function handleConfigSaved(_events: ConfigSavedEvent[], queryClient: QueryClient) {
+  await typeSafeInvalidate(queryClient, 'GET /config')
+  await typeSafeInvalidate(queryClient, 'GET /config/folders')
+  await typeSafeInvalidate(queryClient, 'GET /config/devices')
 }
 
 async function typeSafeInvalidate<K extends keyof EndpointMap>(
