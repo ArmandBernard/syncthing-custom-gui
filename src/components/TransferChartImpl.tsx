@@ -57,6 +57,8 @@ export default function TransferChartImpl({ history }: { history: TransferHistor
             if (width === 0 || height === 0) {
               return null
             }
+            const lastPoint = history.at(-1)!
+            const renderedPoints = [...history, { ...lastPoint, time: nowUnix }]
 
             const xScale = scaleLinear({
               domain: [nowUnix - 60 * 1000, nowUnix],
@@ -99,7 +101,7 @@ export default function TransferChartImpl({ history }: { history: TransferHistor
                   {lines.map((line) => (
                     <AreaClosed
                       key={line.field}
-                      data={history}
+                      data={renderedPoints}
                       x={(d) => xScale(d.time)}
                       y={(d) => yScale(d[line.field])}
                       yScale={yScale}
