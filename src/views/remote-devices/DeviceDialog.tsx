@@ -6,6 +6,7 @@ import { Button } from '@components/ui/Button.tsx'
 import { useSyncthingMutation } from '@hooks/useSyncthingMutation.ts'
 import { useSyncthingQuery } from '@hooks/useSyncthingQuery.ts'
 import { mergeConfigurations } from '@lib/mergeConfigurations.ts'
+import type { DeviceID } from '@lib/syncthing/types/common.ts'
 
 export default function DeviceDialog({
   initialConfig,
@@ -105,7 +106,7 @@ export default function DeviceDialog({
           <TextField
             label="ID"
             value={effectiveConfig.deviceID}
-            onChange={(e) => handleUpdateField({ deviceID: e.currentTarget?.value })}
+            onChange={(e) => handleUpdateField({ deviceID: e.currentTarget?.value as DeviceID })}
             supportingText="The device ID to enter here can be found in the 'Actions > Show ID' dialog on the other device. Spaces and dashes are optional (ignored). When adding a new device, keep in mind that this device must be added on the other side too."
           />
           <TextField
