@@ -7,6 +7,12 @@ import { useSyncthingMutation } from '@hooks/useSyncthingMutation.ts'
 import { useSyncthingQuery } from '@hooks/useSyncthingQuery.ts'
 import { useCreateFolderId } from '@hooks/useCreateFolderId.ts'
 import { mergeConfigurations } from '@lib/mergeConfigurations.ts'
+import { Tabs } from '@components/ui/tabs/Tabs.tsx'
+import { TabPanel } from '@components/ui/tabs/TabPanel.tsx'
+import { TabsContextProvider } from '@components/ui/tabs/TabsContextProvider.tsx'
+import { Tab } from '@components/ui/tabs/Tab.tsx'
+
+type FolderDialogTabs = 'general' | 'sharing'
 
 export default function FolderDialog({
   initialConfig,
@@ -19,8 +25,8 @@ export default function FolderDialog({
 }) {
   const [folderConfigChanges, setFolderConfigChanges] = useState<Partial<FolderConfiguration>>({})
   const [confirmingDelete, setConfirmingDelete] = useState(false)
+  const [currentTab, setCurrentTab] = useState<FolderDialogTabs>('general')
 
-  const { data: status } = useSyncthingQuery('GET /system/status')
   const newFolderId = useCreateFolderId()
   const { data: defaultFolderConfig } = useSyncthingQuery('GET /config/defaults/folder')
   const { mutateAsync: updateFolderAsync, isPending: updateFolderIsPending } = useSyncthingMutation(
@@ -73,7 +79,7 @@ export default function FolderDialog({
     onClose()
   }
 
-  function handleUpdateField(configUpdates: Partial<FolderConfiguration>) {
+  function handleUpdateConfiguration(configUpdates: Partial<FolderConfiguration>) {
     setFolderConfigChanges((old) => {
       return { ...old, ...configUpdates }
     })
@@ -110,55 +116,81 @@ export default function FolderDialog({
       }
     >
       {effectiveConfig && (
-        <div className="flex flex-col gap-4">
-          <TextField
-            label="Label"
-            value={effectiveConfig.label}
-            onChange={(e) => handleUpdateField({ label: e.currentTarget?.value })}
-            supportingText="Optional descriptive label for the folder."
-          />
-          <TextField
-            label="Group"
-            value={effectiveConfig.group}
-            onChange={(e) => handleUpdateField({ group: e.currentTarget?.value })}
-            supportingText="Optional group for the folder."
-          />
-          <TextField
-            label="Path"
-            value={effectiveConfig.path}
-            onChange={(e) => handleUpdateField({ path: e.currentTarget?.value })}
-            supportingText={
-              <>
-                Path to the folder on the local computer. Will be created if it does not exist.
-                {status && (
-                  <>
-                    {' '}
-                    The tilde character (~) can be used as a shortcut for{' '}
-                    <code className="bg-surface p-0.5 rounded-xs">{status.tilde}</code>.
-                  </>
-                )}
-              </>
-            }
-          />
-          <Dialog
-            title="Confirm deletion"
-            open={confirmingDelete}
-            onClose={handleCancelConfirmDelete}
-            actions={
-              <>
-                <Button variant="outlined" disabled={isPending} onClick={handleCancelConfirmDelete}>
-                  Cancel
-                </Button>
-                <Button variant="tonal" disabled={isPending} onClick={handleConfirmDelete}>
-                  Confirm
-                </Button>
-              </>
-            }
-          >
-            <div>Are you sure you want to delete this folder?</div>
-          </Dialog>
-        </div>
+        <TabsContextProvider selectedValue={currentTab} onSelect={(value) => setCurrentTab(value)}>
+          <Tabs value="general" onChange={() => {}}>
+            <Tab value="general" label="General" />
+            <Tab value="sharing" label="Sharing" />
+          </Tabs>
+          <TabPanel value="general" className="pt-4">
+            <GeneralForm
+              effectiveConfig={effectiveConfig}
+              onUpdateConfiguration={handleUpdateConfiguration}
+            />
+          </TabPanel>
+          <TabPanel value="sharing" className="pt-4"></TabPanel>
+        </TabsContextProvider>
       )}
+      <Dialog
+        title="Confirm deletion"
+        open={confirmingDelete}
+        onClose={handleCancelConfirmDelete}
+        actions={
+          <>
+            <Button variant="outlined" disabled={isPending} onClick={handleCancelConfirmDelete}>
+              Cancel
+            </Button>
+            <Button variant="tonal" disabled={isPending} onClick={handleConfirmDelete}>
+              Confirm
+            </Button>
+          </>
+        }
+      >
+        <div>Are you sure you want to delete this folder?</div>
+      </Dialog>
     </Dialog>
+  )
+}
+
+function GeneralForm({
+  effectiveConfig,
+  onUpdateConfiguration,
+}: {
+  effectiveConfig: FolderConfiguration
+  onUpdateConfiguration: (configUpdates: Partial<FolderConfiguration>) => void
+}) {
+  const { data: status } = useSyncthingQuery('GET /system/status')
+
+  return (
+    <div className="flex flex-col gap-4">
+      <TextField
+        label="Label"
+        value={effectiveConfig.label}
+        onChange={(e) => onUpdateConfiguration({ label: e.currentTarget?.value })}
+        supportingText="Optional descriptive label for the folder."
+      />
+      <TextField
+        label="Group"
+        value={effectiveConfig.group}
+        onChange={(e) => onUpdateConfiguration({ group: e.currentTarget?.value })}
+        supportingText="Optional group for the folder."
+      />
+      <TextField
+        label="Path"
+        value={effectiveConfig.path}
+        onChange={(e) => onUpdateConfiguration({ path: e.currentTarget?.value })}
+        supportingText={
+          <>
+            Path to the folder on the local computer. Will be created if it does not exist.
+            {status && (
+              <>
+                {' '}
+                The tilde character (~) can be used as a shortcut for{' '}
+                <code className="bg-surface p-0.5 rounded-xs">{status.tilde}</code>.
+              </>
+            )}
+          </>
+        }
+      />
+    </div>
   )
 }
