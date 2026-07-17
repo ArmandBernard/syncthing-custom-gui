@@ -75,8 +75,8 @@ export function Device({
             <div className="text-xl">{device.name}</div>
           </div>
           <div className="flex items-baseline gap-2">
-            <ConnectionStatusText connection={connection} completion={completion} />
             <SpeedInline rates={latestRates} />
+            <ConnectionStatusText connection={connection} completion={completion} />
           </div>
         </div>
       }
