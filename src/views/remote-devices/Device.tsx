@@ -105,7 +105,7 @@ export function Device({
             }
           />
         </ul>
-        <TransferChart history={transferHistory ?? []} />
+        {!connection.paused && <TransferChart history={transferHistory ?? []} />}
         <div className="flex gap-4 justify-end">
           <Button variant="outlined" onClick={handlePauseOrResume}>
             {connection.paused ? 'Resume' : 'Pause'}
