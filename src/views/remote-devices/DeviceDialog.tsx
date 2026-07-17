@@ -7,6 +7,7 @@ import { useSyncthingMutation } from '@hooks/useSyncthingMutation.ts'
 import { useSyncthingQuery } from '@hooks/useSyncthingQuery.ts'
 import { mergeConfigurations } from '@lib/mergeConfigurations.ts'
 import type { DeviceID } from '@lib/syncthing/types/common.ts'
+import { DeviceIDText } from '@components/DeviceIDText.tsx'
 
 export default function DeviceDialog({
   initialConfig,
@@ -81,6 +82,7 @@ export default function DeviceDialog({
       open={isOpen}
       onClose={onClose}
       title={<>{inEditMode ? 'Edit' : 'Add remote'} device</>}
+      className="max-w-2xl"
       actions={
         <div className="flex flex-1 gap-4 justify-between">
           <div>
@@ -103,14 +105,19 @@ export default function DeviceDialog({
     >
       {effectiveConfig && (
         <div className="flex flex-col gap-4">
-          <TextField
-            label="ID"
-            value={effectiveConfig.deviceID}
-            onChange={(e) => handleUpdateField({ deviceID: e.currentTarget?.value as DeviceID })}
-            supportingText="The device ID to enter here can be found in the 'Actions > Show ID' dialog on the other device. Spaces and dashes are optional (ignored). When adding a new device, keep in mind that this device must be added on the other side too."
-          />
+          {inEditMode ? (
+            <DeviceIDText deviceID={effectiveConfig.deviceID} />
+          ) : (
+            <TextField
+              label="ID"
+              value={effectiveConfig.deviceID}
+              onChange={(e) => handleUpdateField({ deviceID: e.currentTarget?.value as DeviceID })}
+              supportingText="The device ID to enter here can be found in the 'Actions > Show ID' dialog on the other device. Spaces and dashes are optional (ignored). When adding a new device, keep in mind that this device must be added on the other side too."
+            />
+          )}
           <TextField
             label="Name"
+            variant="filled"
             value={effectiveConfig.name}
             onChange={(e) => handleUpdateField({ name: e.currentTarget?.value })}
             supportingText="Shown instead of Device ID in the cluster status. Will be updated to the name the device advertises if left empty."
