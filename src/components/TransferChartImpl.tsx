@@ -41,10 +41,10 @@ export default function TransferChartImpl({ history }: { history: TransferHistor
   const nowUnix = Date.now()
   const clipId = useId()
 
-  const dataMax = useMemo(
-    () => history.reduce((max, point) => Math.max(max, point.inRate, point.outRate), 0),
-    [history],
-  )
+  const dataMax = useMemo(() => {
+    const visible = history.filter((point) => point.time >= nowUnix - 60 * 1000)
+    return visible.reduce((max, point) => Math.max(max, point.inRate, point.outRate), 0)
+  }, [history, nowUnix])
 
   const { tooltipData, tooltipLeft, tooltipTop, tooltipOpen, showTooltip, hideTooltip } =
     useTooltip<TransferHistoryPoint>()
