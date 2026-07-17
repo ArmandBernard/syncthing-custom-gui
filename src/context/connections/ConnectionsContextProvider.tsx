@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useQueries } from '@tanstack/react-query'
 import { useSyncthingQuery } from '@hooks/useSyncthingQuery.ts'
 import { syncthingRequest } from '@lib/syncthing/client.ts'
@@ -11,11 +11,15 @@ const IDLE_POLL_INTERVAL = 15000
 
 export function ConnectionsContextProvider({ children }: { children: ReactNode }) {
   const [isTransferring, setIsTransferring] = useState(false)
+  const wasTransferring = useRef(false)
 
   const { data: devices } = useSyncthingQuery('GET /config/devices')
-  const { data: connections } = useSyncthingQuery('GET /system/connections', {
-    refetchInterval: isTransferring ? TRANSFERRING_POLL_INTERVAL : IDLE_POLL_INTERVAL,
-  })
+  const { data: connections, refetch: refetchConnections } = useSyncthingQuery(
+    'GET /system/connections',
+    {
+      refetchInterval: isTransferring ? TRANSFERRING_POLL_INTERVAL : IDLE_POLL_INTERVAL,
+    },
+  )
 
   // Only devices we're actually connected to can be transferring right now;
   // a disconnected device stuck below 100% shouldn't force fast polling forever.
@@ -44,8 +48,16 @@ export function ConnectionsContextProvider({ children }: { children: ReactNode }
   )
 
   useEffect(() => {
+    // Capture one more sample right away on the transferring->idle edge, so
+    // the rate chart reflects the stop instead of replaying the last
+    // (nonzero) rate for up to IDLE_POLL_INTERVAL until the next slow poll.
+    if (wasTransferring.current && !anyDeviceStillTransferring) {
+      void refetchConnections()
+    }
+    wasTransferring.current = anyDeviceStillTransferring
+
     setIsTransferring(anyDeviceStillTransferring)
-  }, [anyDeviceStillTransferring])
+  }, [anyDeviceStillTransferring, refetchConnections])
 
   return <ConnectionsContext.Provider value={connections}>{children}</ConnectionsContext.Provider>
 }
