@@ -5,6 +5,7 @@ import type { DeviceID } from '@lib/syncthing/types/common.ts'
 import { useBeforeUnload } from '@hooks/useBeforeUnload.ts'
 import { TransferHistoryContext } from './TransferHistoryContext.ts'
 import type { TransferHistoryPoint } from './useDeviceTransferHistory.ts'
+import { getEnumEntries } from '@lib/getEnumEntries.ts'
 
 const HISTORY_LENGTH = 60
 const STORAGE_KEY = 'syncthing-transfer-history'
@@ -44,7 +45,7 @@ export function TransferHistoryContextProvider({ children }: { children: ReactNo
     const sampleTime = Date.now()
     const newPoints: Record<DeviceID, TransferHistoryPoint> = {}
     const connectionsAndMe: [DeviceID, Rates][] = [
-      ...Object.entries(connections.connections),
+      ...getEnumEntries(connections.connections),
       [myId, connections.total],
     ]
 
@@ -64,7 +65,7 @@ export function TransferHistoryContextProvider({ children }: { children: ReactNo
 
     setHistory((prevHistory) => {
       const nextHistory = { ...prevHistory }
-      for (const [deviceID, point] of Object.entries(newPoints)) {
+      for (const [deviceID, point] of getEnumEntries(newPoints)) {
         nextHistory[deviceID] = [...(nextHistory[deviceID] ?? []), point].slice(-HISTORY_LENGTH)
       }
       return nextHistory

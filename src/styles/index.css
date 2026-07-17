@@ -126,7 +126,7 @@
 }
 
 body {
-  background-color: var(--color-surface);
+  background-color: var(--color-surface-low);
   color: var(--color-on-surface);
 }
 

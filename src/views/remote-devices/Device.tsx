@@ -33,7 +33,7 @@ export function Device({
   const [expanded, setExpanded] = useState(false)
   const { data: completion, isLoading: completionIsLoading } = useSyncthingQuery(
     'GET /db/completion',
-    { query: { device: device.deviceID }, refetchInterval: 5000 },
+    { query: { device: device.deviceID } },
   )
   const { mutateAsync: pauseAsync } = useSyncthingMutation('POST /system/pause')
   const { mutateAsync: resumeAsync } = useSyncthingMutation('POST /system/resume')
@@ -105,7 +105,7 @@ export function Device({
             }
           />
         </ul>
-        <TransferChart history={transferHistory ?? []} />
+        {!connection.paused && <TransferChart history={transferHistory ?? []} />}
         <div className="flex gap-4 justify-end">
           <Button variant="outlined" onClick={handlePauseOrResume}>
             {connection.paused ? 'Resume' : 'Pause'}

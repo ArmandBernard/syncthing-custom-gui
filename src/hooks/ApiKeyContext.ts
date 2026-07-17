@@ -1,7 +1,7 @@
 import { createContext } from 'react'
 
 export interface ApiKeyContextValue {
-  apiKey: string | null
+  apiKey: string
   setApiKey: (key: string) => void
   clearApiKey: () => void
 }

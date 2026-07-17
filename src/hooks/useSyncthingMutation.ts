@@ -1,7 +1,8 @@
 import { useMutation, type UseMutationOptions } from '@tanstack/react-query'
-import { syncthingRequest, SyncthingApiError, type RequestOptions } from '@lib/syncthing/client'
+import { syncthingRequest, SyncthingApiError } from '@lib/syncthing/client'
 import type { EndpointMap } from '@lib/syncthing/endpoints'
 import { useCallback } from 'react'
+import type { RequestOptions } from '@lib/syncthing/RequestOptions.ts'
 
 type ReactMutationOptions<TData, TVariables> = Omit<
   UseMutationOptions<TData, SyncthingApiError, TVariables>,
@@ -19,9 +20,7 @@ export function useSyncthingMutation<K extends keyof EndpointMap>(
 ) {
   const mutateFn = useCallback(
     async (options: RequestOptions<EndpointMap[K]>) => {
-      const queryInfo = createQueryInfo(options)
-
-      await syncthingRequest(key, queryInfo)
+      await syncthingRequest(key, options)
     },
     [key],
   )
@@ -30,12 +29,4 @@ export function useSyncthingMutation<K extends keyof EndpointMap>(
     ...options,
     mutationFn: mutateFn,
   })
-}
-
-function createQueryInfo<K extends keyof EndpointMap>(options: RequestOptions<EndpointMap[K]>) {
-  return {
-    ...('params' in options ? { params: options.params } : {}),
-    ...('query' in options ? { query: options.query } : {}),
-    ...('body' in options ? { body: options.body } : {}),
-  }
 }

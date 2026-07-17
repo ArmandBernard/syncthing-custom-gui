@@ -4,7 +4,6 @@ import { useState } from 'react'
 import type { DeviceConfiguration, FolderConfiguration } from '@lib/syncthing/types/config'
 import { Button } from '@components/ui/Button.tsx'
 import { useSyncthingMutation } from '@hooks/useSyncthingMutation.ts'
-import { useSyncthingInvalidate } from '@hooks/useSyncthingInvalidate.ts'
 import { useSyncthingQuery } from '@hooks/useSyncthingQuery.ts'
 import { mergeConfigurations } from '@lib/mergeConfigurations.ts'
 
@@ -29,7 +28,6 @@ export default function DeviceDialog({
   )
   const { mutateAsync: createFolderAsync, isPending: createFolderIsPending } =
     useSyncthingMutation('POST /config/devices')
-  const invalidateFolders = useSyncthingInvalidate('GET /config/devices')
 
   const isPending = updateFolderIsPending || createFolderIsPending || deleteFolderIsPending
   const inEditMode = !!initialConfig
@@ -48,7 +46,6 @@ export default function DeviceDialog({
   async function handleConfirmDelete() {
     if (initialConfig) {
       await deleteFolderAsync({ params: { id: initialConfig.deviceID } })
-      await invalidateFolders()
       setConfirmingDelete(false)
       onClose()
     }
@@ -69,7 +66,6 @@ export default function DeviceDialog({
         body: { ...effectiveConfig },
       })
     }
-    await invalidateFolders()
     onClose()
   }
 

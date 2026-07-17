@@ -1,4 +1,4 @@
-import { useId, useMemo } from 'react'
+import { useEffect, useId, useMemo, useState } from 'react'
 import type { TargetedPointerEvent } from 'preact'
 import { ParentSize } from '@visx/responsive'
 import { scaleLinear } from '@visx/scale'
@@ -11,9 +11,10 @@ import { localPoint } from '@visx/event'
 import type { TransferHistoryPoint } from '@context/transfer-history/useDeviceTransferHistory.ts'
 import { formatTransferRate } from '@lib/formatTransferRate.ts'
 
-const margin = { top: 4, right: 8, bottom: 4, left: 56 }
+const margin = { top: 4, right: 8, bottom: 4, left: 72 }
 const NUM_TICKS = 4
 const STROKE_WIDTH = 2
+const DRAW_INTERVAL = 2000
 
 type LineOptions = {
   label: string
@@ -38,13 +39,19 @@ const lines: LineOptions[] = [
 ]
 
 export default function TransferChartImpl({ history }: { history: TransferHistoryPoint[] }) {
-  const nowUnix = Date.now()
+  const [nowUnix, setNowUnix] = useState(Date.now())
   const clipId = useId()
 
-  const dataMax = useMemo(
-    () => history.reduce((max, point) => Math.max(max, point.inRate, point.outRate), 0),
-    [history],
-  )
+  useEffect(() => {
+    const timeout = setTimeout(() => setNowUnix(Date.now()), DRAW_INTERVAL)
+
+    return () => clearTimeout(timeout)
+  }, [nowUnix])
+
+  const dataMax = useMemo(() => {
+    const visible = history.filter((point) => point.time >= nowUnix - 60 * 1000)
+    return visible.reduce((max, point) => Math.max(max, point.inRate, point.outRate), 0)
+  }, [history, nowUnix])
 
   const { tooltipData, tooltipLeft, tooltipTop, tooltipOpen, showTooltip, hideTooltip } =
     useTooltip<TransferHistoryPoint>()
@@ -57,6 +64,11 @@ export default function TransferChartImpl({ history }: { history: TransferHistor
             if (width === 0 || height === 0) {
               return null
             }
+            const lastPoint = history.at(-1)!
+            const renderedPoints =
+              lastPoint.time < nowUnix - DRAW_INTERVAL
+                ? [...history, { ...lastPoint, time: nowUnix }]
+                : history
 
             const xScale = scaleLinear({
               domain: [nowUnix - 60 * 1000, nowUnix],
@@ -99,7 +111,7 @@ export default function TransferChartImpl({ history }: { history: TransferHistor
                   {lines.map((line) => (
                     <AreaClosed
                       key={line.field}
-                      data={history}
+                      data={renderedPoints}
                       x={(d) => xScale(d.time)}
                       y={(d) => yScale(d[line.field])}
                       yScale={yScale}

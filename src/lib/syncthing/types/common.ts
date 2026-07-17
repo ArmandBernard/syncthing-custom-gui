@@ -1,8 +1,8 @@
 /** Syncthing device ID (54-char base32, e.g. "ABCDEFG-...") */
-export type DeviceID = string
+export type DeviceID = string & { brand: 'DeviceID' }
 
 /** Folder ID as configured by the user, e.g. "default" */
-export type FolderID = string
+export type FolderID = string & { brand: 'FolderId' }
 
 /** RFC3339 timestamp string as emitted by Go's time.Time JSON marshaling */
 export type ISODateTime = string
