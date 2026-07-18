@@ -1,8 +1,16 @@
-import { forwardRef, useEffect, useId, useImperativeHandle, useRef, useState } from 'react'
+import {
+  forwardRef,
+  type ReactNode,
+  useEffect,
+  useId,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react'
 import type { InputHTMLAttributes } from 'preact'
 
 export interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
-  label?: string
+  label?: ReactNode
   labelPosition?: 'left' | 'right'
   /** Visual "mixed" state. Must be set imperatively on the DOM node, since HTML has no `indeterminate` attribute. */
   indeterminate?: boolean
