@@ -7,9 +7,11 @@ import { useSyncthingQuery } from '@hooks/useSyncthingQuery.ts'
 import { Button } from '@components/ui/Button.tsx'
 import { useSyncthingMutation } from '@hooks/useSyncthingMutation.ts'
 import { useSyncthingInvalidate } from '@hooks/useSyncthingInvalidate.ts'
-import FolderDialog from './FolderDialog.tsx'
-import { useState } from 'preact/compat'
+import { lazy, useState } from 'preact/compat'
 import { getEnumKeys } from '@lib/getEnumKeys.ts'
+import { Suspense } from 'react'
+
+const FolderDialog = lazy(() => import('./FolderDialog.tsx'))
 
 export function AcceptFolderAlerts({ devices }: { devices: DeviceConfiguration[] }) {
   const { data: pendingFolders } = useSyncthingQuery('GET /cluster/pending/folders')
@@ -67,13 +69,15 @@ export function AcceptFolderAlerts({ devices }: { devices: DeviceConfiguration[]
           onEditClick={handleEditClick}
         />
       ))}
-      <FolderDialog
-        initialConfig={initialFolderConfig}
-        isOpen={!!editingFolderId}
-        editing={false}
-        onClose={handleEditDialogCloseClick}
-        onSave={handleSaveClick}
-      />
+      <Suspense fallback={<Suspense fallback={null} />}>
+        <FolderDialog
+          initialConfig={initialFolderConfig}
+          isOpen={!!editingFolderId}
+          editing={false}
+          onClose={handleEditDialogCloseClick}
+          onSave={handleSaveClick}
+        />
+      </Suspense>
     </div>
   )
 }
