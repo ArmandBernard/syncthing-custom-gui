@@ -10,7 +10,7 @@ type LoginFormProps = {
   onLogin: (username: string, password: string, stayLoggedIn: boolean) => Promise<void>
 }
 
-export function LoginForm({ onLogin }: LoginFormProps) {
+export default function LoginForm({ onLogin }: LoginFormProps) {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [stayLoggedIn, setStayLoggedIn] = useState(true)

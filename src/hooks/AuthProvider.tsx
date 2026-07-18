@@ -1,8 +1,11 @@
-import { useCallback, type ReactNode } from 'react'
+import { useCallback, type ReactNode, Suspense } from 'react'
 import { login as loginRequest, logout as logoutRequest } from '@lib/syncthing/auth'
 import { useSyncthingQuery } from './useSyncthingQuery'
 import { AuthContext, type AuthStatus } from './AuthContext'
-import { LoginForm } from '../views/LoginForm.tsx'
+import { CircularProgressCentred } from '@components/CircularProgressCentred.tsx'
+import { lazy } from 'preact/compat'
+
+const LoginForm = lazy(() => import('../views/LoginForm.tsx'))
 
 const POLL_INTERVAL_MS = 30000
 
@@ -41,7 +44,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   if (status === 'unauthorized') {
     return (
       <main className="flex flex-1 flex-col min-h-screen">
-        <LoginForm onLogin={login} />
+        <Suspense fallback={<CircularProgressCentred name="login" />}>
+          <LoginForm onLogin={login} />
+        </Suspense>
       </main>
     )
   }
