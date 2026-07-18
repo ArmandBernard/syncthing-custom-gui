@@ -1,4 +1,4 @@
-import { SyncthingApiError } from '@lib/syncthing/client.ts'
+import { SyncthingApiError } from '@lib/syncthing/SyncthingApiError.ts'
 
 export function ErrorAlert({ error }: { error: SyncthingApiError | string }) {
   if (error instanceof SyncthingApiError) {

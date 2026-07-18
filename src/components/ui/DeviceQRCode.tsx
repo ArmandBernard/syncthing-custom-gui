@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import type { DeviceID } from '@lib/syncthing/types/common.ts'
-import { fetchQrCode } from '@lib/syncthing/client.ts'
+import { fetchQrCode } from '@lib/syncthing/fetchQrCode.ts'
 
 export default function DeviceQRCode({
   deviceId,

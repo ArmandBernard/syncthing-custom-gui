@@ -4,7 +4,8 @@ import { Card } from '@components/ui/Card.tsx'
 import { TextField } from '@components/ui/TextField.tsx'
 import { Checkbox } from '@components/ui/Checkbox.tsx'
 import { Button } from '@components/ui/Button.tsx'
-import { SyncthingApiError } from '@lib/syncthing/client'
+
+import { SyncthingApiError } from '@lib/syncthing/SyncthingApiError.ts'
 
 type LoginFormProps = {
   onLogin: (username: string, password: string, stayLoggedIn: boolean) => Promise<void>

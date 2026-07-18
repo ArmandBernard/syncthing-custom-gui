@@ -1,16 +1,7 @@
-import { getCsrfHeader } from './csrf'
+import { getCsrfHeader } from './getCsrfHeader'
 import type { EndpointMap } from './endpoints'
 import type { RequestOptions } from '@lib/syncthing/RequestOptions.ts'
-
-export class SyncthingApiError extends Error {
-  readonly status: number
-
-  constructor(status: number, message: string) {
-    super(message)
-    this.name = 'SyncthingApiError'
-    this.status = status
-  }
-}
+import { SyncthingApiError } from '@lib/syncthing/SyncthingApiError.ts'
 
 // A small fixed set of endpoints don't speak JSON. TS types alone can't drive
 // runtime parsing decisions, so these are tracked as plain lookup tables.
@@ -88,18 +79,4 @@ export async function syncthingRequest<K extends keyof EndpointMap>(
   if (response.status === 204) return undefined as EndpointMap[K]['response']
   const text = await response.text()
   return (text ? JSON.parse(text) : undefined) as EndpointMap[K]['response']
-}
-
-// Syncthing serves QR codes from /qr/, outside the /rest namespace. Cookie
-// auth works here for free since the browser attaches cookies automatically.
-export async function fetchQrCode(text: string): Promise<Blob> {
-  const url = `/qr/?text=${encodeURIComponent(text)}`
-  const response = await fetch(url, { credentials: 'include', headers: getCsrfHeader() })
-
-  if (!response.ok) {
-    const message = await response.text().catch(() => '')
-    throw new SyncthingApiError(response.status, message || response.statusText)
-  }
-
-  return response.blob()
 }

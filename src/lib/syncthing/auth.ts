@@ -1,4 +1,4 @@
-import { SyncthingApiError } from './client'
+import { SyncthingApiError } from '@lib/syncthing/SyncthingApiError.ts'
 
 // These hit /rest/noauth/..., which is unauthenticated (and CSRF-exempt), so
 // they bypass syncthingRequest entirely rather than pretending to fit its

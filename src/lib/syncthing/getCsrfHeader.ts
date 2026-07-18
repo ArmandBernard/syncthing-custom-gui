@@ -3,7 +3,9 @@
 // `X-CSRF-Token-<unique>` header on cookie-authenticated requests.
 export function getCsrfHeader(): Record<string, string> {
   const cookie = document.cookie.split('; ').find((entry) => entry.startsWith('CSRF-Token-'))
-  if (!cookie) return {}
+  if (!cookie) {
+    return {}
+  }
 
   const separatorIndex = cookie.indexOf('=')
   const name = cookie.slice(0, separatorIndex)

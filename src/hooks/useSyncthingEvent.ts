@@ -1,4 +1,4 @@
-import { syncthingRequest } from '@lib/syncthing/client.ts'
+import { syncthingRequest } from '@lib/syncthing/syncthingRequest.ts'
 import type { SyncthingEvent } from '@lib/syncthing/types/events'
 import { useEffect, useRef } from 'react'
 

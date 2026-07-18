@@ -1,8 +1,9 @@
 import { useQuery, type UseQueryOptions } from '@tanstack/react-query'
-import { syncthingRequest, SyncthingApiError } from '@lib/syncthing/client'
+import { syncthingRequest } from '@lib/syncthing/syncthingRequest'
 import type { EndpointMap } from '@lib/syncthing/endpoints'
 import type { RequestOptions } from '@lib/syncthing/RequestOptions.ts'
 import createQueryKey from '@hooks/createQueryKey.ts'
+import { SyncthingApiError } from '@lib/syncthing/SyncthingApiError.ts'
 
 type ReactQueryOptions<TData> = Omit<
   UseQueryOptions<TData, SyncthingApiError>,
