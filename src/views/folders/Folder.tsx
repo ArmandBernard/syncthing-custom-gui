@@ -9,6 +9,8 @@ import { Button } from '@components/ui/Button.tsx'
 import { useSyncthingMutation } from '@hooks/useSyncthingMutation.ts'
 import { useSyncthingInvalidate } from '@hooks/useSyncthingInvalidate.ts'
 import ListItem from '@components/ui/ListItem.tsx'
+import { useDeviceID } from '@context/device-id/useDeviceID.ts'
+import { ErrorAlert } from '@components/ui/ErrorAlert.tsx'
 
 export function Folder({
   folder,
@@ -20,6 +22,7 @@ export function Folder({
   onEditClick: () => void
 }) {
   const [expanded, setExpanded] = useState<boolean>(false)
+  const myDeviceID = useDeviceID()
 
   const { data: status } = useSyncthingQuery('GET /db/status', { query: { folder: folder.id } })
   const { mutateAsync: scanAsync, isPending: scanAsyncIsPending } =
@@ -49,6 +52,7 @@ export function Folder({
       }
     >
       <div className="flex flex-col gap-4">
+        {status?.error && <ErrorAlert error={status?.error} />}
         <ul>
           <ListItem leftSlot="Path" rightSlot={folder.path} />
           {status && (
@@ -76,6 +80,7 @@ export function Folder({
             rightSlot={
               <>
                 {folder.devices
+                  .filter((device) => device.deviceID !== myDeviceID)
                   .map((device) => {
                     const deviceConfig = devices.find((d) => d.deviceID === device.deviceID)
 

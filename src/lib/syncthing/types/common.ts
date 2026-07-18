@@ -5,7 +5,7 @@ export type DeviceID = string & { brand: 'DeviceID' }
 export type FolderID = string & { brand: 'FolderId' }
 
 /** RFC3339 timestamp string as emitted by Go's time.Time JSON marshaling */
-export type ISODateTime = string
+export type ISODateTime = string & { brand: 'ISODateTime' }
 
 /** Mixin for the several DB/folder endpoints that return `{ ...arrays, page, perpage }`. */
 export interface Paginated {

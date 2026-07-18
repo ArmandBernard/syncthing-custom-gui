@@ -29,7 +29,7 @@ export const Card = forwardRef<HTMLDivElement | HTMLButtonElement, CardProps>(fu
         type="button"
         onClick={onClick}
         disabled={disabled}
-        className={`w-full text-left hover:shadow-md hover:brightness-95 active:brightness-90 disabled:pointer-events-none disabled:opacity-[0.38] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${base}`}
+        className={`w-full text-left hover:shadow-md hover:brightness-95 active:brightness-90 disabled:pointer-events-none disabled:opacity-[0.38] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ${base}`}
         {...(props as ButtonHTMLAttributes<HTMLButtonElement>)}
       />
     )

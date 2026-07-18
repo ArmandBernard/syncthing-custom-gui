@@ -6,10 +6,19 @@ export interface DialogProps {
   title: ReactNode
   children: ReactNode
   actions?: ReactNode
+  centred?: boolean
   className?: string
 }
 
-export function Dialog({ open, onClose, title, children, actions, className }: DialogProps) {
+export function Dialog({
+  open,
+  onClose,
+  title,
+  children,
+  actions,
+  className,
+  centred = true,
+}: DialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const titleId = useId()
 
@@ -40,7 +49,10 @@ export function Dialog({ open, onClose, title, children, actions, className }: D
         }
       }}
       // Chromium and Firefox sets max-width to calc(100% - 38px) on dialogs. These have to be overridden
-      className="hidden h-full w-full max-w-none max-h-none items-center justify-center bg-transparent open:flex backdrop:bg-scrim/30"
+      className={
+        'hidden h-full w-full max-w-none max-h-none open:flex flex-col items-center bg-transparent  backdrop:bg-scrim/30' +
+        (centred ? ' justify-center' : ' pt-12')
+      }
     >
       <div
         className={`min-w-70 rounded-xl bg-surface-high text-on-surface m-6 p-6 shadow-lg ${className ?? ''}`}

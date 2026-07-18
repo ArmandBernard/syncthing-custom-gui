@@ -10,6 +10,7 @@ import type {
   FolderCompletionEvent,
   FolderErrorsEvent,
   FolderScanProgressEvent,
+  FolderSummaryEvent,
   StateChangedEvent,
   SyncthingEvent,
 } from '@lib/syncthing/types/events'
@@ -32,7 +33,7 @@ export function InvalidationLayer({ children }: PropsWithChildren) {
   )
 
   useSyncthingEvent({
-    eventsToSubscribeTo: getEnumKeys(eventsToInvalidationsDictionary),
+    eventsToSubscribeTo: subscribedEventTypes,
     callback: handleNewEvent,
   })
 
@@ -59,14 +60,18 @@ type SyncthingEventDictionary = {
 }
 
 const eventsToInvalidationsDictionary: SyncthingEventDictionary = {
-  StateChanged: handleFolderStateUpdate,
-  FolderScanProgress: handleFolderStateUpdate,
-  FolderErrors: handleFolderStateUpdate,
-  FolderCompletion: handleFolderCompletion,
+  ConfigSaved: handleConfigSaved,
   DeviceConnected: handleDeviceConnectionChange,
   DeviceDisconnected: handleDeviceConnectionChange,
-  ConfigSaved: handleConfigSaved,
+  FolderCompletion: handleFolderCompletion,
+  FolderErrors: handleFolderStateUpdate,
+  FolderScanProgress: handleFolderStateUpdate,
+  FolderSummary: handleFolderSummaryUpdate,
+  StateChanged: handleFolderStateUpdate,
 }
+
+// Computed once at module scope so it's a stable reference across renders
+const subscribedEventTypes = getEnumKeys(eventsToInvalidationsDictionary)
 
 async function handleFolderStateUpdate(
   events: (StateChangedEvent | FolderScanProgressEvent | FolderErrorsEvent)[],
@@ -79,10 +84,11 @@ async function handleFolderStateUpdate(
   }
 }
 
-async function handleFolderCompletion(
-  events: FolderCompletionEvent[],
-  queryClient: QueryClient,
-) {
+async function handleFolderSummaryUpdate(_: FolderSummaryEvent[], queryClient: QueryClient) {
+  await typeSafeInvalidate(queryClient, 'GET /cluster/pending/folders')
+}
+
+async function handleFolderCompletion(events: FolderCompletionEvent[], queryClient: QueryClient) {
   const uniqueAffectedDeviceIds = new Set(events.map((e) => e.data.device))
 
   for (const deviceId of uniqueAffectedDeviceIds) {

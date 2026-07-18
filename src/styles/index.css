@@ -7,18 +7,18 @@
  * single component.
  */
 :root {
-  --md-primary: var(--color-sky-400);
+  --md-primary: var(--color-sky-700);
   --md-on-primary: var(--color-sky-50);
-  --md-primary-container: var(--color-sky-200);
-  --md-on-primary-container: var(--color-sky-950);
-  --md-secondary: var(--color-violet-400);
+  --md-primary-container: var(--color-sky-100);
+  --md-on-primary-container: var(--color-sky-900);
+  --md-secondary: var(--color-violet-700);
   --md-on-secondary: var(--color-violet-50);
-  --md-secondary-container: var(--color-violet-200);
-  --md-on-secondary-container: var(--color-violet-950);
-  --md-error: var(--color-red-400);
+  --md-secondary-container: var(--color-violet-100);
+  --md-on-secondary-container: var(--color-violet-900);
+  --md-error: var(--color-red-700);
   --md-on-error: var(--color-red-50);
-  --md-error-container: var(--color-red-200);
-  --md-on-error-container: var(--color-red-950);
+  --md-error-container: var(--color-red-100);
+  --md-on-error-container: var(--color-red-900);
   --md-surface-low: var(--color-neutral-100);
   --md-surface: var(--color-neutral-200);
   --md-surface-high: var(--color-neutral-300);
@@ -47,16 +47,16 @@
 .dark {
   --md-primary: var(--color-sky-300);
   --md-on-primary: var(--color-sky-950);
-  --md-primary-container: var(--color-sky-200);
-  --md-on-primary-container: var(--color-sky-950);
+  --md-primary-container: var(--color-sky-900);
+  --md-on-primary-container: var(--color-sky-50);
   --md-secondary: var(--color-violet-300);
-  --md-on-secondary: var(--color-violet-50);
-  --md-secondary-container: var(--color-violet-200);
-  --md-on-secondary-container: var(--color-violet-950);
+  --md-on-secondary: var(--color-violet-950);
+  --md-secondary-container: var(--color-violet-900);
+  --md-on-secondary-container: var(--color-violet-50);
   --md-error: var(--color-red-300);
-  --md-on-error: var(--color-red-50);
-  --md-error-container: var(--color-red-200);
-  --md-on-error-container: var(--color-red-950);
+  --md-on-error: var(--color-red-950);
+  --md-error-container: var(--color-red-900);
+  --md-on-error-container: var(--color-red-50);
   --md-surface-low: var(--color-neutral-900);
   --md-surface: var(--color-neutral-800);
   --md-surface-high: var(--color-neutral-700);

@@ -1,39 +1,68 @@
 import { Dialog } from '@components/ui/Dialog.tsx'
 import { TextField } from '@components/ui/TextField.tsx'
 import { useState } from 'react'
-import type { FolderConfiguration } from '@lib/syncthing/types/config'
+import type {
+  DeviceConfiguration,
+  FolderConfiguration,
+  FolderDeviceConfiguration,
+} from '@lib/syncthing/types/config'
 import { Button } from '@components/ui/Button.tsx'
 import { useSyncthingMutation } from '@hooks/useSyncthingMutation.ts'
 import { useSyncthingQuery } from '@hooks/useSyncthingQuery.ts'
 import { useCreateFolderId } from '@hooks/useCreateFolderId.ts'
 import { mergeConfigurations } from '@lib/mergeConfigurations.ts'
+import { Tabs } from '@components/ui/tabs/Tabs.tsx'
+import { TabPanel } from '@components/ui/tabs/TabPanel.tsx'
+import { TabsContextProvider } from '@components/ui/tabs/TabsContextProvider.tsx'
+import { Tab } from '@components/ui/tabs/Tab.tsx'
+import type { DeviceID } from '@lib/syncthing/types/common.ts'
+import { Checkbox } from '@components/ui/Checkbox.tsx'
+import { useDeviceID } from '@context/device-id/useDeviceID.ts'
+import { CircularProgressCentred } from '@components/CircularProgressCentred.tsx'
+import { ErrorAlert } from '@components/ui/ErrorAlert.tsx'
+import { useConnections } from '@context/connections/useConnections.ts'
+import getSharedFolderStatus, { type SharedFolderStatus } from '@lib/getSharedFolderStatus.ts'
+
+type FolderDialogTabs = 'general' | 'sharing'
 
 export default function FolderDialog({
   initialConfig,
+  editing,
   isOpen,
   onClose,
+  onSave,
 }: {
   initialConfig: FolderConfiguration | undefined
+  editing: boolean
   isOpen: boolean
   onClose: () => void
+  onSave?: (config: FolderConfiguration) => Promise<void>
 }) {
   const [folderConfigChanges, setFolderConfigChanges] = useState<Partial<FolderConfiguration>>({})
   const [confirmingDelete, setConfirmingDelete] = useState(false)
+  const [currentTab, setCurrentTab] = useState<FolderDialogTabs>('general')
 
-  const { data: status } = useSyncthingQuery('GET /system/status')
   const newFolderId = useCreateFolderId()
   const { data: defaultFolderConfig } = useSyncthingQuery('GET /config/defaults/folder')
-  const { mutateAsync: updateFolderAsync, isPending: updateFolderIsPending } = useSyncthingMutation(
-    'PATCH /config/folders/:id',
-  )
-  const { mutateAsync: deleteFolderAsync, isPending: deleteFolderIsPending } = useSyncthingMutation(
-    'DELETE /config/folders/:id',
-  )
-  const { mutateAsync: createFolderAsync, isPending: createFolderIsPending } =
-    useSyncthingMutation('POST /config/folders')
+  const {
+    mutateAsync: updateFolderAsync,
+    isPending: updateFolderIsPending,
+    error: updateFolderError,
+  } = useSyncthingMutation('PATCH /config/folders/:id')
+  const {
+    mutateAsync: createFolderAsync,
+    isPending: createFolderIsPending,
+    error: createFolderError,
+  } = useSyncthingMutation('POST /config/folders')
+  const {
+    mutateAsync: deleteFolderAsync,
+    isPending: deleteFolderIsPending,
+    error: deleteFolderError,
+  } = useSyncthingMutation('DELETE /config/folders/:id')
 
   const isPending = updateFolderIsPending || createFolderIsPending || deleteFolderIsPending
-  const inEditMode = !!initialConfig
+  const error = updateFolderError || createFolderError || deleteFolderError
+
   const effectiveConfig: FolderConfiguration | undefined = mergeConfigurations(
     defaultFolderConfig,
     newFolderId ? { id: newFolderId } : undefined,
@@ -60,7 +89,7 @@ export default function FolderDialog({
       return
     }
 
-    if (inEditMode) {
+    if (editing) {
       await updateFolderAsync({
         params: { id: effectiveConfig.id },
         body: effectiveConfig,
@@ -70,10 +99,13 @@ export default function FolderDialog({
         body: { ...effectiveConfig, id: newFolderId },
       })
     }
+    if (onSave) {
+      await onSave(effectiveConfig)
+    }
     onClose()
   }
 
-  function handleUpdateField(configUpdates: Partial<FolderConfiguration>) {
+  function handleUpdateConfiguration(configUpdates: Partial<FolderConfiguration>) {
     setFolderConfigChanges((old) => {
       return { ...old, ...configUpdates }
     })
@@ -83,16 +115,19 @@ export default function FolderDialog({
     <Dialog
       open={isOpen}
       onClose={onClose}
+      centred={false}
+      className="max-w-xl w-full"
       title={
         <>
-          {inEditMode ? 'Edit' : 'Create'} folder{' '}
-          <span className="text-on-surface-variant">{!inEditMode ? ` (${newFolderId})` : ''}</span>
+          {editing ? 'Edit' : 'Create'} folder
+          {effectiveConfig?.label ? ` "${effectiveConfig.label}"` : ''}
+          <span className="text-on-surface-variant">{` (${effectiveConfig?.id ?? newFolderId})`}</span>
         </>
       }
       actions={
         <div className="flex flex-1 gap-4 justify-between">
           <div>
-            {inEditMode && (
+            {editing && (
               <Button variant="tonal" disabled={isPending} onClick={handleClickDelete}>
                 Delete
               </Button>
@@ -110,55 +145,211 @@ export default function FolderDialog({
       }
     >
       {effectiveConfig && (
-        <div className="flex flex-col gap-4">
-          <TextField
-            label="Label"
-            value={effectiveConfig.label}
-            onChange={(e) => handleUpdateField({ label: e.currentTarget?.value })}
-            supportingText="Optional descriptive label for the folder."
-          />
-          <TextField
-            label="Group"
-            value={effectiveConfig.group}
-            onChange={(e) => handleUpdateField({ group: e.currentTarget?.value })}
-            supportingText="Optional group for the folder."
-          />
-          <TextField
-            label="Path"
-            value={effectiveConfig.path}
-            onChange={(e) => handleUpdateField({ path: e.currentTarget?.value })}
-            supportingText={
-              <>
-                Path to the folder on the local computer. Will be created if it does not exist.
-                {status && (
-                  <>
-                    {' '}
-                    The tilde character (~) can be used as a shortcut for{' '}
-                    <code className="bg-surface p-0.5 rounded-xs">{status.tilde}</code>.
-                  </>
-                )}
-              </>
-            }
-          />
-          <Dialog
-            title="Confirm deletion"
-            open={confirmingDelete}
-            onClose={handleCancelConfirmDelete}
-            actions={
-              <>
-                <Button variant="outlined" disabled={isPending} onClick={handleCancelConfirmDelete}>
-                  Cancel
-                </Button>
-                <Button variant="tonal" disabled={isPending} onClick={handleConfirmDelete}>
-                  Confirm
-                </Button>
-              </>
-            }
+        <div>
+          {error && <ErrorAlert error={error} />}
+          <TabsContextProvider
+            selectedValue={currentTab}
+            onSelect={(value) => setCurrentTab(value)}
           >
-            <div>Are you sure you want to delete this folder?</div>
-          </Dialog>
+            <Tabs value="general" onChange={() => {}}>
+              <Tab value="general" label="General" />
+              <Tab value="sharing" label="Sharing" />
+            </Tabs>
+            <TabPanel value="general" className="pt-4">
+              <GeneralForm
+                effectiveConfig={effectiveConfig}
+                onUpdateConfiguration={handleUpdateConfiguration}
+              />
+            </TabPanel>
+            <TabPanel value="sharing" className="pt-4">
+              <SharingForm
+                effectiveConfig={effectiveConfig}
+                onUpdateConfiguration={handleUpdateConfiguration}
+              />
+            </TabPanel>
+          </TabsContextProvider>
         </div>
       )}
+      <Dialog
+        title="Confirm deletion"
+        open={confirmingDelete}
+        onClose={handleCancelConfirmDelete}
+        actions={
+          <>
+            <Button variant="outlined" disabled={isPending} onClick={handleCancelConfirmDelete}>
+              Cancel
+            </Button>
+            <Button variant="tonal" disabled={isPending} onClick={handleConfirmDelete}>
+              Confirm
+            </Button>
+          </>
+        }
+      >
+        <div>Are you sure you want to delete this folder?</div>
+      </Dialog>
     </Dialog>
   )
+}
+
+function GeneralForm({
+  effectiveConfig,
+  onUpdateConfiguration,
+}: {
+  effectiveConfig: FolderConfiguration
+  onUpdateConfiguration: (configUpdates: Partial<FolderConfiguration>) => void
+}) {
+  const { data: status } = useSyncthingQuery('GET /system/status')
+
+  return (
+    <div className="flex flex-col gap-4">
+      <TextField
+        label="Label"
+        value={effectiveConfig.label}
+        onChange={(e) => onUpdateConfiguration({ label: e.currentTarget?.value })}
+        supportingText="Optional descriptive label for the folder."
+      />
+      <TextField
+        label="Group"
+        value={effectiveConfig.group}
+        onChange={(e) => onUpdateConfiguration({ group: e.currentTarget?.value })}
+        supportingText="Optional group for the folder."
+      />
+      <TextField
+        label="Path"
+        value={effectiveConfig.path}
+        onChange={(e) => onUpdateConfiguration({ path: e.currentTarget?.value })}
+        supportingText={
+          <>
+            Path to the folder on the local computer. Will be created if it does not exist.
+            {status && (
+              <>
+                {' '}
+                The tilde character (~) can be used as a shortcut for{' '}
+                <code className="bg-surface p-0.5 rounded-xs">{status.tilde}</code>.
+              </>
+            )}
+          </>
+        }
+      />
+    </div>
+  )
+}
+
+function SharingForm({
+  effectiveConfig,
+  onUpdateConfiguration,
+}: {
+  effectiveConfig: FolderConfiguration
+  onUpdateConfiguration: (configUpdates: Partial<FolderConfiguration>) => void
+}) {
+  const myDeviceId = useDeviceID()
+  const { data: devicesIncludingMe, isLoading: devicesLoading } =
+    useSyncthingQuery('GET /config/devices')
+
+  if (devicesLoading || !devicesIncludingMe) {
+    return <CircularProgressCentred name="devices" />
+  }
+
+  const devices = devicesIncludingMe.filter((d) => d.deviceID !== myDeviceId)
+  const sharedDeviceIds = new Set<DeviceID>(effectiveConfig.devices.map((d) => d.deviceID))
+
+  return (
+    <div className="flex flex-col gap-4">
+      <h2>Devices</h2>
+      <ul>
+        {devices.map((device) => {
+          const shared = sharedDeviceIds.has(device.deviceID)
+
+          return (
+            <SharingItem
+              key={device.deviceID}
+              device={device}
+              shared={shared}
+              effectiveConfig={effectiveConfig}
+              onUpdateConfiguration={onUpdateConfiguration}
+            />
+          )
+        })}
+      </ul>
+    </div>
+  )
+}
+
+function SharingItem({
+  device,
+  shared,
+  effectiveConfig,
+  onUpdateConfiguration,
+}: {
+  device: DeviceConfiguration
+  shared: boolean
+  effectiveConfig: FolderConfiguration
+  onUpdateConfiguration: (configUpdates: Partial<FolderConfiguration>) => void
+}) {
+  const { data: completion } = useSyncthingQuery('GET /db/completion', {
+    enabled: shared,
+    query: { device: device.deviceID, folder: effectiveConfig.id },
+  })
+  const connections = useConnections()
+  const connection = connections?.connections[device.deviceID]
+
+  function handleShareDevice(device: FolderDeviceConfiguration) {
+    onUpdateConfiguration({ devices: [...effectiveConfig.devices, device] })
+  }
+
+  function handleUnshareDevice() {
+    onUpdateConfiguration({
+      devices: effectiveConfig.devices.filter((d) => d.deviceID !== device.deviceID),
+    })
+  }
+
+  return (
+    <li key={device.deviceID} className="flex gap-4 justify-between items-center">
+      <Checkbox
+        label={
+          shared ? (
+            <div className="flex gap-4 justify-between">
+              <span>{device.name}</span>
+              <FolderStatusText
+                folderStatus={getSharedFolderStatus({
+                  connection: connection,
+                  completion,
+                })}
+              />
+            </div>
+          ) : (
+            device.name
+          )
+        }
+        className="flex-1"
+        checked={shared}
+        onChange={(event) => {
+          if (event.currentTarget.checked) {
+            handleShareDevice({
+              deviceID: device.deviceID,
+              encryptionPassword: '',
+              introducedBy: '',
+            })
+          } else {
+            handleUnshareDevice()
+          }
+        }}
+      />
+    </li>
+  )
+}
+
+function FolderStatusText({ folderStatus }: { folderStatus: SharedFolderStatus }) {
+  switch (folderStatus) {
+    case 'accepted':
+      return <span className="text-on-surface-connected">Accepted</span>
+    case 'ignored':
+      return <span className="text-error">Ignored</span>
+    case 'not-accepted':
+      return <span className="text-on-surface-variant">Not accepted</span>
+    case 'disconnected':
+      return <span className="text-on-surface-disconnected">Disconnected</span>
+    default:
+      return null
+  }
 }

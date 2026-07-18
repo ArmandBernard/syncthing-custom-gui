@@ -71,11 +71,7 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
               setUncontrolledValue(event.currentTarget.value)
               onChange?.(event)
             }}
-            className={
-              variant === 'filled'
-                ? `flex-1 disabled:opacity-[0.38]`
-                : `w-full disabled:opacity-[0.38]`
-            }
+            className="flex-1 disabled:opacity-[0.38] outline-none"
             {...props}
           />
           {endAdornment && <div className="-mr-4">{endAdornment}</div>}

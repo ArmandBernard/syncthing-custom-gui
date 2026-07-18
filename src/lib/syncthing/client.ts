@@ -33,7 +33,9 @@ function buildPath(pathTemplate: string, params?: unknown, query?: unknown): str
   const searchParams = new URLSearchParams()
   if (query) {
     for (const [name, value] of Object.entries(query)) {
-      if (value === undefined) continue
+      if (value === undefined) {
+        continue
+      }
       if (Array.isArray(value)) {
         for (const item of value) searchParams.append(name, String(item))
       } else {

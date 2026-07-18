@@ -7,6 +7,7 @@ import { lazy, Suspense } from 'react'
 import { IconButton } from '@components/ui/IconButton.tsx'
 import { MoreVertIcon } from '@components/icons/MoreVertIcon.tsx'
 import { Menu } from '@components/ui/menu/Menu.tsx'
+import { AcceptFolderAlerts } from './AcceptFolderAlerts.tsx'
 
 const FolderDialog = lazy(() => import('./FolderDialog.tsx'))
 
@@ -52,21 +53,24 @@ export function Folders() {
           <Menu.Item onClick={handleAddClick}>Add folder</Menu.Item>
         </Menu>
       </div>
+      <AcceptFolderAlerts devices={devices} />
       {Object.entries(grouped)
         .toSorted((a, b) => a[0].localeCompare(b[0]))
         .map(([group, value]) => (
           <>
             {group && <h3 className="text-xl">{group}</h3>}
             <ul className="flex flex-col gap-2">
-              {value!.map((folder) => (
-                <li key={folder.id}>
-                  <Folder
-                    folder={folder}
-                    devices={devices}
-                    onEditClick={() => handleEditClick(folder.id)}
-                  />
-                </li>
-              ))}
+              {value!
+                .toSorted((a, b) => a.label.localeCompare(b.label))
+                .map((folder) => (
+                  <li key={folder.id}>
+                    <Folder
+                      folder={folder}
+                      devices={devices}
+                      onEditClick={() => handleEditClick(folder.id)}
+                    />
+                  </li>
+                ))}
             </ul>
           </>
         ))}
@@ -74,11 +78,13 @@ export function Folders() {
         <FolderDialog
           isOpen={!!editingFolder}
           key={editingFolderId}
+          editing
           initialConfig={editingFolder}
           onClose={handleEditClose}
         />
         <FolderDialog
           isOpen={creatingFolder}
+          editing={false}
           initialConfig={undefined}
           onClose={handleCreateClose}
         />
