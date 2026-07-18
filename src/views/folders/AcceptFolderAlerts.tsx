@@ -14,6 +14,8 @@ import { getEnumKeys } from '@lib/getEnumKeys.ts'
 export function AcceptFolderAlerts({ devices }: { devices: DeviceConfiguration[] }) {
   const { data: pendingFolders } = useSyncthingQuery('GET /cluster/pending/folders')
   const { data: defaultFolderConfig } = useSyncthingQuery('GET /config/defaults/folder')
+  const { mutateAsync: removeOffer } = useSyncthingMutation('DELETE /cluster/pending/folders')
+  const invalidate = useSyncthingInvalidate('GET /cluster/pending/folders')
   const [editingFolderId, setEditingFolderId] = useState<FolderID | undefined>(undefined)
 
   const deviceDictionary = new Map<DeviceID, DeviceConfiguration>(
@@ -30,6 +32,13 @@ export function AcceptFolderAlerts({ devices }: { devices: DeviceConfiguration[]
 
   function handleEditDialogCloseClick() {
     setEditingFolderId(undefined)
+  }
+
+  async function handleSaveClick() {
+    if (editingFolderId) {
+      await removeOffer({ query: { folder: editingFolderId } })
+      await invalidate()
+    }
   }
 
   const editingPendingFolder = editingFolderId ? pendingFolders[editingFolderId] : undefined
@@ -63,6 +72,7 @@ export function AcceptFolderAlerts({ devices }: { devices: DeviceConfiguration[]
         isOpen={!!editingFolderId}
         editing={false}
         onClose={handleEditDialogCloseClick}
+        onSave={handleSaveClick}
       />
     </div>
   )

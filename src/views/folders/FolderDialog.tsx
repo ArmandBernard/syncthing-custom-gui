@@ -24,11 +24,13 @@ export default function FolderDialog({
   editing,
   isOpen,
   onClose,
+  onSave,
 }: {
   initialConfig: FolderConfiguration | undefined
   editing: boolean
   isOpen: boolean
   onClose: () => void
+  onSave?: (config: FolderConfiguration) => Promise<void>
 }) {
   const [folderConfigChanges, setFolderConfigChanges] = useState<Partial<FolderConfiguration>>({})
   const [confirmingDelete, setConfirmingDelete] = useState(false)
@@ -90,6 +92,9 @@ export default function FolderDialog({
       await createFolderAsync({
         body: { ...effectiveConfig, id: newFolderId },
       })
+    }
+    if (onSave) {
+      await onSave(effectiveConfig)
     }
     onClose()
   }
