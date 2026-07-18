@@ -11,20 +11,6 @@ const proxy = {
   '/rest': { target: 'https://127.0.0.1:8384', changeOrigin: true, secure: false },
   '/meta.js': { target: 'https://127.0.0.1:8384', changeOrigin: true, secure: false },
   '/qr': { target: 'https://127.0.0.1:8384', changeOrigin: true, secure: false },
-  // Syncthing issues its CSRF-Token cookie while serving GUI pages, which in
-  // production is this app's own index.html served directly by Syncthing. In
-  // dev, Vite serves index.html itself and never proxies "/" to Syncthing, so
-  // nothing sets that cookie — this dedicated path lets ensureCsrfCookie()
-  // fetch it explicitly. Rewritten to Syncthing's real /index.html: unlike
-  // arbitrary paths (which 403 without setting the cookie, likely an
-  // origin/host check on unrecognized routes), known static GUI paths like
-  // /index.html and /assets/* set it even when unauthenticated.
-  '/__syncthing_csrf_bootstrap': {
-    target: 'https://127.0.0.1:8384',
-    changeOrigin: true,
-    secure: false,
-    rewrite: () => '/index.html',
-  },
 }
 
 // Keep in sync with the "paths" entries in tsconfig.app.json.
