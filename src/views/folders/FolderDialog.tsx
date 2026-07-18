@@ -113,8 +113,9 @@ export default function FolderDialog({
       className="max-w-xl w-full"
       title={
         <>
-          {editing ? 'Edit' : 'Create'} folder{' '}
-          <span className="text-on-surface-variant">{!editing ? ` (${newFolderId})` : ''}</span>
+          {editing ? 'Edit' : 'Create'} folder
+          {effectiveConfig?.label ? ` "${effectiveConfig.label}"` : ''}
+          <span className="text-on-surface-variant">{` (${effectiveConfig?.id ?? newFolderId})`}</span>
         </>
       }
       actions={
