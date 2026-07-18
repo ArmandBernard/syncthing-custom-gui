@@ -112,14 +112,14 @@ function AcceptFolderAlert({
       className="flex flex-col gap-4 bg-primary-container text-on-primary-container rounded-md p-4"
     >
       <div className="flex justify-between items-baseline gap-4 text-lg">
-        <div>New folder</div>
+        <div>Folder share request</div>
         <div>
           Shared <RelativeTime date={offer1Offer.time} />
         </div>
       </div>
       <div className="text-sm">
-        {deviceDictionary.get(offer1Device)?.name} wants to share folder "{offer1Offer.label}" (
-        {folderID})
+        {deviceDictionary.get(offer1Device)?.name} wants to share a folder called "
+        {offer1Offer.label}" ({folderID})
       </div>
       <div className="flex gap-2 justify-end">
         <Button variant="filled" onClick={handleOnAddClick}>
