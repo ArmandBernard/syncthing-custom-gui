@@ -1,4 +1,4 @@
-import { getStoredApiKey } from '../apiKey'
+import { ensureCsrfCookie, getCsrfHeader } from './csrf'
 import type { EndpointMap } from './endpoints'
 import type { RequestOptions } from '@lib/syncthing/RequestOptions.ts'
 
@@ -52,21 +52,19 @@ export async function syncthingRequest<K extends keyof EndpointMap>(
   key: K,
   options: RequestOptions<EndpointMap[K]> & { signal?: AbortSignal },
 ): Promise<EndpointMap[K]['response']> {
-  const apiKey = getStoredApiKey()
-  if (!apiKey) {
-    throw new SyncthingApiError(0, 'No Syncthing API key configured')
-  }
-
   const [method, pathTemplate] = key.split(' ', 2)
   const url = buildPath(pathTemplate, options?.params, options?.query)
 
   const isRawTextBody = RAW_TEXT_BODY_KEYS.has(key)
   const hasBody = 'body' in options && options?.body !== undefined
 
+  await ensureCsrfCookie()
+
   const response = await fetch(url, {
     method,
+    credentials: 'include',
     headers: {
-      'X-API-Key': apiKey,
+      ...getCsrfHeader(),
       ...(hasBody && !isRawTextBody ? { 'Content-Type': 'application/json' } : {}),
     },
     body: hasBody
@@ -94,16 +92,13 @@ export async function syncthingRequest<K extends keyof EndpointMap>(
   return (text ? JSON.parse(text) : undefined) as EndpointMap[K]['response']
 }
 
-// Syncthing serves QR codes from /qr/, outside the /rest namespace, but it
-// still requires the same X-API-Key auth, which an <img src> can't provide.
+// Syncthing serves QR codes from /qr/, outside the /rest namespace. Cookie
+// auth works here for free since the browser attaches cookies automatically.
 export async function fetchQrCode(text: string): Promise<Blob> {
-  const apiKey = getStoredApiKey()
-  if (!apiKey) {
-    throw new SyncthingApiError(0, 'No Syncthing API key configured')
-  }
+  await ensureCsrfCookie()
 
   const url = `/qr/?text=${encodeURIComponent(text)}`
-  const response = await fetch(url, { headers: { 'X-API-Key': apiKey } })
+  const response = await fetch(url, { credentials: 'include', headers: getCsrfHeader() })
 
   if (!response.ok) {
     const message = await response.text().catch(() => '')
