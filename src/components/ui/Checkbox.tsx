@@ -71,9 +71,10 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
         />
         <span
           aria-hidden="true"
-          className={`flex h-[18px] w-[18px] items-center justify-center rounded-xs border-2 transition-colors peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primary ${
-            isFilled ? 'border-primary bg-primary' : 'border-outline bg-transparent'
-          }`}
+          className={`flex h-4.5 w-4.5 items-center justify-center rounded-xs border-2 transition-colors 
+            peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primary ${
+              isFilled ? 'border-primary bg-primary' : 'border-outline bg-transparent'
+            }`}
         >
           {indeterminate ? (
             <svg viewBox="0 0 18 18" className="h-3 w-3 text-on-primary" fill="none">
