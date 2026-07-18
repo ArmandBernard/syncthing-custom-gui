@@ -48,7 +48,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
         <span className="text-sm text-on-surface flex-1">{label}</span>
       )}
       <span
-        className={`relative inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-colors ${
+        className={`relative inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors ${
           isFilled
             ? 'hover:bg-primary/8 active:bg-primary/12'
             : 'hover:bg-on-surface/8 active:bg-on-surface/12'
@@ -71,17 +71,17 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
         />
         <span
           aria-hidden="true"
-          className={`flex h-4.5 w-4.5 items-center justify-center rounded-xs border-2 transition-colors 
+          className={`flex h-5 w-5 items-center justify-center rounded-xs border-2 transition-colors 
             peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-primary ${
               isFilled ? 'border-primary bg-primary' : 'border-outline bg-transparent'
             }`}
         >
           {indeterminate ? (
-            <svg viewBox="0 0 18 18" className="h-3 w-3 text-on-primary" fill="none">
+            <svg viewBox="0 0 18 18" className="h-4 w-4 text-on-primary" fill="none">
               <path d="M4 9h10" stroke="currentColor" strokeWidth={2} strokeLinecap="round" />
             </svg>
           ) : isChecked ? (
-            <svg viewBox="0 0 18 18" className="h-3 w-3 text-on-primary" fill="none">
+            <svg viewBox="0 0 18 18" className="h-4 w-4 text-on-primary" fill="none">
               <path
                 d="M4 9.5l3 3 7-7"
                 stroke="currentColor"
