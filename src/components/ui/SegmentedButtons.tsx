@@ -77,7 +77,7 @@ export function SegmentedButtons({
               isFirst ? 'rounded-l-full' : '-ml-px',
               isLast ? 'rounded-r-full' : '',
               isSelected
-                ? 'border-outline bg-secondary-container text-on-secondary-container hover:bg-secondary-container/90 active:bg-secondary-container/80'
+                ? 'border-outline bg-primary text-on-primary hover:bg-primary/90 active:bg-primary/80'
                 : 'border-outline bg-transparent text-on-surface hover:bg-on-surface/8 active:bg-on-surface/12',
               disabled ? 'pointer-events-none opacity-[0.38]' : '',
             ].join(' ')}
