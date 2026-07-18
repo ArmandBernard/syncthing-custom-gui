@@ -7,6 +7,7 @@ import { lazy, Suspense } from 'react'
 import { IconButton } from '@components/ui/IconButton.tsx'
 import { MoreVertIcon } from '@components/icons/MoreVertIcon.tsx'
 import { Menu } from '@components/ui/menu/Menu.tsx'
+import { AcceptFolderAlerts } from './AcceptFolderAlerts.tsx'
 
 const FolderDialog = lazy(() => import('./FolderDialog.tsx'))
 
@@ -52,6 +53,7 @@ export function Folders() {
           <Menu.Item onClick={handleAddClick}>Add folder</Menu.Item>
         </Menu>
       </div>
+      <AcceptFolderAlerts devices={devices} />
       {Object.entries(grouped)
         .toSorted((a, b) => a[0].localeCompare(b[0]))
         .map(([group, value]) => (
