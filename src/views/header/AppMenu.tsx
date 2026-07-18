@@ -6,10 +6,10 @@ import { useAuth } from '@hooks/useAuth.ts'
 import { IconButton } from '@components/ui/IconButton.tsx'
 import { SettingsIcon } from '@components/icons/SettingsIcon.tsx'
 import { useSyncthingQuery } from '@hooks/useSyncthingQuery.ts'
-import ShareDeviceDialog from '../this-device/ShareDeviceDialog.tsx'
 import { lazy, Suspense, useState } from 'react'
 
 const SettingsDialog = lazy(() => import('./SettingsDialog.tsx'))
+const ShareDeviceDialog = lazy(() => import('../this-device/ShareDeviceDialog.tsx'))
 
 const THEME_OPTIONS = [
   { value: 'light', label: 'Light' },
@@ -83,7 +83,9 @@ export function AppMenu() {
         <Menu.Item onClick={logout.mutateAsync}>Log out</Menu.Item>
       </Menu>
       {device && (
-        <ShareDeviceDialog isOpen={showShare} onClose={handleCloseShare} device={device} />
+        <Suspense fallback={null}>
+          <ShareDeviceDialog isOpen={showShare} onClose={handleCloseShare} device={device} />
+        </Suspense>
       )}
       <Suspense fallback={null}>
         <SettingsDialog isOpen={showSettings} onClose={handleCloseSettings} />
