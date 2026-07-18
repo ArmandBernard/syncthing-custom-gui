@@ -16,12 +16,9 @@ export function useSyncthingQuery<K extends keyof EndpointMap>(
   key: K,
   options: UseSyncthingQueryOptions<EndpointMap[K], EndpointMap[K]['response']> | undefined = {},
 ) {
-  const { enabled, ...reactQueryOptions } = options
-
   return useQuery<EndpointMap[K]['response'], SyncthingApiError>({
-    ...reactQueryOptions,
+    ...options,
     queryKey: createQueryKey(key, options),
     queryFn: () => syncthingRequest(key, options),
-    enabled: (enabled as boolean | undefined) ?? true,
   })
 }
