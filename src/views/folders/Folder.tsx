@@ -10,6 +10,7 @@ import { useSyncthingMutation } from '@hooks/useSyncthingMutation.ts'
 import { useSyncthingInvalidate } from '@hooks/useSyncthingInvalidate.ts'
 import ListItem from '@components/ui/ListItem.tsx'
 import { useDeviceID } from '@context/device-id/useDeviceID.ts'
+import { ErrorAlert } from '@components/ui/ErrorAlert.tsx'
 
 export function Folder({
   folder,
@@ -51,9 +52,7 @@ export function Folder({
       }
     >
       <div className="flex flex-col gap-4">
-        {status?.error && (
-          <div className="text-on-error bg-error rounded-xs p-2">{status?.error}</div>
-        )}
+        {status?.error && <ErrorAlert error={status?.error} />}
         <ul>
           <ListItem leftSlot="Path" rightSlot={folder.path} />
           {status && (
