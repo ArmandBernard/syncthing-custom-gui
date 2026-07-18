@@ -4,8 +4,8 @@ A custom web UI for [Syncthing](https://syncthing.net/), inspired by Material 3.
 
 ![Dashboard screenshot](./images/dashboard-screenshot.png)
 
-There is no backend. The app talks directly to Syncthing's REST API (`/rest/...`) using an API key, stored in the
-browser's `localStorage`.
+There is no backend. The app talks directly to Syncthing's REST API (`/rest/...`), authenticating with Syncthing's
+GUI username/password to get a session cookie — the same mechanism Syncthing's own bundled web UI uses.
 
 ## Running this project
 
@@ -55,8 +55,11 @@ HTTPS cert is trusted server-side by the proxy.
 By default the proxy targets `https://127.0.0.1:8384` (Syncthing's default GUI address). If your instance runs
 elsewhere, update the `server.proxy` targets in `vite.config.ts`.
 
-Once the dev server is running, open it in a browser and paste in your Syncthing API key (found in Syncthing's
-Settings → General) when prompted.
+Your Syncthing instance needs a GUI username/password configured before you can log in — set one with
+`syncthing generate --gui-user=<user> --gui-password=<password>`, or by hand in the `<gui>` block of
+`config.xml`. Once the dev server is running, open it in a browser and log in with those credentials when
+prompted. Leave `sendBasicAuthPrompt` at its default (`false`) — enabling it makes the browser's native
+basic-auth popup intercept unauthenticated requests before this app's own login screen ever sees them.
 
 ### Other development tips
 
