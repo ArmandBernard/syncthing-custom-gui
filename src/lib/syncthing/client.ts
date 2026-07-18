@@ -1,4 +1,4 @@
-import { ensureCsrfCookie, getCsrfHeader } from './csrf'
+import { getCsrfHeader } from './csrf'
 import type { EndpointMap } from './endpoints'
 import type { RequestOptions } from '@lib/syncthing/RequestOptions.ts'
 
@@ -58,8 +58,6 @@ export async function syncthingRequest<K extends keyof EndpointMap>(
   const isRawTextBody = RAW_TEXT_BODY_KEYS.has(key)
   const hasBody = 'body' in options && options?.body !== undefined
 
-  await ensureCsrfCookie()
-
   const response = await fetch(url, {
     method,
     credentials: 'include',
@@ -95,8 +93,6 @@ export async function syncthingRequest<K extends keyof EndpointMap>(
 // Syncthing serves QR codes from /qr/, outside the /rest namespace. Cookie
 // auth works here for free since the browser attaches cookies automatically.
 export async function fetchQrCode(text: string): Promise<Blob> {
-  await ensureCsrfCookie()
-
   const url = `/qr/?text=${encodeURIComponent(text)}`
   const response = await fetch(url, { credentials: 'include', headers: getCsrfHeader() })
 
