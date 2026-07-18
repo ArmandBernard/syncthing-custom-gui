@@ -19,6 +19,12 @@ export default function LoginForm() {
     await login.mutateAsync({ body: { password, stayLoggedIn, username } })
   }
 
+  let augmentedLoginError = login.error
+
+  if (augmentedLoginError && augmentedLoginError.status === 403) {
+    augmentedLoginError.message = 'Invalid username or password'
+  }
+
   return (
     <div className="flex flex-1 flex-col items-center justify-center">
       <Card variant="elevated" className="max-w-sm">
@@ -48,7 +54,7 @@ export default function LoginForm() {
             checked={stayLoggedIn}
             onChange={(event) => setStayLoggedIn(event.currentTarget.checked)}
           />
-          {login.error && <ErrorAlert error={login.error} />}
+          {augmentedLoginError && <ErrorAlert error={augmentedLoginError} />}
           <Button
             type="submit"
             variant="filled"
