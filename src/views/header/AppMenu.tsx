@@ -7,7 +7,9 @@ import { IconButton } from '@components/ui/IconButton.tsx'
 import { SettingsIcon } from '@components/icons/SettingsIcon.tsx'
 import { useSyncthingQuery } from '@hooks/useSyncthingQuery.ts'
 import ShareDeviceDialog from '../this-device/ShareDeviceDialog.tsx'
-import { useState } from 'react'
+import { lazy, Suspense, useState } from 'react'
+
+const SettingsDialog = lazy(() => import('./SettingsDialog.tsx'))
 
 const THEME_OPTIONS = [
   { value: 'light', label: 'Light' },
@@ -21,6 +23,7 @@ const THEME_OPTIONS = [
  */
 export function AppMenu() {
   const [showShare, setShowShare] = useState(false)
+  const [showSettings, setShowSettings] = useState(false)
   const { theme, setTheme } = useTheme()
   const { logout } = useAuth()
 
@@ -37,6 +40,14 @@ export function AppMenu() {
 
   function handleItemClick() {
     setShowShare(true)
+  }
+
+  function handleCloseSettings() {
+    setShowSettings(false)
+  }
+
+  function handleSettingsClick() {
+    setShowSettings(true)
   }
 
   return (
@@ -60,6 +71,7 @@ export function AppMenu() {
           />
         </Menu.Toggle>
         {status && device && <Menu.Item onClick={handleItemClick}>Share device ID</Menu.Item>}
+        <Menu.Item onClick={handleSettingsClick}>Settings</Menu.Item>
         <Menu.Item
           href="https://github.com/ArmandBernard/syncthing-custom-gui"
           target="_blank"
@@ -73,6 +85,9 @@ export function AppMenu() {
       {device && (
         <ShareDeviceDialog isOpen={showShare} onClose={handleCloseShare} device={device} />
       )}
+      <Suspense fallback={null}>
+        <SettingsDialog isOpen={showSettings} onClose={handleCloseSettings} />
+      </Suspense>
     </>
   )
 }

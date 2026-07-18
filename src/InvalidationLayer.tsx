@@ -108,6 +108,7 @@ async function handleConfigSaved(_events: ConfigSavedEvent[], queryClient: Query
   await typeSafeInvalidate(queryClient, 'GET /config')
   await typeSafeInvalidate(queryClient, 'GET /config/folders')
   await typeSafeInvalidate(queryClient, 'GET /config/devices')
+  await typeSafeInvalidate(queryClient, 'GET /config/gui')
 }
 
 async function typeSafeInvalidate<K extends keyof EndpointMap>(
