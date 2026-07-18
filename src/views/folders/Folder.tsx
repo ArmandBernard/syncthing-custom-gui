@@ -21,7 +21,7 @@ export function Folder({
   onEditClick: () => void
 }) {
   const [expanded, setExpanded] = useState<boolean>(false)
-  const myDeviceID= useDeviceID()
+  const myDeviceID = useDeviceID()
 
   const { data: status } = useSyncthingQuery('GET /db/status', { query: { folder: folder.id } })
   const { mutateAsync: scanAsync, isPending: scanAsyncIsPending } =
@@ -51,6 +51,9 @@ export function Folder({
       }
     >
       <div className="flex flex-col gap-4">
+        {status?.error && (
+          <div className="text-on-error bg-error rounded-xs p-2">{status?.error}</div>
+        )}
         <ul>
           <ListItem leftSlot="Path" rightSlot={folder.path} />
           {status && (
