@@ -1,4 +1,4 @@
-import { getCsrfHeader } from './getCsrfHeader'
+import { getCsrfHeader, ensureCsrfCookie } from './getCsrfHeader'
 import type { EndpointMap } from './endpoints'
 import type { RequestOptions } from '@lib/syncthing/RequestOptions.ts'
 import { SyncthingApiError } from '@lib/syncthing/SyncthingApiError.ts'
@@ -48,6 +48,8 @@ export async function syncthingRequest<K extends keyof EndpointMap>(
 
   const isRawTextBody = RAW_TEXT_BODY_KEYS.has(key)
   const hasBody = 'body' in options && options?.body !== undefined
+
+  await ensureCsrfCookie()
 
   const response = await fetch(url, {
     method,
