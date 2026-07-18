@@ -1,15 +1,20 @@
 import type { DeviceID, FolderID } from '@lib/syncthing/types/common.ts'
 import type { PendingFolder } from '@lib/syncthing/types/cluster.ts'
-import type { DeviceConfiguration } from '@lib/syncthing/types/config'
+import type { DeviceConfiguration, FolderConfiguration } from '@lib/syncthing/types/config'
 import { getEnumEntries } from '@lib/getEnumEntries.ts'
 import { RelativeTime } from '@components/RelativeTime.tsx'
 import { useSyncthingQuery } from '@hooks/useSyncthingQuery.ts'
 import { Button } from '@components/ui/Button.tsx'
 import { useSyncthingMutation } from '@hooks/useSyncthingMutation.ts'
 import { useSyncthingInvalidate } from '@hooks/useSyncthingInvalidate.ts'
+import FolderDialog from './FolderDialog.tsx'
+import { useState } from 'preact/compat'
+import { getEnumKeys } from '@lib/getEnumKeys.ts'
 
 export function AcceptFolderAlerts({ devices }: { devices: DeviceConfiguration[] }) {
   const { data: pendingFolders } = useSyncthingQuery('GET /cluster/pending/folders')
+  const { data: defaultFolderConfig } = useSyncthingQuery('GET /config/defaults/folder')
+  const [editingFolderId, setEditingFolderId] = useState<FolderID | undefined>(undefined)
 
   const deviceDictionary = new Map<DeviceID, DeviceConfiguration>(
     devices.map((d) => [d.deviceID, d]),
@@ -19,6 +24,29 @@ export function AcceptFolderAlerts({ devices }: { devices: DeviceConfiguration[]
     return null
   }
 
+  function handleEditClick(folderID: FolderID) {
+    setEditingFolderId(folderID)
+  }
+
+  function handleEditDialogCloseClick() {
+    setEditingFolderId(undefined)
+  }
+
+  const editingPendingFolder = editingFolderId ? pendingFolders[editingFolderId] : undefined
+  const initialFolderConfig: FolderConfiguration | undefined =
+    editingFolderId && editingPendingFolder && defaultFolderConfig
+      ? {
+          ...defaultFolderConfig,
+          id: editingFolderId,
+          label: Object.values(editingPendingFolder.offeredBy)[0].label,
+          devices: getEnumKeys(editingPendingFolder.offeredBy).map((deviceID) => ({
+            deviceID: deviceID,
+            introducedBy: '',
+            encryptionPassword: '',
+          })),
+        }
+      : undefined
+
   return (
     <div className="flex flex-col gap-4">
       {getEnumEntries(pendingFolders).map(([folderID, folder]) => (
@@ -27,8 +55,15 @@ export function AcceptFolderAlerts({ devices }: { devices: DeviceConfiguration[]
           folderID={folderID}
           folder={folder}
           deviceDictionary={deviceDictionary}
+          onEditClick={handleEditClick}
         />
       ))}
+      <FolderDialog
+        initialConfig={initialFolderConfig}
+        isOpen={!!editingFolderId}
+        editing={false}
+        onClose={handleEditDialogCloseClick}
+      />
     </div>
   )
 }
@@ -37,10 +72,12 @@ function AcceptFolderAlert({
   folderID,
   folder,
   deviceDictionary,
+  onEditClick,
 }: {
   folderID: FolderID
   folder: PendingFolder
   deviceDictionary: Map<DeviceID, DeviceConfiguration>
+  onEditClick: (folderId: FolderID) => void
 }) {
   const { mutateAsync: removeOffer, isPending: removeOfferIsPending } = useSyncthingMutation(
     'DELETE /cluster/pending/folders',
@@ -53,6 +90,10 @@ function AcceptFolderAlert({
   async function handleOnRemoveClick() {
     await removeOffer({ query: { folder: folderID } })
     await invalidate()
+  }
+
+  function handleOnAddClick() {
+    onEditClick(folderID)
   }
 
   return (
@@ -71,7 +112,9 @@ function AcceptFolderAlert({
         {folderID})
       </div>
       <div className="flex gap-2 justify-end">
-        <Button variant="filled">Add</Button>
+        <Button variant="filled" onClick={handleOnAddClick}>
+          Add
+        </Button>
         <Button variant="tonal" disabled={removeOfferIsPending} onClick={handleOnRemoveClick}>
           Ignore
         </Button>

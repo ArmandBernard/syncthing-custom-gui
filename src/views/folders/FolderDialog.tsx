@@ -20,10 +20,12 @@ type FolderDialogTabs = 'general' | 'sharing'
 
 export default function FolderDialog({
   initialConfig,
+  editing,
   isOpen,
   onClose,
 }: {
   initialConfig: FolderConfiguration | undefined
+  editing: boolean
   isOpen: boolean
   onClose: () => void
 }) {
@@ -43,7 +45,7 @@ export default function FolderDialog({
     useSyncthingMutation('POST /config/folders')
 
   const isPending = updateFolderIsPending || createFolderIsPending || deleteFolderIsPending
-  const inEditMode = !!initialConfig
+
   const effectiveConfig: FolderConfiguration | undefined = mergeConfigurations(
     defaultFolderConfig,
     newFolderId ? { id: newFolderId } : undefined,
@@ -70,7 +72,7 @@ export default function FolderDialog({
       return
     }
 
-    if (inEditMode) {
+    if (editing) {
       await updateFolderAsync({
         params: { id: effectiveConfig.id },
         body: effectiveConfig,
@@ -97,14 +99,14 @@ export default function FolderDialog({
       className="max-w-xl w-full"
       title={
         <>
-          {inEditMode ? 'Edit' : 'Create'} folder{' '}
-          <span className="text-on-surface-variant">{!inEditMode ? ` (${newFolderId})` : ''}</span>
+          {editing ? 'Edit' : 'Create'} folder{' '}
+          <span className="text-on-surface-variant">{!editing ? ` (${newFolderId})` : ''}</span>
         </>
       }
       actions={
         <div className="flex flex-1 gap-4 justify-between">
           <div>
-            {inEditMode && (
+            {editing && (
               <Button variant="tonal" disabled={isPending} onClick={handleClickDelete}>
                 Delete
               </Button>
