@@ -3,7 +3,7 @@ import { syncthingRequest } from '@lib/syncthing/syncthingRequest'
 import type { EndpointMap } from '@lib/syncthing/endpoints'
 import { useCallback } from 'react'
 import type { RequestOptions } from '@lib/syncthing/RequestOptions.ts'
-import { SyncthingApiError } from '@lib/syncthing/SyncthingApiError.ts'
+import { type SyncthingApiError } from '@lib/syncthing/SyncthingApiError.ts'
 
 type ReactMutationOptions<TData, TVariables> = Omit<
   UseMutationOptions<TData, SyncthingApiError, TVariables>,
