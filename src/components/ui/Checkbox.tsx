@@ -42,9 +42,9 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
   return (
     <label
       htmlFor={inputId}
-      className={`inline-flex items-center gap-2 ${disabled ? 'pointer-events-none opacity-[0.38]' : 'cursor-pointer'} ${className}`}
+      className={`inline-flex items-center gap-2 text-on-surface ${disabled ? 'pointer-events-none opacity-[0.38]' : 'cursor-pointer'} ${className}`}
     >
-      {label && labelPosition === 'left' && <span className="text-on-surface flex-1">{label}</span>}
+      {label && labelPosition === 'left' && <span className="flex-1">{label}</span>}
       <span
         className={`relative inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors ${
           isFilled
@@ -91,9 +91,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
           ) : null}
         </span>
       </span>
-      {label && labelPosition === 'right' && (
-        <span className="text-on-surface flex-1">{label}</span>
-      )}
+      {label && labelPosition === 'right' && <span className=" flex-1">{label}</span>}
     </label>
   )
 })
