@@ -236,15 +236,16 @@ function SharingForm({
 
   return (
     <div className="flex flex-col gap-4">
-      Devices
+      <h2>Devices</h2>
       <ul>
         {devices.map((device) => {
           const shared = sharedDeviceIds.has(device.deviceID)
 
           return (
             <li key={device.deviceID} className="flex gap-4 justify-between items-center">
-              <span>{device.name}</span>
               <Checkbox
+                label={device.name}
+                className="flex-1"
                 checked={shared}
                 onChange={(event) => {
                   if (event.currentTarget.checked) {

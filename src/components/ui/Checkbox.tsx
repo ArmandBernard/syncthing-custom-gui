@@ -3,6 +3,7 @@ import type { InputHTMLAttributes } from 'preact'
 
 export interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
   label?: string
+  labelPosition?: 'left' | 'right'
   /** Visual "mixed" state. Must be set imperatively on the DOM node, since HTML has no `indeterminate` attribute. */
   indeterminate?: boolean
 }
@@ -10,6 +11,7 @@ export interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement
 export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Checkbox(
   {
     label,
+    labelPosition = 'left',
     indeterminate = false,
     className = '',
     disabled,
@@ -42,6 +44,9 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
       htmlFor={inputId}
       className={`inline-flex items-center gap-2 ${disabled ? 'pointer-events-none opacity-[0.38]' : 'cursor-pointer'} ${className}`}
     >
+      {label && labelPosition === 'left' && (
+        <span className="text-sm text-on-surface flex-1">{label}</span>
+      )}
       <span
         className={`relative inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-colors ${
           isFilled
@@ -87,7 +92,9 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
           ) : null}
         </span>
       </span>
-      {label && <span className="text-sm text-on-surface">{label}</span>}
+      {label && labelPosition === 'right' && (
+        <span className="text-sm text-on-surface flex-1">{label}</span>
+      )}
     </label>
   )
 })
