@@ -6,11 +6,11 @@ export function CardAccordion({ expanded, setExpanded, buttonBody, children }: A
       <AccordionBase
         expanded={expanded}
         setExpanded={setExpanded}
-        buttonBody={
-          <div className="p-4 bg-surface rounded-md hover:brightness-80 flex flex-col">
-            {buttonBody}
-          </div>
+        buttonClassname={
+          'p-4 bg-surface hover:brightness-80 rounded-md ' +
+          'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary'
         }
+        buttonBody={<div className="flex flex-col">{buttonBody}</div>}
       >
         <div className="pb-4 px-4">{children}</div>
       </AccordionBase>
