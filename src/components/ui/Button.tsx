@@ -9,8 +9,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   filled: 'bg-primary text-on-primary hover:bg-primary/90 active:bg-primary/80',
-  tonal:
-    'bg-secondary text-on-secondary hover:bg-secondary-container/90 active:bg-secondary-container/80',
+  tonal: 'bg-secondary text-on-secondary hover:bg-secondary/90 active:bg-secondary/80',
   outlined:
     'bg-transparent text-primary border border-outline hover:bg-primary/8 active:bg-primary/12',
   text: 'bg-transparent text-primary hover:bg-primary/8 active:bg-primary/12',
