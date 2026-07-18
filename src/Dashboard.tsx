@@ -2,7 +2,7 @@ import { ThisDevice } from './views/this-device/ThisDevice.tsx'
 import { RemoteDevices } from './views/remote-devices/RemoteDevices.tsx'
 import { Folders } from './views/folders/Folders.tsx'
 
-export function Dashboard() {
+export default function Dashboard() {
   return (
     <div className="self-center pt-4 flex flex-col gap-4">
       <h1 className="text-3xl">Dashboard</h1>
