@@ -7,6 +7,7 @@ import type { DbEndpoints } from './endpoints/db'
 import type { FolderEndpoints } from './endpoints/folder'
 import type { EventEndpoints } from './endpoints/events'
 import type { ConfigEndpoints } from './endpoints/config'
+import type { AuthEndpoints } from './endpoints/auth'
 
 export type EndpointMap = SystemEndpoints &
   ClusterEndpoints &
@@ -16,4 +17,5 @@ export type EndpointMap = SystemEndpoints &
   DbEndpoints &
   FolderEndpoints &
   EventEndpoints &
-  ConfigEndpoints
+  ConfigEndpoints &
+  AuthEndpoints
