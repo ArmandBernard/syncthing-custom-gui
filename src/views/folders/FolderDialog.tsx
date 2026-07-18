@@ -15,6 +15,7 @@ import type { DeviceID } from '@lib/syncthing/types/common.ts'
 import { Checkbox } from '@components/ui/Checkbox.tsx'
 import { useDeviceID } from '@context/device-id/useDeviceID.ts'
 import { CircularProgressCentred } from '@components/CircularProgressCentred.tsx'
+import { ErrorAlert } from '@components/ui/ErrorAlert.tsx'
 
 type FolderDialogTabs = 'general' | 'sharing'
 
@@ -35,16 +36,24 @@ export default function FolderDialog({
 
   const newFolderId = useCreateFolderId()
   const { data: defaultFolderConfig } = useSyncthingQuery('GET /config/defaults/folder')
-  const { mutateAsync: updateFolderAsync, isPending: updateFolderIsPending } = useSyncthingMutation(
-    'PATCH /config/folders/:id',
-  )
-  const { mutateAsync: deleteFolderAsync, isPending: deleteFolderIsPending } = useSyncthingMutation(
-    'DELETE /config/folders/:id',
-  )
-  const { mutateAsync: createFolderAsync, isPending: createFolderIsPending } =
-    useSyncthingMutation('POST /config/folders')
+  const {
+    mutateAsync: updateFolderAsync,
+    isPending: updateFolderIsPending,
+    error: updateFolderError,
+  } = useSyncthingMutation('PATCH /config/folders/:id')
+  const {
+    mutateAsync: createFolderAsync,
+    isPending: createFolderIsPending,
+    error: createFolderError,
+  } = useSyncthingMutation('POST /config/folders')
+  const {
+    mutateAsync: deleteFolderAsync,
+    isPending: deleteFolderIsPending,
+    error: deleteFolderError,
+  } = useSyncthingMutation('DELETE /config/folders/:id')
 
   const isPending = updateFolderIsPending || createFolderIsPending || deleteFolderIsPending
+  const error = updateFolderError || createFolderError || deleteFolderError
 
   const effectiveConfig: FolderConfiguration | undefined = mergeConfigurations(
     defaultFolderConfig,
@@ -124,24 +133,30 @@ export default function FolderDialog({
       }
     >
       {effectiveConfig && (
-        <TabsContextProvider selectedValue={currentTab} onSelect={(value) => setCurrentTab(value)}>
-          <Tabs value="general" onChange={() => {}}>
-            <Tab value="general" label="General" />
-            <Tab value="sharing" label="Sharing" />
-          </Tabs>
-          <TabPanel value="general" className="pt-4">
-            <GeneralForm
-              effectiveConfig={effectiveConfig}
-              onUpdateConfiguration={handleUpdateConfiguration}
-            />
-          </TabPanel>
-          <TabPanel value="sharing" className="pt-4">
-            <SharingForm
-              effectiveConfig={effectiveConfig}
-              onUpdateConfiguration={handleUpdateConfiguration}
-            />
-          </TabPanel>
-        </TabsContextProvider>
+        <div>
+          {error && <ErrorAlert error={error} />}
+          <TabsContextProvider
+            selectedValue={currentTab}
+            onSelect={(value) => setCurrentTab(value)}
+          >
+            <Tabs value="general" onChange={() => {}}>
+              <Tab value="general" label="General" />
+              <Tab value="sharing" label="Sharing" />
+            </Tabs>
+            <TabPanel value="general" className="pt-4">
+              <GeneralForm
+                effectiveConfig={effectiveConfig}
+                onUpdateConfiguration={handleUpdateConfiguration}
+              />
+            </TabPanel>
+            <TabPanel value="sharing" className="pt-4">
+              <SharingForm
+                effectiveConfig={effectiveConfig}
+                onUpdateConfiguration={handleUpdateConfiguration}
+              />
+            </TabPanel>
+          </TabsContextProvider>
+        </div>
       )}
       <Dialog
         title="Confirm deletion"
