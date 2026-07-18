@@ -126,7 +126,7 @@ function AcceptFolderAlert({
           Add
         </Button>
         <Button variant="tonal" disabled={removeOfferIsPending} onClick={handleOnRemoveClick}>
-          Ignore
+          Dismiss
         </Button>
       </div>
     </div>
