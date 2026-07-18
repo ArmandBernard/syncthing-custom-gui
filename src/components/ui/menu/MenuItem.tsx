@@ -5,7 +5,7 @@ export interface MenuItemProps extends Omit<
   ButtonHTMLAttributes<HTMLButtonElement> & AnchorHTMLAttributes<HTMLAnchorElement>,
   'onSelect'
 > {
-  onClick: () => void
+  onClick?: () => void
   /** Renders the item as a link instead of a button, so the destination shows on hover/status bar. */
   href?: string
   disabled?: boolean
@@ -17,7 +17,9 @@ export interface MenuItemProps extends Omit<
 }
 
 const ITEM_CLASS_NAME =
-  'flex h-12 w-full items-center px-3 text-left text-sm text-on-surface hover:bg-on-surface/8 active:bg-on-surface/12 focus-visible:bg-on-surface/12 focus:outline-none aria-disabled:pointer-events-none aria-disabled:opacity-[0.38]'
+  'flex h-12 w-full items-center px-3 text-left text-sm text-on-surface hover:bg-on-surface/8 active:bg-on-surface/12 ' +
+  'focus-visible:bg-on-surface/12 focus:outline-none aria-disabled:pointer-events-none aria-disabled:opacity-[0.38] ' +
+  'cursor-pointer aria-disabled:cursor-default'
 
 /** A single action in a `Menu`. Must be a direct child of `Menu`. */
 export function MenuItem({

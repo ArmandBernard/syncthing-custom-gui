@@ -76,7 +76,6 @@ export function AppMenu() {
           href="https://github.com/ArmandBernard/syncthing-custom-gui"
           target="_blank"
           rel="noopener"
-          onClick={() => {}}
         >
           View code on GitHub
         </Menu.Item>

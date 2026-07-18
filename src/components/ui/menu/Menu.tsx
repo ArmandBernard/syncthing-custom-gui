@@ -186,7 +186,7 @@ export function Menu({ anchorOrigin, transformOrigin, children, button }: MenuPr
         onToggle={handleToggle}
         onKeyDown={handleMenuKeyDown}
         style={{ position: 'fixed', top, left, margin: 0 }}
-        className="min-w-28 rounded-xs bg-surface-high py-2 shadow-xl cursor-pointer"
+        className="min-w-28 rounded-xs bg-surface-high py-2 shadow-xl"
       >
         {Children.map(children, (child, index) => {
           if (isMenuItemElement(child)) {
@@ -197,7 +197,9 @@ export function Menu({ anchorOrigin, transformOrigin, children, button }: MenuPr
                 else itemNodesRef.current.delete(index)
               },
               onSelect: () => {
-                child.props.onClick()
+                if (child.props.onClick) {
+                  child.props.onClick()
+                }
                 requestClose(true)
               },
             })
