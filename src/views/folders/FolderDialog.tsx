@@ -93,7 +93,8 @@ export default function FolderDialog({
     <Dialog
       open={isOpen}
       onClose={onClose}
-      className="max-w-lg w-full"
+      centred={false}
+      className="max-w-xl w-full"
       title={
         <>
           {inEditMode ? 'Edit' : 'Create'} folder{' '}
