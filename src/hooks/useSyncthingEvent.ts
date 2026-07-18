@@ -16,7 +16,7 @@ export function useSyncthingEvent({
     const controller = new AbortController()
 
     async function fetchLoop() {
-      while (polling) {
+      while (polling.current) {
         let response: SyncthingEvent[] = []
         try {
           response = await syncthingRequest('GET /events', {
