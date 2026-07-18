@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { useEffect, useRef, useState } from 'react'
 import { useQueries } from '@tanstack/react-query'
 import { useSyncthingQuery } from '@hooks/useSyncthingQuery.ts'
-import { syncthingRequest } from '@lib/syncthing/client.ts'
+import { syncthingRequest } from '@lib/syncthing/syncthingRequest.ts'
 import createQueryKey from '@hooks/createQueryKey.ts'
 import { ConnectionsContext } from './ConnectionsContext.ts'
 

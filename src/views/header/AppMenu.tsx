@@ -2,12 +2,14 @@ import { Menu } from '@components/ui/menu/Menu.tsx'
 import { SegmentedButtons } from '@components/ui/SegmentedButtons.tsx'
 import { useTheme } from '@hooks/useTheme.ts'
 import type { Theme } from '@lib/theme.ts'
-import { useApiKey } from '@hooks/useApiKey.ts'
+import { useAuth } from '@hooks/useAuth.ts'
 import { IconButton } from '@components/ui/IconButton.tsx'
 import { SettingsIcon } from '@components/icons/SettingsIcon.tsx'
 import { useSyncthingQuery } from '@hooks/useSyncthingQuery.ts'
 import ShareDeviceDialog from '../this-device/ShareDeviceDialog.tsx'
-import { useState } from 'react'
+import { lazy, Suspense, useState } from 'react'
+
+const SettingsDialog = lazy(() => import('./SettingsDialog.tsx'))
 
 const THEME_OPTIONS = [
   { value: 'light', label: 'Light' },
@@ -21,8 +23,9 @@ const THEME_OPTIONS = [
  */
 export function AppMenu() {
   const [showShare, setShowShare] = useState(false)
+  const [showSettings, setShowSettings] = useState(false)
   const { theme, setTheme } = useTheme()
-  const { apiKey, clearApiKey } = useApiKey()
+  const { logout } = useAuth()
 
   const { data: status } = useSyncthingQuery('GET /system/status')
   const { data: device } = useSyncthingQuery('GET /config/devices/:id', {
@@ -37,6 +40,14 @@ export function AppMenu() {
 
   function handleItemClick() {
     setShowShare(true)
+  }
+
+  function handleCloseSettings() {
+    setShowSettings(false)
+  }
+
+  function handleSettingsClick() {
+    setShowSettings(true)
   }
 
   return (
@@ -60,6 +71,7 @@ export function AppMenu() {
           />
         </Menu.Toggle>
         {status && device && <Menu.Item onClick={handleItemClick}>Share device ID</Menu.Item>}
+        <Menu.Item onClick={handleSettingsClick}>Settings</Menu.Item>
         <Menu.Item
           href="https://github.com/ArmandBernard/syncthing-custom-gui"
           target="_blank"
@@ -68,11 +80,14 @@ export function AppMenu() {
         >
           View code on GitHub
         </Menu.Item>
-        {apiKey && <Menu.Item onClick={clearApiKey}>Log out</Menu.Item>}
+        <Menu.Item onClick={logout.mutateAsync}>Log out</Menu.Item>
       </Menu>
       {device && (
         <ShareDeviceDialog isOpen={showShare} onClose={handleCloseShare} device={device} />
       )}
+      <Suspense fallback={null}>
+        <SettingsDialog isOpen={showSettings} onClose={handleCloseSettings} />
+      </Suspense>
     </>
   )
 }

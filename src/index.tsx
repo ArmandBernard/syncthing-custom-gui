@@ -1,7 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ApiKeyProvider } from './hooks/ApiKeyProvider.tsx'
+import { AuthProvider } from './hooks/AuthProvider.tsx'
 import { ThemeProvider } from './hooks/ThemeProvider.tsx'
 import { SnackbarProvider } from './hooks/SnackbarProvider.tsx'
 import './styles/index.css'
@@ -20,11 +20,11 @@ createRoot(document.getElementById('root')!).render(
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <SnackbarProvider>
-          <ApiKeyProvider>
+          <AuthProvider>
             <InvalidationLayer>
               <App />
             </InvalidationLayer>
-          </ApiKeyProvider>
+          </AuthProvider>
         </SnackbarProvider>
       </ThemeProvider>
     </QueryClientProvider>
