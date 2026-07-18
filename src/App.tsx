@@ -7,7 +7,7 @@ import { DeviceIDContextProvider } from './context/device-id/DeviceIDContextProv
 
 function App() {
   return (
-    <div className="flex min-h-screen flex-col bg-surface-low">
+    <div className="flex flex-col min-h-screen">
       <Header />
 
       <main className="flex flex-1 flex-col">
