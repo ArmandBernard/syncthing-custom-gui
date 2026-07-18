@@ -1,36 +1,20 @@
 import { useState } from 'react'
-import type { TargetedEvent } from 'preact'
 import { Card } from '@components/ui/Card.tsx'
 import { TextField } from '@components/ui/TextField.tsx'
 import { Checkbox } from '@components/ui/Checkbox.tsx'
 import { Button } from '@components/ui/Button.tsx'
+import { useAuth } from '@hooks/useAuth.ts'
+import { ErrorAlert } from '@components/ui/ErrorAlert.tsx'
 
-import { SyncthingApiError } from '@lib/syncthing/SyncthingApiError.ts'
-
-type LoginFormProps = {
-  onLogin: (username: string, password: string, stayLoggedIn: boolean) => Promise<void>
-}
-
-export default function LoginForm({ onLogin }: LoginFormProps) {
+export default function LoginForm() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [stayLoggedIn, setStayLoggedIn] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [submitting, setSubmitting] = useState(false)
 
-  const handleSubmit = async (event: TargetedEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    setError(null)
-    setSubmitting(true)
-    try {
-      await onLogin(username, password, stayLoggedIn)
-    } catch (cause) {
-      setError(
-        cause instanceof SyncthingApiError ? cause.message : 'Unable to reach Syncthing right now.',
-      )
-    } finally {
-      setSubmitting(false)
-    }
+  const { login } = useAuth()
+
+  async function handleSubmit() {
+    await login.mutateAsync({ body: { password, stayLoggedIn, username } })
   }
 
   return (
@@ -62,11 +46,11 @@ export default function LoginForm({ onLogin }: LoginFormProps) {
             checked={stayLoggedIn}
             onChange={(event) => setStayLoggedIn(event.currentTarget.checked)}
           />
-          {error && <p className="text-sm text-error">{error}</p>}
+          {login.error && <ErrorAlert error={login.error} />}
           <Button
             type="submit"
             variant="filled"
-            disabled={!username.trim() || !password || submitting}
+            disabled={!username.trim() || !password || login.isPending}
           >
             Log in
           </Button>

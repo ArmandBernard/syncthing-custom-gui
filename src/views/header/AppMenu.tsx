@@ -68,7 +68,7 @@ export function AppMenu() {
         >
           View code on GitHub
         </Menu.Item>
-        <Menu.Item onClick={logout}>Log out</Menu.Item>
+        <Menu.Item onClick={logout.mutateAsync}>Log out</Menu.Item>
       </Menu>
       {device && (
         <ShareDeviceDialog isOpen={showShare} onClose={handleCloseShare} device={device} />
