@@ -2,7 +2,7 @@ import { Menu } from '@components/ui/menu/Menu.tsx'
 import { SegmentedButtons } from '@components/ui/SegmentedButtons.tsx'
 import { useTheme } from '@hooks/useTheme.ts'
 import type { Theme } from '@lib/theme.ts'
-import { useApiKey } from '@hooks/useApiKey.ts'
+import { useAuth } from '@hooks/useAuth.ts'
 import { IconButton } from '@components/ui/IconButton.tsx'
 import { SettingsIcon } from '@components/icons/SettingsIcon.tsx'
 import { useSyncthingQuery } from '@hooks/useSyncthingQuery.ts'
@@ -22,7 +22,7 @@ const THEME_OPTIONS = [
 export function AppMenu() {
   const [showShare, setShowShare] = useState(false)
   const { theme, setTheme } = useTheme()
-  const { apiKey, clearApiKey } = useApiKey()
+  const { logout } = useAuth()
 
   const { data: status } = useSyncthingQuery('GET /system/status')
   const { data: device } = useSyncthingQuery('GET /config/devices/:id', {
@@ -68,7 +68,7 @@ export function AppMenu() {
         >
           View code on GitHub
         </Menu.Item>
-        {apiKey && <Menu.Item onClick={clearApiKey}>Log out</Menu.Item>}
+        <Menu.Item onClick={logout}>Log out</Menu.Item>
       </Menu>
       {device && (
         <ShareDeviceDialog isOpen={showShare} onClose={handleCloseShare} device={device} />
