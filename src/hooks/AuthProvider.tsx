@@ -1,9 +1,9 @@
 import { useCallback, type ReactNode, Suspense } from 'react'
-import { login as loginRequest, logout as logoutRequest } from '@lib/syncthing/auth'
 import { useSyncthingQuery } from './useSyncthingQuery'
 import { AuthContext, type AuthStatus } from './AuthContext'
 import { CircularProgressCentred } from '@components/CircularProgressCentred.tsx'
 import { lazy } from 'preact/compat'
+import { syncthingRequest } from '@lib/syncthing/syncthingRequest.ts'
 
 const LoginForm = lazy(() => import('../views/LoginForm.tsx'))
 
@@ -26,14 +26,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = useCallback(
     async (username: string, password: string, stayLoggedIn: boolean) => {
-      await loginRequest(username, password, stayLoggedIn)
+      await syncthingRequest('POST /noauth/auth/password', {
+        body: { username, password, stayLoggedIn },
+      })
       await refetch()
     },
     [refetch],
   )
 
   const logout = useCallback(async () => {
-    await logoutRequest()
+    await syncthingRequest('POST /noauth/auth/logout', {})
     await refetch()
   }, [refetch])
 
