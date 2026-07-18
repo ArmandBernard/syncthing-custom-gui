@@ -33,7 +33,7 @@ export function InvalidationLayer({ children }: PropsWithChildren) {
   )
 
   useSyncthingEvent({
-    eventsToSubscribeTo: getEnumKeys(eventsToInvalidationsDictionary),
+    eventsToSubscribeTo: subscribedEventTypes,
     callback: handleNewEvent,
   })
 
@@ -69,6 +69,9 @@ const eventsToInvalidationsDictionary: SyncthingEventDictionary = {
   FolderSummary: handleFolderSummaryUpdate,
   StateChanged: handleFolderStateUpdate,
 }
+
+// Computed once at module scope so it's a stable reference across renders
+const subscribedEventTypes = getEnumKeys(eventsToInvalidationsDictionary)
 
 async function handleFolderStateUpdate(
   events: (StateChangedEvent | FolderScanProgressEvent | FolderErrorsEvent)[],
