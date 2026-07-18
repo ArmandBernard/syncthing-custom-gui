@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import type { TargetedEvent } from 'preact'
 import { Card } from '@components/ui/Card.tsx'
 import { TextField } from '@components/ui/TextField.tsx'
 import { Checkbox } from '@components/ui/Checkbox.tsx'
@@ -13,7 +14,8 @@ export default function LoginForm() {
 
   const { login } = useAuth()
 
-  async function handleSubmit() {
+  async function handleSubmit(event: TargetedEvent<HTMLFormElement>) {
+    event.preventDefault()
     await login.mutateAsync({ body: { password, stayLoggedIn, username } })
   }
 
