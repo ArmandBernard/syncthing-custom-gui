@@ -71,7 +71,7 @@ export const CircularProgress = forwardRef<HTMLDivElement, CircularProgressProps
             r={radius}
             fill="none"
             strokeWidth={strokeWidth}
-            className="stroke-secondary-container"
+            className="stroke-surface-high"
           />
           <circle
             cx={size / 2}

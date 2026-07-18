@@ -5,7 +5,7 @@ export function CircularProgressCentred({ name }: { name: string }) {
   const labelId = useId()
 
   return (
-    <div className="flex flex-col items-center gap-4">
+    <div className="flex flex-1 flex-col items-center justify-center gap-4">
       <CircularProgress aria-labelledby={labelId} />
       <div id={labelId}>Loading {name}...</div>
     </div>
