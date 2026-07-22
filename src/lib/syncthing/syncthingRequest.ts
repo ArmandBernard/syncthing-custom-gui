@@ -1,4 +1,4 @@
-import { getCsrfHeader, ensureCsrfCookie } from './getCsrfHeader'
+import { getCsrfHeader, ensureCsrfCookie, refreshCsrfCookie } from './getCsrfHeader'
 import type { EndpointMap } from './endpoints'
 import type { RequestOptions } from '@lib/syncthing/RequestOptions.ts'
 import { SyncthingApiError } from '@lib/syncthing/SyncthingApiError.ts'
@@ -51,24 +51,37 @@ export async function syncthingRequest<K extends keyof EndpointMap>(
 
   await ensureCsrfCookie()
 
-  const response = await fetch(url, {
-    method,
-    credentials: 'include',
-    headers: {
-      ...getCsrfHeader(),
-      ...(hasBody && !isRawTextBody ? { 'Content-Type': 'application/json' } : {}),
-    },
-    body: hasBody
-      ? isRawTextBody
-        ? String(options?.body)
-        : JSON.stringify(options?.body)
-      : undefined,
-    signal: options.signal,
-  })
+  const doFetch = () =>
+    fetch(url, {
+      method,
+      credentials: 'include',
+      headers: {
+        ...getCsrfHeader(),
+        ...(hasBody && !isRawTextBody ? { 'Content-Type': 'application/json' } : {}),
+      },
+      body: hasBody
+        ? isRawTextBody
+          ? String(options?.body)
+          : JSON.stringify(options?.body)
+        : undefined,
+      signal: options.signal,
+    })
+
+  let response = await doFetch()
 
   if (!response.ok) {
-    const message = await response.text().catch(() => '')
-    throw new SyncthingApiError(response.status, message || response.statusText)
+    let message = await response.text().catch(() => '')
+    // The existing CSRF-Token cookie can go stale (e.g. Syncthing regenerates
+    // its secret across a restart) — retry once with a freshly fetched token
+    // before giving up.
+    if (response.status === 403 && /csrf/i.test(message)) {
+      await refreshCsrfCookie()
+      response = await doFetch()
+      message = response.ok ? '' : await response.text().catch(() => '')
+    }
+    if (!response.ok) {
+      throw new SyncthingApiError(response.status, message || response.statusText)
+    }
   }
 
   if (BLOB_RESPONSE_KEYS.has(key)) {

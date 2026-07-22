@@ -20,5 +20,13 @@ export function getCsrfHeader(): Record<string, string> {
 // never arrives on its own — fetch a proxied path once to pick it up.
 export async function ensureCsrfCookie(): Promise<void> {
   if (Object.keys(getCsrfHeader()).length > 0) return
+  await refreshCsrfCookie()
+}
+
+// The existing cookie can go stale (e.g. Syncthing regenerates its CSRF
+// secret across a restart) without disappearing client-side, so a request
+// can still get rejected even though ensureCsrfCookie() saw a cookie already
+// present. Call this unconditionally to force a fresh one.
+export async function refreshCsrfCookie(): Promise<void> {
   await fetch('/__syncthing_csrf_bootstrap', { credentials: 'include' }).catch(() => {})
 }
