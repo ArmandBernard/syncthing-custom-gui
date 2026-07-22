@@ -14,11 +14,15 @@ export function getCsrfHeader(): Record<string, string> {
 }
 
 // Syncthing only issues the CSRF-Token cookie while serving a GUI page (e.g.
-// "/"). In production that's this app's own index.html, served directly by
-// Syncthing, so the cookie already exists before any JS runs. In dev, Vite
-// serves index.html itself and never proxies "/" to Syncthing, so the cookie
-// never arrives on its own — fetch a proxied path once to pick it up.
-export async function ensureCsrfCookie(): Promise<void> {
-  if (Object.keys(getCsrfHeader()).length > 0) return
-  await fetch('/__syncthing_csrf_bootstrap', { credentials: 'include' }).catch(() => {})
+// "/"), never from plain REST calls — so a request can fail with a CSRF
+// error before any cookie has ever been set (first load) or after a
+// previously valid one has gone stale (e.g. Syncthing regenerated its secret
+// across a restart). Either way the fix is the same: fetch a GUI page to
+// pick up a fresh cookie and retry. In production that page is this app's
+// own index.html, served directly by Syncthing. In dev, Vite serves
+// index.html itself and never proxies "/" to Syncthing, so a dedicated
+// proxied path stands in for it instead.
+export async function refreshCsrfCookie(): Promise<void> {
+  const path = import.meta.env.DEV ? '/__syncthing_csrf_bootstrap' : '/index.html'
+  await fetch(path, { credentials: 'include' }).catch(() => {})
 }
