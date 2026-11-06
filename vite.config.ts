@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vite'
 import preact from '@preact/preset-vite'
@@ -45,6 +46,7 @@ export default defineConfig(({ mode }) => ({
       '@styles': alias('./src/styles'),
     },
   },
+  test: { environment: 'happy-dom' },
   server: { proxy },
   preview: { proxy },
 }))
