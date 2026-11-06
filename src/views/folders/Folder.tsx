@@ -52,7 +52,7 @@ export function Folder({
       }
     >
       <div className="flex flex-col gap-4">
-        {status?.error && <ErrorAlert error={status?.error} />}
+        {status?.error && <ErrorAlert error={new Error(status?.error)} />}
         <ul>
           <ListItem leftSlot="Path" rightSlot={folder.path} />
           {status && (

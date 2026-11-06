@@ -1,7 +1,8 @@
 import { forwardRef } from 'react'
 import type { HTMLAttributes } from 'preact'
+import type { StringProps } from './stringProps'
 
-export interface LinearProgressProps extends HTMLAttributes<HTMLDivElement> {
+export interface LinearProgressProps extends StringProps<HTMLAttributes<HTMLDivElement>> {
   /** 0-100. Omit for an indeterminate progress bar. */
   value?: number
 }
@@ -33,7 +34,7 @@ export const LinearProgress = forwardRef<HTMLDivElement, LinearProgressProps>(
   },
 )
 
-export interface CircularProgressProps extends HTMLAttributes<HTMLDivElement> {
+export interface CircularProgressProps extends StringProps<HTMLAttributes<HTMLDivElement>> {
   /** 0-100. Omit for an indeterminate progress bar. */
   value?: number
   /** Diameter in pixels. Defaults to 40. */

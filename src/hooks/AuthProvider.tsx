@@ -1,4 +1,4 @@
-import { type ReactNode, Suspense, useCallback, useEffect, useState } from 'react'
+import { type ReactNode, Suspense, useCallback, useState } from 'react'
 import { useSyncthingQuery } from './useSyncthingQuery'
 import { AuthContext, type AuthStatus } from './AuthContext'
 import { CircularProgressCentred } from '@components/CircularProgressCentred.tsx'
@@ -18,15 +18,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   })
   const [status, setStatus] = useState<AuthStatus>('checking')
 
-  // State used to prevent return to checking state after hitting 'unauthorized' / 'offline'
-  // which would unmount the login screen
-  useEffect(() => {
-    if (isSuccess) {
-      setStatus('authed')
-    } else if (isError) {
-      setStatus(error.status === 401 || error.status === 403 ? 'unauthorized' : 'offline')
-    }
-  }, [isSuccess, isError, error])
+  const computedStatus: AuthStatus | undefined = isSuccess
+    ? 'authed'
+    : isError
+      ? error.status === 401 || error.status === 403
+        ? 'unauthorized'
+        : 'offline'
+      : undefined
+
+  // The query returns to `pending` when it refetches after an error if it has never succeeded.
+  // Remember the last settled status so we never fall back to 'checking' once we've seen a result,
+  // which would unmount the login screen.
+  if (computedStatus !== undefined && computedStatus !== status) {
+    setStatus(computedStatus)
+  }
 
   const login = useLogin(refetch)
   const logout = useLogout(refetch)

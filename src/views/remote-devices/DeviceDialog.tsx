@@ -1,7 +1,7 @@
 import { Dialog } from '@components/ui/Dialog.tsx'
 import { TextField } from '@components/ui/TextField.tsx'
 import { useState } from 'react'
-import type { DeviceConfiguration, FolderConfiguration } from '@lib/syncthing/types/config'
+import type { DeviceConfiguration } from '@lib/syncthing/types/config'
 import { Button } from '@components/ui/Button.tsx'
 import { useSyncthingMutation } from '@hooks/useSyncthingMutation.ts'
 import { useSyncthingQuery } from '@hooks/useSyncthingQuery.ts'
@@ -18,7 +18,7 @@ export default function DeviceDialog({
   isOpen: boolean
   onClose: () => void
 }) {
-  const [folderConfigChanges, setFolderConfigChanges] = useState<Partial<FolderConfiguration>>({})
+  const [folderConfigChanges, setFolderConfigChanges] = useState<Partial<DeviceConfiguration>>({})
   const [confirmingDelete, setConfirmingDelete] = useState(false)
 
   const { data: defaultDeviceConfig } = useSyncthingQuery('GET /config/defaults/device')

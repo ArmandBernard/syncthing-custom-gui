@@ -8,8 +8,11 @@ import {
   useState,
 } from 'react'
 import type { InputHTMLAttributes } from 'preact'
+import type { StringProps } from './stringProps'
 
-export interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
+export interface CheckboxProps extends StringProps<
+  Omit<InputHTMLAttributes<HTMLInputElement>, 'type'>
+> {
   label?: ReactNode
   labelPosition?: 'left' | 'right'
   /** Visual "mixed" state. Must be set imperatively on the DOM node, since HTML has no `indeterminate` attribute. */

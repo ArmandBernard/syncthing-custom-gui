@@ -39,7 +39,7 @@ const lines: LineOptions[] = [
 ]
 
 export default function TransferChartImpl({ history }: { history: TransferHistoryPoint[] }) {
-  const [nowUnix, setNowUnix] = useState(Date.now())
+  const [nowUnix, setNowUnix] = useState(() => Date.now())
   const clipId = useId()
 
   useEffect(() => {
@@ -180,6 +180,7 @@ function findNearest(history: TransferHistoryPoint[], time: number): TransferHis
 }
 
 const tooltipStyles = {
+  // oxlint-disable-next-line typescript/no-misused-spread
   ...defaultStyles,
   backgroundColor: 'var(--color-surface-high)',
   color: 'var(--color-on-surface)',

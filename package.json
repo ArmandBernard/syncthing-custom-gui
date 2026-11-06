@@ -34,6 +34,7 @@
     "@preact/preset-vite": "^2.10.6",
     "@types/node": "^26.6.6",
     "oxlint": "^1.71.0",
+    "oxlint-tsgolint": "7.0.2006",
     "prettier": "^3.9.10",
     "typescript": "~6.0.2",
     "vite": "^8.3.6",

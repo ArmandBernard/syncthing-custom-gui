@@ -1,6 +1,6 @@
 import { SyncthingApiError } from '@lib/syncthing/SyncthingApiError.ts'
 
-export function ErrorAlert({ error }: { error: SyncthingApiError | string }) {
+export function ErrorAlert({ error }: { error: SyncthingApiError | Error }) {
   if (error instanceof SyncthingApiError) {
     return (
       <div className="text-on-error-container bg-error-container rounded-sm p-2">
@@ -11,6 +11,8 @@ export function ErrorAlert({ error }: { error: SyncthingApiError | string }) {
   }
 
   return (
-    <div className="text-on-error-container bg-error-container rounded-sm p-2">Error: {error}</div>
+    <div className="text-on-error-container bg-error-container rounded-sm p-2">
+      Error: {error.message}
+    </div>
   )
 }

@@ -1,7 +1,10 @@
 import { forwardRef, useId, useState } from 'react'
 import type { InputHTMLAttributes } from 'preact'
+import type { StringProps } from './stringProps'
 
-export interface RadioProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
+export interface RadioProps extends StringProps<
+  Omit<InputHTMLAttributes<HTMLInputElement>, 'type'>
+> {
   label?: string
 }
 

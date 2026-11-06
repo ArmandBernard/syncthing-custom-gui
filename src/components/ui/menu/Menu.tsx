@@ -188,6 +188,9 @@ export function Menu({ anchorOrigin, transformOrigin, children, button }: MenuPr
         style={{ position: 'fixed', top, left, margin: 0 }}
         className="min-w-28 rounded-xs bg-surface-high py-2 shadow-xl"
       >
+        {/* The ref accesses below (`_itemRef`, and `requestClose` in `onSelect`) only run when the
+            DOM node attaches or the user selects an item, never during render. */}
+        {/* oxlint-disable-next-line react/refs */}
         {Children.map(children, (child, index) => {
           if (isMenuItemElement(child)) {
             return cloneElement(child, {
