@@ -180,6 +180,7 @@ function findNearest(history: TransferHistoryPoint[], time: number): TransferHis
 }
 
 const tooltipStyles = {
+  // oxlint-disable-next-line typescript/no-misused-spread
   ...defaultStyles,
   backgroundColor: 'var(--color-surface-high)',
   color: 'var(--color-on-surface)',
