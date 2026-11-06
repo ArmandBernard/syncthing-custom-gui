@@ -1,4 +1,4 @@
-import { type ReactNode, Suspense, useCallback } from 'react'
+import { type ReactNode, Suspense, useCallback, useEffect, useState } from 'react'
 import { useSyncthingQuery } from './useSyncthingQuery'
 import { AuthContext, type AuthStatus } from './AuthContext'
 import { CircularProgressCentred } from '@components/CircularProgressCentred.tsx'
@@ -12,19 +12,21 @@ const LoginForm = lazy(() => import('../views/LoginForm.tsx'))
 const POLL_INTERVAL_MS = 30000
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  // Unauthenticated by default, so this is the one query allowed to run
-  // before we know the auth status at all — it's how that status is found.
-  const { error, isLoading, refetch } = useSyncthingQuery('GET /system/ping', {
+  // Allowed to run unauthenticated
+  const { error, isSuccess, isError, refetch } = useSyncthingQuery('GET /system/ping', {
     refetchInterval: POLL_INTERVAL_MS,
   })
+  const [status, setStatus] = useState<AuthStatus>('checking')
 
-  const status: AuthStatus = isLoading
-    ? 'checking'
-    : error
-      ? error.status === 401 || error.status === 403
-        ? 'unauthorized'
-        : 'offline'
-      : 'authed'
+  // State used to prevent return to checking state after hitting 'unauthorized' / 'offline'
+  // which would unmount the login screen
+  useEffect(() => {
+    if (isSuccess) {
+      setStatus('authed')
+    } else if (isError) {
+      setStatus(error.status === 401 || error.status === 403 ? 'unauthorized' : 'offline')
+    }
+  }, [isSuccess, isError, error])
 
   const login = useLogin(refetch)
   const logout = useLogout(refetch)
@@ -41,7 +43,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     )
   }
 
-  return <AuthContext.Provider value={{ status, login, logout }}>{children}</AuthContext.Provider>
+  return (
+    <AuthContext.Provider value={{ status: status, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  )
 }
 
 function useLogin(refetch: () => Promise<unknown>) {
