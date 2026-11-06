@@ -15,10 +15,12 @@ const EXIT_TRANSITION_MS = 200
 
 export function SnackbarProvider({ children }: { children: ReactNode }) {
   const [queue, setQueue] = useState<SnackbarEntry[]>([])
-  const [visible, setVisible] = useState(false)
+  // Id of the entry that has started its exit; it is removed once the exit transition finishes.
+  const [dismissedId, setDismissedId] = useState<number | null>(null)
   const nextId = useRef(0)
 
   const current = queue[0] ?? null
+  const visible = current !== null && current.id !== dismissedId
 
   const show = useCallback((message: string, options?: SnackbarOptions) => {
     const entry: SnackbarEntry = {
@@ -31,24 +33,24 @@ export function SnackbarProvider({ children }: { children: ReactNode }) {
     setQueue((prev) => [...prev, entry])
   }, [])
 
-  // Show the current entry and auto-dismiss it after its duration.
+  // Auto-dismiss the current entry after its duration.
   useEffect(() => {
     if (!current) return
-    setVisible(true)
-    const timeout = setTimeout(() => setVisible(false), current.durationMs)
+    const timeout = setTimeout(() => setDismissedId(current.id), current.durationMs)
     return () => clearTimeout(timeout)
   }, [current])
 
   // Once the exit transition has finished, drop the entry so the next one can show.
   useEffect(() => {
-    if (visible || !current) return
+    if (!current || current.id !== dismissedId) return
     const timeout = setTimeout(() => setQueue((prev) => prev.slice(1)), EXIT_TRANSITION_MS)
     return () => clearTimeout(timeout)
-  }, [visible, current])
+  }, [current, dismissedId])
 
   const handleAction = useCallback(() => {
-    current?.onAction?.()
-    setVisible(false)
+    if (!current) return
+    current.onAction?.()
+    setDismissedId(current.id)
   }, [current])
 
   return (
@@ -61,7 +63,8 @@ export function SnackbarProvider({ children }: { children: ReactNode }) {
             aria-live="polite"
             className={`fixed bottom-4 left-1/2 z-50 flex min-w-70 max-w-140 -translate-x-1/2 
               items-center gap-4 rounded-xs bg-surface-high px-4 py-3 text-on-surface shadow-lg 
-              transition-all duration-200 ease-out ${visible ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'}`}
+              transition-all duration-200 ease-out starting:translate-y-2 starting:opacity-0
+              ${visible ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0'}`}
           >
             <span className="flex-1 text-sm">{current.message}</span>
             {current.actionLabel && (
