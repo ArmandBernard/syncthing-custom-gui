@@ -2,7 +2,7 @@ import { useSyncExternalStore } from 'preact/compat'
 
 let currentTime: Date = new Date()
 
-const subscribers = new Map<number, () => void>()
+const subscribers = new Set<() => void>()
 
 function getTime() {
   return currentTime
@@ -19,13 +19,12 @@ function updateTime() {
 updateTime()
 
 function subscribe(notify: () => void) {
-  const id = Math.random()
-  subscribers.set(id, notify)
-  return id
+  subscribers.add(notify)
+  return notify
 }
 
-function unsubscribe(id: number) {
-  subscribers.delete(id)
+function unsubscribe(notify: () => void) {
+  subscribers.delete(notify)
 }
 
 export function useCurrentTime() {
