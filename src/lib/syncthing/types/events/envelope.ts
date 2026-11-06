@@ -14,7 +14,7 @@ export interface EventEnvelope<TType extends string, TData> {
 export interface SyncthingURL {
   Scheme: string
   Opaque: string
-  User: unknown | null
+  User: unknown
   Host: string
   Path: string
   RawPath: string
