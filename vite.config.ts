@@ -45,6 +45,7 @@ export default defineConfig(({ mode }) => ({
       '@styles': alias('./src/styles'),
     },
   },
+  test: { environment: 'happy-dom' },
   server: { proxy },
   preview: { proxy },
 }))

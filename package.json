@@ -33,7 +33,9 @@
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.10.6",
+    "@testing-library/preact": "^3.2.6",
     "@types/node": "^26.6.6",
+    "happy-dom": "^21.0.4",
     "oxlint": "^1.71.0",
     "oxlint-tsgolint": "7.0.2006",
     "prettier": "^3.9.10",
