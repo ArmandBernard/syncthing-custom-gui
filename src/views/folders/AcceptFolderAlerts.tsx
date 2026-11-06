@@ -59,7 +59,7 @@ export function AcceptFolderAlerts({ devices }: { devices: DeviceConfiguration[]
       : undefined
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-2">
       {getEnumEntries(pendingFolders).map(([folderID, folder]) => (
         <AcceptFolderAlert
           key={folderID}
