@@ -12,6 +12,9 @@ import { useDeviceID } from '@context/device-id/useDeviceID.ts'
 import { SpeedInline } from '@components/SpeedInline.tsx'
 import { Button } from '@components/ui/Button.tsx'
 import ListItem from '@components/ui/ListItem.tsx'
+import { Menu } from '@components/ui/menu/Menu.tsx'
+import { IconButton } from '@components/ui/IconButton.tsx'
+import { MoreVertIcon } from '@components/icons/MoreVertIcon.tsx'
 
 const ShareDeviceDialog = lazy(() => import('./ShareDeviceDialog.tsx'))
 
@@ -43,7 +46,21 @@ export function ThisDevice() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-2xl">This device</h2>
+      <div className="flex justify-between items-center gap-4">
+        <h2 className="text-2xl">This device</h2>
+        <Menu
+          button={
+            <IconButton aria-label="Folder actions">
+              <MoreVertIcon />
+            </IconButton>
+          }
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+          transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        >
+          <Menu.Item onClick={handleShareClick}>Share</Menu.Item>
+        </Menu>
+      </div>
+
       <CardAccordion
         expanded={expanded}
         setExpanded={setExpanded}
