@@ -49,8 +49,8 @@ export async function syncthingRequest<K extends keyof EndpointMap>(
   const isRawTextBody = RAW_TEXT_BODY_KEYS.has(key)
   const hasBody = 'body' in options && options?.body !== undefined
 
-  const doFetch = () =>
-    fetch(url, {
+  function doFetch() {
+    return fetch(url, {
       method,
       credentials: 'include',
       headers: {
@@ -64,19 +64,17 @@ export async function syncthingRequest<K extends keyof EndpointMap>(
         : undefined,
       signal: options.signal,
     })
+  }
 
   let response = await doFetch()
 
   if (!response.ok) {
     let message = await response.text().catch(() => '')
-    // Syncthing only issues the CSRF-Token cookie from GUI pages, never from
-    // REST calls, so the very first authenticated request has no cookie to
-    // send yet — and an existing one can also go stale later (e.g. Syncthing
-    // regenerating its secret across a restart). Both surface identically as
-    // a CSRF-flavoured 403; fetch a fresh cookie and retry once before giving
-    // up.
+
+    // CSRF cookie may not be acquired yet, so get one if we fail in this manner and retry.
     if (response.status === 403 && /csrf/i.test(message)) {
       await refreshCsrfCookie()
+      // retry
       response = await doFetch()
       message = response.ok ? '' : await response.text().catch(() => '')
     }

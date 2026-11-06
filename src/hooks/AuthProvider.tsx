@@ -12,19 +12,14 @@ const LoginForm = lazy(() => import('../views/LoginForm.tsx'))
 const POLL_INTERVAL_MS = 30000
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  // Unauthenticated by default, so this is the one query allowed to run
-  // before we know the auth status at all — it's how that status is found.
+  // Allowed to run unauthenticated
   const { error, isSuccess, isError, refetch } = useSyncthingQuery('GET /system/ping', {
     refetchInterval: POLL_INTERVAL_MS,
   })
-
-  // react-query resets status/error to "pending"/null at the start of every
-  // background refetch when this query has never had cached data (true here,
-  // since it only ever errors while unauthenticated) — so reading isLoading/
-  // error directly would flip the UI to "checking" on every 30s poll,
-  // unmounting LoginForm mid-typing. Only update on a settled result instead.
   const [status, setStatus] = useState<AuthStatus>('checking')
 
+  // State used to prevent return to checking state after hitting 'unauthorized' / 'offline'
+  // which would unmount the login screen
   useEffect(() => {
     if (isSuccess) {
       setStatus('authed')
@@ -48,7 +43,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     )
   }
 
-  return <AuthContext.Provider value={{ status, login, logout }}>{children}</AuthContext.Provider>
+  return (
+    <AuthContext.Provider value={{ status: status, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  )
 }
 
 function useLogin(refetch: () => Promise<unknown>) {
