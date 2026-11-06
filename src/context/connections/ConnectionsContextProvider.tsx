@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useQueries } from '@tanstack/react-query'
 import { useSyncthingQuery } from '@hooks/useSyncthingQuery.ts'
 import { syncthingRequest } from '@lib/syncthing/syncthingRequest.ts'
@@ -12,8 +12,8 @@ const IDLE_POLL_INTERVAL = 15000
 const TRANSFERRING_COOLDOWN = 10000
 
 export function ConnectionsContextProvider({ children }: { children: ReactNode }) {
-  const [shouldUseHighPollingRate, setShouldUseHighPollingRate] = useState(false)
-  const cooldownTimeout = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+  const [wasTransferring, setWasTransferring] = useState(false)
+  const [isCoolingDown, setIsCoolingDown] = useState(false)
 
   const { data: devices } = useSyncthingQuery('GET /config/devices')
 
@@ -27,10 +27,6 @@ export function ConnectionsContextProvider({ children }: { children: ReactNode }
       })) ?? [],
   })
 
-  const { data: connections } = useSyncthingQuery('GET /system/connections', {
-    refetchInterval: shouldUseHighPollingRate ? TRANSFERRING_POLL_INTERVAL : IDLE_POLL_INTERVAL,
-  })
-
   const anyDeviceStillTransferring = completions.some(
     (completion) =>
       completion.data &&
@@ -39,24 +35,26 @@ export function ConnectionsContextProvider({ children }: { children: ReactNode }
         completion.data.needDeletes > 0),
   )
 
+  // Start the cooldown the moment transfers stop, and cancel it if they start again. Adjusted
+  // during render (rather than in an effect) so the polling rate never lags a render behind:
+  // https://react.dev/learn/you-might-not-need-an-effect
+  if (anyDeviceStillTransferring !== wasTransferring) {
+    setWasTransferring(anyDeviceStillTransferring)
+    setIsCoolingDown(!anyDeviceStillTransferring)
+  }
+
+  // Keep polling fast for a while after a transfer stops.
   useEffect(() => {
-    // Immediately increase polling speed.
-    if (anyDeviceStillTransferring) {
-      clearTimeout(cooldownTimeout.current)
-      cooldownTimeout.current = undefined
-      setShouldUseHighPollingRate(true)
-      return
-    }
+    if (!isCoolingDown) return
+    const timeout = setTimeout(() => setIsCoolingDown(false), TRANSFERRING_COOLDOWN)
+    return () => clearTimeout(timeout)
+  }, [isCoolingDown])
 
-    if (shouldUseHighPollingRate && cooldownTimeout.current === undefined) {
-      cooldownTimeout.current = setTimeout(() => {
-        cooldownTimeout.current = undefined
-        setShouldUseHighPollingRate(false)
-      }, TRANSFERRING_COOLDOWN)
-    }
+  const shouldUseHighPollingRate = anyDeviceStillTransferring || isCoolingDown
 
-    return () => clearTimeout(cooldownTimeout.current)
-  }, [anyDeviceStillTransferring, shouldUseHighPollingRate])
+  const { data: connections } = useSyncthingQuery('GET /system/connections', {
+    refetchInterval: shouldUseHighPollingRate ? TRANSFERRING_POLL_INTERVAL : IDLE_POLL_INTERVAL,
+  })
 
   return <ConnectionsContext.Provider value={connections}>{children}</ConnectionsContext.Provider>
 }
