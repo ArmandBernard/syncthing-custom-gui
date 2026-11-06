@@ -4,7 +4,7 @@ on:
   push:
 
 jobs:
-  lint-and-build:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -19,8 +19,8 @@ jobs:
       - run: npm run lint
         name: Lint
 
-      - run: npm run typecheck
-        name: Typescript compile
+      - run: npm run test
+        name: Test
 
       - run: npm run build
         name: Build
