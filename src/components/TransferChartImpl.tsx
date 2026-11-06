@@ -39,7 +39,7 @@ const lines: LineOptions[] = [
 ]
 
 export default function TransferChartImpl({ history }: { history: TransferHistoryPoint[] }) {
-  const [nowUnix, setNowUnix] = useState(Date.now())
+  const [nowUnix, setNowUnix] = useState(() => Date.now())
   const clipId = useId()
 
   useEffect(() => {
