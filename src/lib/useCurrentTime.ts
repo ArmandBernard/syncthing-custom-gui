@@ -17,6 +17,7 @@ function subscribe(notify: () => void) {
   if (subscribers.size === 1) {
     currentTime = new Date()
     timer = setTimeout(tick, 1000)
+    notify() // needed so a fresh value is read
   }
 
   // unsubscribe
