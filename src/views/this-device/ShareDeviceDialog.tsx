@@ -2,6 +2,7 @@ import { Dialog } from '@components/ui/Dialog.tsx'
 import type { DeviceConfiguration } from '@lib/syncthing/types/config'
 import DeviceQRCode from '@components/ui/DeviceQRCode.tsx'
 import { DeviceIDText } from '@components/DeviceIDText.tsx'
+import { Button } from '@components/ui/Button.tsx'
 
 export default function ShareDeviceDialog({
   isOpen,
@@ -28,6 +29,9 @@ export default function ShareDeviceDialog({
             className="aspect-square w-full"
           />
         </div>
+        <Button className="self-end" variant="outlined" onClick={onClose}>
+          Close
+        </Button>
       </div>
     </Dialog>
   )
