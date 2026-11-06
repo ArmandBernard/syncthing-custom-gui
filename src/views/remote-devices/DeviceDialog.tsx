@@ -94,7 +94,7 @@ export default function DeviceDialog({
           </div>
           <div className="flex gap-4">
             <Button variant="outlined" disabled={isPending} onClick={onClose}>
-              Close
+              Cancel
             </Button>
             <Button variant="filled" disabled={isPending} onClick={handleSave}>
               Save
