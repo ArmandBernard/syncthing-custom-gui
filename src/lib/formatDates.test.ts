@@ -6,10 +6,10 @@ describe('getLocaleLongString', () => {
   const testDate = '2026-11-06T16:00:00Z'
   const expectedOutput = 'Friday, 6 November 2026 at 16:00:00 GMT'
   test.each([
-    [testDate, 'an ISO string'],
-    [new Date(testDate), 'a Date'],
-    [dayJs(testDate), 'a DayJS object'],
-  ])('works with $1', (date, _) => {
+    { name: 'an ISO string', date: testDate },
+    { name: 'a Date', date: new Date(testDate) },
+    { name: 'a DayJS object', date: dayJs(testDate) },
+  ])('works with $name', ({ date }) => {
     const result = getLongDateTimeString(date)
 
     expect(result).toBe(expectedOutput)
