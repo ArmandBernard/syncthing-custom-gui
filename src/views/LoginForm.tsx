@@ -19,10 +19,10 @@ export default function LoginForm() {
     await login.mutateAsync({ body: { password, stayLoggedIn, username } })
   }
 
-  let augmentedLoginError = login.error
+  let augmentedLoginError: Error | null = login.error
 
-  if (augmentedLoginError && augmentedLoginError.status === 403) {
-    augmentedLoginError.message = 'Invalid username or password'
+  if (login.error && login.error.status === 403) {
+    augmentedLoginError = new Error('Invalid username or password')
   }
 
   return (
