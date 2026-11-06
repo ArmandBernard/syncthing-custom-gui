@@ -1,14 +1,11 @@
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 
 export function useBeforeUnload(callback: () => void): void {
-  const callbackRef = useRef(callback)
-  callbackRef.current = callback
-
   useEffect(() => {
     function handleBeforeUnload() {
-      callbackRef.current()
+      callback()
     }
     window.addEventListener('beforeunload', handleBeforeUnload)
     return () => window.removeEventListener('beforeunload', handleBeforeUnload)
-  }, [])
+  }, [callback])
 }
