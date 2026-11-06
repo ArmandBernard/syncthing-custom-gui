@@ -1,11 +1,11 @@
 import { forwardRef } from 'react'
 import type { ButtonHTMLAttributes } from 'preact'
+import type { StringProps } from './stringProps'
 
 export type IconButtonVariant = 'standard' | 'filled' | 'tonal' | 'outlined'
 
-export interface IconButtonProps extends Omit<
-  ButtonHTMLAttributes<HTMLButtonElement>,
-  'aria-label'
+export interface IconButtonProps extends StringProps<
+  Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'aria-label'>
 > {
   variant?: IconButtonVariant
   /** Icon buttons carry no visible label, so an accessible name is required. */

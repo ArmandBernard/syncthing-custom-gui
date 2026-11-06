@@ -1,9 +1,13 @@
 import { forwardRef, type ReactNode, useId, useState } from 'react'
 import type { InputHTMLAttributes } from 'preact'
+import type { StringProps } from './stringProps'
 
 export type TextFieldVariant = 'filled' | 'outlined'
 
-export interface TextFieldProps extends InputHTMLAttributes<HTMLInputElement> {
+export interface TextFieldProps extends StringProps<
+  InputHTMLAttributes<HTMLInputElement>,
+  'className' | 'id'
+> {
   variant?: TextFieldVariant
   label: string
   supportingText?: ReactNode

@@ -1,9 +1,10 @@
 import { forwardRef, type Ref } from 'react'
 import type { ButtonHTMLAttributes, HTMLAttributes } from 'preact'
+import type { StringProps } from './stringProps'
 
 export type CardVariant = 'elevated' | 'filled' | 'outlined'
 
-export interface CardProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onClick'> {
+export interface CardProps extends StringProps<Omit<HTMLAttributes<HTMLDivElement>, 'onClick'>> {
   variant?: CardVariant
   /** When provided, the card renders as an accessible, clickable <button> instead of a <div>. */
   onClick?: ButtonHTMLAttributes<HTMLButtonElement>['onClick']

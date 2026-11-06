@@ -1,8 +1,11 @@
 import { forwardRef, type ReactNode } from 'react'
 import type { ButtonHTMLAttributes, TargetedKeyboardEvent } from 'preact'
+import type { StringProps } from '../stringProps'
 import { useTabsContext } from './useTabsContext'
 
-export interface TabProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'value' | 'id'> {
+export interface TabProps extends StringProps<
+  Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'value' | 'id'>
+> {
   /** Identifies this tab and the `TabPanel` it controls — must match a `TabPanel`'s `value`. */
   value: string
   label: ReactNode

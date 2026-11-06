@@ -1,9 +1,10 @@
 import { forwardRef } from 'react'
 import type { ButtonHTMLAttributes } from 'preact'
+import type { StringProps } from './stringProps'
 
 export type ButtonVariant = 'filled' | 'tonal' | 'outlined' | 'text' | 'elevated'
 
-export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps extends StringProps<ButtonHTMLAttributes<HTMLButtonElement>> {
   variant?: ButtonVariant
 }
 

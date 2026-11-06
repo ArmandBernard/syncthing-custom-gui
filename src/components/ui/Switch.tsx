@@ -1,7 +1,10 @@
 import { forwardRef, useId, useState } from 'react'
 import type { InputHTMLAttributes } from 'preact'
+import type { StringProps } from './stringProps'
 
-export interface SwitchProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'role'> {
+export interface SwitchProps extends StringProps<
+  Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'role'>
+> {
   label?: string
 }
 
@@ -21,7 +24,7 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(function Switch(
       htmlFor={inputId}
       className={`inline-flex items-center gap-2 ${disabled ? 'pointer-events-none opacity-[0.38]' : 'cursor-pointer'} ${className}`}
     >
-      <span className="relative inline-flex h-8 w-[52px] shrink-0 items-center">
+      <span className="relative inline-flex h-8 w-13 shrink-0 items-center">
         <input
           ref={ref}
           type="checkbox"

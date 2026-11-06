@@ -1,9 +1,12 @@
 import type { ReactNode } from 'react'
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes } from 'preact'
+import type { StringProps } from '../stringProps'
 
-export interface MenuItemProps extends Omit<
-  ButtonHTMLAttributes<HTMLButtonElement> & AnchorHTMLAttributes<HTMLAnchorElement>,
-  'onSelect'
+export interface MenuItemProps extends StringProps<
+  Omit<
+    ButtonHTMLAttributes<HTMLButtonElement> & AnchorHTMLAttributes<HTMLAnchorElement>,
+    'onSelect'
+  >
 > {
   onClick?: () => void
   /** Renders the item as a link instead of a button, so the destination shows on hover/status bar. */

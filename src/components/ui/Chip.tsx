@@ -1,7 +1,8 @@
 import { forwardRef, type ReactNode } from 'react'
 import type { ButtonHTMLAttributes } from 'preact'
+import type { StringProps } from './stringProps'
 
-export interface ChipProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ChipProps extends StringProps<ButtonHTMLAttributes<HTMLButtonElement>> {
   label?: ReactNode
   children?: ReactNode
   selected?: boolean
