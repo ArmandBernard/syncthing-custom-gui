@@ -4,6 +4,8 @@ import { ErrorAlert } from '@components/ui/ErrorAlert.tsx'
 import { useSyncthingQuery } from '@hooks/useSyncthingQuery.ts'
 import { RelativeTime } from '@components/RelativeTime.tsx'
 import { Table } from '@components/ui/table/Table.tsx'
+import { IconButton } from '@components/ui/IconButton.tsx'
+import { DeleteIcon } from '@components/icons/DeleteIcon.tsx'
 
 interface IgnoredFoldersProps {
   guiConfig: GUIConfiguration | undefined
@@ -23,13 +25,14 @@ export function IgnoredFolders({ error }: IgnoredFoldersProps) {
 
   return (
     <div className="flex flex-col gap-4">
-      <Table className="grid grid-cols-[7rem_1fr_2fr_8rem]">
+      <Table className="grid grid-cols-[7rem_1fr_2fr_8rem_auto]">
         <thead className="contents">
           <tr className="contents">
             <th>Id</th>
             <th>Source device</th>
             <th>Name</th>
-            <th>Ignored at</th>
+            <th className="text-right!">Ignored at</th>
+            <th aria-label="actions"></th>
           </tr>
         </thead>
         <tbody className="contents">
@@ -41,8 +44,13 @@ export function IgnoredFolders({ error }: IgnoredFoldersProps) {
                 </td>
                 <td>{folder.deviceName}</td>
                 <td>{folder.label}</td>
-                <td>
+                <td className="justify-end">
                   <RelativeTime date={folder.time} />
+                </td>
+                <td className="justify-end pr-0!">
+                  <IconButton aria-label="Delete">
+                    <DeleteIcon />
+                  </IconButton>
                 </td>
               </tr>
             )
