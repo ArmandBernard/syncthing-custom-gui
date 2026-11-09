@@ -6,7 +6,7 @@ import type { PropsWithChildren } from 'react'
 const tableClasses = `
   border-collapse text-sm
   [&_th]:border-b [&_th]:border-outline [&_th]:px-2 [&_th]:py-1 [&_th]:text-left
-  [&_td]:border-b [&_td]:border-outline [&_td]:px-2 [&_td]:py-1
+  [&_td]:border-b [&_td]:border-outline [&_td]:px-2 [&_td]:py-1 [&_td]:flex [&_td]:items-center
   `
 
 export function Table({ children, className, ...rest }: PropsWithChildren<TableHTMLAttributes>) {
