@@ -1,17 +1,14 @@
 import { Dialog } from '@components/ui/Dialog.tsx'
-import { TextField } from '@components/ui/TextField.tsx'
 import { useState } from 'react'
 import { Button } from '@components/ui/Button.tsx'
 import { useSyncthingMutation } from '@hooks/useSyncthingMutation.ts'
-import { ErrorAlert } from '@components/ui/ErrorAlert.tsx'
 import { useAuth } from '@hooks/useAuth.ts'
 import { useSyncthingQuery } from '@hooks/useSyncthingQuery.ts'
 import { Tabs } from '@components/ui/tabs/Tabs.tsx'
 import { Tab } from '@components/ui/tabs/Tab.tsx'
 import { TabPanel } from '@components/ui/tabs/TabPanel.tsx'
 import { TabsContextProvider } from '@components/ui/tabs/TabsContextProvider.tsx'
-import type { GUIConfiguration } from '@lib/syncthing/types/config'
-import type { SyncthingApiError } from '@lib/syncthing/SyncthingApiError.ts'
+import { AuthSettings } from './AuthSettings.tsx'
 
 type SettingsDialogTabs = 'auth' | 'ignored-folders'
 
@@ -84,47 +81,5 @@ export default function SettingsDialog({
         <TabPanel value="ignored-folders" className="pt-4"></TabPanel>
       </TabsContextProvider>
     </Dialog>
-  )
-}
-
-function AuthSettings({
-  guiConfig,
-  error,
-  user,
-  setUser,
-  password,
-  setPassword,
-}: {
-  guiConfig: GUIConfiguration | undefined
-  error: SyncthingApiError | null
-  user: string
-  setUser: (value: string) => void
-  password: string
-  setPassword: (value: string) => void
-}) {
-  const effectiveUser = user ?? guiConfig?.user
-
-  return (
-    <div className="flex flex-col gap-4">
-      <p className="text-sm text-on-surface-variant">
-        Set a GUI username and password to require login. Leave both blank to allow unauthenticated
-        access.
-      </p>
-      <TextField
-        label="Username"
-        value={effectiveUser ?? ''}
-        onChange={(event) => setUser(event.currentTarget.value)}
-        autoComplete="username"
-      />
-      <TextField
-        type="password"
-        label="Password"
-        value={password ?? ''}
-        onChange={(event) => setPassword(event.currentTarget.value)}
-        autoComplete="new-password"
-        supportingText="Leave blank to keep the current password."
-      />
-      {error && <ErrorAlert error={error} />}
-    </div>
   )
 }
