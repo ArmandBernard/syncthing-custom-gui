@@ -20,7 +20,7 @@ export function AuthSettings({
   password,
   setPassword,
 }: AuthSettingsProps) {
-  const effectiveUser = user ?? guiConfig?.user
+  const effectiveUser = user ? user : (guiConfig?.user ?? '')
 
   return (
     <div className="flex flex-col gap-4">
@@ -30,14 +30,14 @@ export function AuthSettings({
       </p>
       <TextField
         label="Username"
-        value={effectiveUser ?? ''}
+        value={effectiveUser}
         onChange={(event) => setUser(event.currentTarget.value)}
         autoComplete="username"
       />
       <TextField
         type="password"
         label="Password"
-        value={password ?? ''}
+        value={password}
         onChange={(event) => setPassword(event.currentTarget.value)}
         autoComplete="new-password"
         supportingText="Leave blank to keep the current password."
