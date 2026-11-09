@@ -1,17 +1,13 @@
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/preact'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import SettingsDialog from './SettingsDialog.tsx'
-import { SyncthingApiError } from '@lib/syncthing/SyncthingApiError.ts'
 
 const mutateAsync = vi.fn()
 const logoutMutateAsync = vi.fn()
-const mutationState: { isPending: boolean; error: SyncthingApiError | null } = {
-  isPending: false,
-  error: null,
-}
+const mutationState = { isPending: false }
 
 vi.mock('@hooks/useSyncthingMutation.ts', () => ({
-  useSyncthingMutation: () => ({ mutateAsync, ...mutationState }),
+  useSyncthingMutation: () => ({ mutateAsync, error: null, ...mutationState }),
 }))
 
 vi.mock('@hooks/useSyncthingQuery.ts', () => ({
@@ -22,11 +18,15 @@ vi.mock('@hooks/useAuth.ts', () => ({
   useAuth: () => ({ logout: { mutateAsync: logoutMutateAsync } }),
 }))
 
+// The ignored folders tab has its own tests, and fetches data this file doesn't mock.
+vi.mock('./IgnoredFolders.tsx', () => ({
+  IgnoredFolders: () => <div>ignored folders content</div>,
+}))
+
 beforeEach(() => {
   mutateAsync.mockResolvedValue(undefined)
   logoutMutateAsync.mockResolvedValue(undefined)
   mutationState.isPending = false
-  mutationState.error = null
 })
 
 afterEach(() => {
@@ -52,10 +52,26 @@ describe('SettingsDialog', () => {
       'true',
     )
     expect(screen.getByLabelText('Username')).toBeTruthy()
-    expect(screen.getByLabelText('Password')).toBeTruthy()
+    expect(screen.queryByText('ignored folders content')).toBeNull()
   })
 
-  it('switches tabs', () => {
+  it('shows the current username from the GUI config', () => {
+    renderDialog()
+
+    expect((screen.getByLabelText('Username') as HTMLInputElement).value).toBe('admin')
+  })
+
+  it('does not resend the current username when only the password changes', async () => {
+    const { onClose } = renderDialog()
+
+    type('Password', 'secret')
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }))
+
+    await waitFor(() => expect(onClose).toHaveBeenCalled())
+    expect(mutateAsync).toHaveBeenCalledWith({ body: { password: 'secret' } })
+  })
+
+  it('switches to the ignored folders tab', () => {
     renderDialog()
 
     fireEvent.click(screen.getByRole('tab', { name: 'Ignored folders' }))
@@ -63,6 +79,7 @@ describe('SettingsDialog', () => {
     expect(screen.getByRole('tab', { name: 'Ignored folders' }).getAttribute('aria-selected')).toBe(
       'true',
     )
+    expect(screen.getByText('ignored folders content')).toBeTruthy()
     expect(screen.queryByLabelText('Username')).toBeNull()
   })
 
@@ -112,13 +129,5 @@ describe('SettingsDialog', () => {
 
     expect(screen.getByRole('button', { name: 'Close' }).getAttribute('aria-disabled')).toBe('true')
     expect(screen.getByRole('button', { name: 'Save' }).getAttribute('aria-disabled')).toBe('true')
-  })
-
-  it('shows an error returned from the API', () => {
-    mutationState.error = new SyncthingApiError(403, 'Forbidden')
-    renderDialog()
-
-    expect(screen.getByText('403 Error')).toBeTruthy()
-    expect(screen.getByText('Forbidden')).toBeTruthy()
   })
 })
