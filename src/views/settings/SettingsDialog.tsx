@@ -9,6 +9,7 @@ import { Tab } from '@components/ui/tabs/Tab.tsx'
 import { TabPanel } from '@components/ui/tabs/TabPanel.tsx'
 import { TabsContextProvider } from '@components/ui/tabs/TabsContextProvider.tsx'
 import { AuthSettings } from './AuthSettings.tsx'
+import { IgnoredFolders } from './IgnoredFolders.tsx'
 
 type SettingsDialogTabs = 'auth' | 'ignored-folders'
 
@@ -51,7 +52,7 @@ export default function SettingsDialog({
       open={isOpen}
       onClose={handleClose}
       title="Settings"
-      className="max-w-md"
+      className="max-w-3xl w-full"
       actions={
         <>
           <Button variant="outlined" disabled={isPending} onClick={handleClose}>
@@ -78,7 +79,9 @@ export default function SettingsDialog({
             setPassword={setPassword}
           />
         </TabPanel>
-        <TabPanel value="ignored-folders" className="pt-4"></TabPanel>
+        <TabPanel value="ignored-folders" className="pt-4">
+          <IgnoredFolders guiConfig={guiConfig} error={error} />
+        </TabPanel>
       </TabsContextProvider>
     </Dialog>
   )
