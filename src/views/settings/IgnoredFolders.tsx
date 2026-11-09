@@ -90,7 +90,7 @@ function Row({ folder, devices }: RowRrops) {
           onClick={() => removeIgnoredFolder(folder.deviceId, folder.id)}
           disabled={isPending}
         >
-          <DeleteIcon />
+          <DeleteIcon fill="var(--color-error)" />
         </IconButton>
       </td>
     </tr>
