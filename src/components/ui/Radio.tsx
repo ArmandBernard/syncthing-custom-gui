@@ -3,7 +3,7 @@ import type { InputHTMLAttributes } from 'preact'
 import type { StringProps } from './stringProps'
 
 export interface RadioProps extends StringProps<
-  Omit<InputHTMLAttributes<HTMLInputElement>, 'type'>
+  Omit<InputHTMLAttributes<HTMLInputElement>, 'type' | 'role'>
 > {
   label?: string
 }
