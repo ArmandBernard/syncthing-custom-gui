@@ -105,6 +105,8 @@ function AcceptFolderAlert({
   const [offer1Device, offer1Offer] = offerPair1
 
   function handleOnIgnoreClick() {
+    // This warning is a false positive
+    // oxlint-disable-next-line react/purity
     const time = new Date().toISOString()
 
     ignoreOffers(
