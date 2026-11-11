@@ -12,3 +12,9 @@ export interface Paginated {
   page: number
   perpage: number
 }
+
+declare global {
+  interface Date {
+    toISOString(): ISODateTime
+  }
+}

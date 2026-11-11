@@ -10,3 +10,4 @@ The project is an alternative GUI for [Syncthing](https://syncthing.net/).
 ## Instructions
 
 - After making a change, run format and lint, they are pretty fast.
+- The [source code of Syncthing](https://github.com/syncthing/syncthing) can be used for reference when trying to determine how the API works, and when the user asks how the base app does something.

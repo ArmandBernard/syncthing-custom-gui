@@ -8,7 +8,7 @@ import { SettingsIcon } from '@components/icons/SettingsIcon.tsx'
 import { useSyncthingQuery } from '@hooks/useSyncthingQuery.ts'
 import { lazy, Suspense, useState } from 'react'
 
-const SettingsDialog = lazy(() => import('./SettingsDialog.tsx'))
+const SettingsDialog = lazy(() => import('../settings/SettingsDialog.tsx'))
 const ShareDeviceDialog = lazy(() => import('../this-device/ShareDeviceDialog.tsx'))
 
 const THEME_OPTIONS = [

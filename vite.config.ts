@@ -46,7 +46,8 @@ export default defineConfig(({ mode }) => ({
       '@styles': alias('./src/styles'),
     },
   },
-  test: { environment: 'happy-dom' },
+  // Inlined so the preact/compat alias applies to react-query's own 'react' imports.
+  test: { environment: 'happy-dom', server: { deps: { inline: ['@tanstack/react-query'] } } },
   server: { proxy },
   preview: { proxy },
 }))

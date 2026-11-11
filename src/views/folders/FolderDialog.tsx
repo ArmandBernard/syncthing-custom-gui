@@ -142,7 +142,7 @@ export default function FolderDialog({
             selectedValue={currentTab}
             onSelect={(value) => setCurrentTab(value)}
           >
-            <Tabs value="general" onChange={() => {}}>
+            <Tabs>
               <Tab value="general" label="General" />
               <Tab value="sharing" label="Sharing" />
             </Tabs>
