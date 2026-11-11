@@ -1,4 +1,4 @@
-import { forwardRef, type Ref } from 'react'
+import { type Ref } from 'react'
 import type { ButtonHTMLAttributes, HTMLAttributes } from 'preact'
 import type { StringProps } from './stringProps'
 
@@ -17,10 +17,14 @@ const VARIANT_CLASSES: Record<CardVariant, string> = {
   outlined: 'bg-surface border border-outline-variant',
 }
 
-export const Card = forwardRef<HTMLDivElement | HTMLButtonElement, CardProps>(function Card(
-  { variant = 'elevated', className = '', onClick, disabled, ...props },
+export function Card({
+  variant = 'elevated',
+  className = '',
+  onClick,
+  disabled,
   ref,
-) {
+  ...props
+}: CardProps) {
   const base = `rounded-md p-4 text-on-surface transition-[box-shadow,filter] ${VARIANT_CLASSES[variant]} ${className}`
 
   if (onClick) {
@@ -37,4 +41,4 @@ export const Card = forwardRef<HTMLDivElement | HTMLButtonElement, CardProps>(fu
   }
 
   return <div ref={ref as Ref<HTMLDivElement>} className={base} {...props} />
-})
+}

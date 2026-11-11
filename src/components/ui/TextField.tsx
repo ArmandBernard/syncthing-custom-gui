@@ -1,13 +1,10 @@
-import { forwardRef, type ReactNode, useId, useState } from 'react'
+import { type ReactNode, useId, useState } from 'react'
 import type { InputHTMLAttributes } from 'preact'
 import type { StringProps } from './stringProps'
 
 export type TextFieldVariant = 'filled' | 'outlined'
 
-export interface TextFieldProps extends StringProps<
-  InputHTMLAttributes<HTMLInputElement>,
-  'className' | 'id'
-> {
+export interface TextFieldProps extends StringProps<InputHTMLAttributes, 'className' | 'id'> {
   variant?: TextFieldVariant
   label: string
   supportingText?: ReactNode
@@ -15,24 +12,22 @@ export interface TextFieldProps extends StringProps<
   endAdornment?: ReactNode
 }
 
-export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function TextField(
-  {
-    variant = 'outlined',
-    label,
-    supportingText,
-    error = false,
-    className = '',
-    id,
-    onFocus,
-    onBlur,
-    onChange,
-    defaultValue,
-    value,
-    endAdornment,
-    ...props
-  },
+export function TextField({
+  variant = 'outlined',
+  label,
+  supportingText,
+  error = false,
+  className = '',
+  id,
+  onFocus,
+  onBlur,
+  onChange,
+  defaultValue,
+  value,
+  endAdornment,
   ref,
-) {
+  ...props
+}: TextFieldProps) {
   const generatedId = useId()
   const inputId = id ?? generatedId
   const supportingId = `${inputId}-supporting`
@@ -76,7 +71,7 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
               onChange?.(event)
             }}
             className="flex-1 disabled:opacity-[0.38] outline-none"
-            {...props}
+            {...(props as InputHTMLAttributes)}
           />
           {endAdornment && <div className="-mr-4">{endAdornment}</div>}
         </div>
@@ -123,4 +118,4 @@ export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function T
       )}
     </div>
   )
-})
+}

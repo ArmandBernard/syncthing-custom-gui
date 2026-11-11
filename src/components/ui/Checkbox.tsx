@@ -1,43 +1,37 @@
-import {
-  forwardRef,
-  type ReactNode,
-  useEffect,
-  useId,
-  useImperativeHandle,
-  useRef,
-  useState,
-} from 'react'
+import { type ReactNode, useEffect, useId, useRef, useState } from 'react'
 import type { InputHTMLAttributes } from 'preact'
 import type { StringProps } from './stringProps'
 
-export interface CheckboxProps extends StringProps<
-  Omit<InputHTMLAttributes<HTMLInputElement>, 'type'>
-> {
+export interface CheckboxProps extends StringProps<Omit<InputHTMLAttributes, 'type' | 'role'>> {
   label?: ReactNode
   labelPosition?: 'left' | 'right'
   /** Visual "mixed" state. Must be set imperatively on the DOM node, since HTML has no `indeterminate` attribute. */
   indeterminate?: boolean
 }
 
-export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Checkbox(
-  {
-    label,
-    labelPosition = 'left',
-    indeterminate = false,
-    className = '',
-    disabled,
-    checked,
-    defaultChecked,
-    onChange,
-    id,
-    ...rest
-  },
+export function Checkbox({
+  label,
+  labelPosition = 'left',
+  indeterminate = false,
+  className = '',
+  disabled,
+  checked,
+  defaultChecked,
+  onChange,
+  id,
   ref,
-) {
+  ...rest
+}: CheckboxProps) {
   const generatedId = useId()
   const inputId = id ?? generatedId
   const internalRef = useRef<HTMLInputElement>(null)
-  useImperativeHandle(ref, () => internalRef.current as HTMLInputElement)
+
+  // Keep our own handle on the input (for `indeterminate`) while still forwarding it to the caller's ref, if any.
+  function setRefs(node: HTMLInputElement | null) {
+    internalRef.current = node
+    if (typeof ref === 'function') ref(node)
+    else if (ref) ref.current = node
+  }
 
   useEffect(() => {
     if (internalRef.current) {
@@ -64,7 +58,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
         }`}
       >
         <input
-          ref={internalRef}
+          ref={setRefs}
           type="checkbox"
           id={inputId}
           checked={checked}
@@ -107,4 +101,4 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(function Che
       {label && labelPosition === 'right' && <span className=" flex-1">{label}</span>}
     </label>
   )
-})
+}

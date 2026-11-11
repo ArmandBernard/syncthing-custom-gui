@@ -1,4 +1,4 @@
-import { forwardRef, useId, useState } from 'react'
+import { useId, useState } from 'react'
 import type { InputHTMLAttributes } from 'preact'
 import type { StringProps } from './stringProps'
 
@@ -8,10 +8,17 @@ export interface SwitchProps extends StringProps<
   label?: string
 }
 
-export const Switch = forwardRef<HTMLInputElement, SwitchProps>(function Switch(
-  { label, className = '', disabled, checked, defaultChecked, onChange, id, ...rest },
+export function Switch({
+  label,
+  className = '',
+  disabled,
+  checked,
+  defaultChecked,
+  onChange,
+  id,
   ref,
-) {
+  ...rest
+}: SwitchProps) {
   const generatedId = useId()
   const inputId = id ?? generatedId
 
@@ -59,4 +66,4 @@ export const Switch = forwardRef<HTMLInputElement, SwitchProps>(function Switch(
       {label && <span className="text-sm text-on-surface">{label}</span>}
     </label>
   )
-})
+}

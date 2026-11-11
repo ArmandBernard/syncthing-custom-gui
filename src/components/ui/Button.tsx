@@ -1,4 +1,3 @@
-import { forwardRef } from 'react'
 import type { ButtonHTMLAttributes } from 'preact'
 import type { StringProps } from './stringProps'
 
@@ -17,10 +16,16 @@ const VARIANT_CLASSES: Record<ButtonVariant, string> = {
   elevated: 'bg-surface-low text-primary shadow-sm hover:shadow-md active:shadow-sm',
 }
 
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
-  { variant = 'filled', className = '', type = 'button', disabled, onClick, onKeyDown, ...props },
+export function Button({
+  variant = 'filled',
+  className = '',
+  type = 'button',
+  disabled,
+  onClick,
+  onKeyDown,
   ref,
-) {
+  ...props
+}: ButtonProps) {
   return (
     <button
       ref={ref}
@@ -35,4 +40,4 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       {...props}
     />
   )
-})
+}

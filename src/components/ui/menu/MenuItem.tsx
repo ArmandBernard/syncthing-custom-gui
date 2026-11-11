@@ -5,7 +5,7 @@ import type { StringProps } from '../stringProps'
 export interface MenuItemProps extends StringProps<
   Omit<
     ButtonHTMLAttributes<HTMLButtonElement> & AnchorHTMLAttributes<HTMLAnchorElement>,
-    'onSelect'
+    'onSelect' | 'role'
   >
 > {
   onClick?: () => void
@@ -45,7 +45,7 @@ export function MenuItem({
         aria-disabled={disabled}
         onClick={disabled ? undefined : onClick}
         className={`${ITEM_CLASS_NAME} ${className}`}
-        {...(props as AnchorHTMLAttributes<HTMLAnchorElement>)}
+        {...(props as Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'role'>)}
       >
         {children}
       </a>

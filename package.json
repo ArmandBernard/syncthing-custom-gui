@@ -28,7 +28,7 @@
     "@visx/shape": "^4.0.0",
     "@visx/tooltip": "^4.0.0",
     "dayjs": "^1.11.21",
-    "preact": "^10.29.7",
+    "preact": "^11.2.0",
     "tailwindcss": "^4.3.2"
   },
   "devDependencies": {
