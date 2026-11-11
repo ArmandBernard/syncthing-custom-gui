@@ -1,21 +1,20 @@
 import type { ComponentChildren } from 'preact'
 import { useCallback, useEffect, useState } from 'preact/hooks'
+import { useSystemPreferredTheme } from '@lib/useSystemPreferredTheme'
 import { getStoredTheme, setStoredTheme, type Theme } from '@lib/theme'
 import { ThemeContext } from './ThemeContext'
 
 export function ThemeProvider({ children }: { children: ComponentChildren }) {
   const [theme, setThemeState] = useState<Theme>(() => getStoredTheme())
 
+  const systemTheme = useSystemPreferredTheme()
+  const effectiveTheme = theme === 'system' ? (systemTheme ?? 'light') : theme
+
   useEffect(() => {
     const root = document.documentElement
     root.classList.remove('light', 'dark')
-
-    let effectiveTheme = theme
-    if (theme === 'system') {
-      effectiveTheme = window.matchMedia('(prefers-color-scheme: dark)') ? 'dark' : 'light'
-    }
     root.classList.add(effectiveTheme)
-  }, [theme])
+  }, [effectiveTheme])
 
   const setTheme = useCallback((next: Theme) => {
     setStoredTheme(next)
