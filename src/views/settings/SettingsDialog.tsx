@@ -35,14 +35,18 @@ export default function SettingsDialog({
   } = useSyncthingMutation('PATCH /config/gui')
   const {
     mutateAsync: patchDevices,
-    isPending: devicesIsPending,
-    error: devicesError,
+    isPending: patchDevicesIsPending,
+    error: patchDevicesError,
   } = useSyncthingBatchMutation('PATCH /config/devices/:id')
-  const { data: guiConfig } = useSyncthingQuery('GET /config/gui', { enabled: isOpen })
-  const { data: devices } = useSyncthingQuery('GET /config/devices', { enabled: isOpen })
+  const { data: guiConfig, error: configError } = useSyncthingQuery('GET /config/gui', {
+    enabled: isOpen,
+  })
+  const { data: devices, error: devicesError } = useSyncthingQuery('GET /config/devices', {
+    enabled: isOpen,
+  })
 
-  const isPending = guiIsPending || devicesIsPending
-  const error = guiError ?? devicesError
+  const isPending = guiIsPending || patchDevicesIsPending
+  const error = guiError ?? devicesError ?? configError ?? patchDevicesError
 
   function handleClose() {
     setUser('')

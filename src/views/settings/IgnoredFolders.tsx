@@ -33,7 +33,7 @@ function getAllIgnoredFolders(devices: DeviceConfiguration[] | undefined) {
 }
 
 export function IgnoredFolders({ removed, onRemove, error }: IgnoredFoldersProps) {
-  const { data: devices } = useSyncthingQuery('GET /config/devices')
+  const { data: devices, error: devicesError } = useSyncthingQuery('GET /config/devices')
 
   const ignoredFolders = getAllIgnoredFolders(devices).filter(
     (folder) => !removed.some((r) => r.deviceId === folder.deviceId && r.folderId === folder.id),
@@ -57,7 +57,7 @@ export function IgnoredFolders({ removed, onRemove, error }: IgnoredFoldersProps
           ))}
         </tbody>
       </Table>
-      {error && <ErrorAlert error={error} />}
+      {error && <ErrorAlert error={error ?? devicesError} />}
     </div>
   )
 }
