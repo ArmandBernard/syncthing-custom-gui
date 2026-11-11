@@ -4,10 +4,7 @@ import type { StringProps } from './stringProps'
 
 export type TextFieldVariant = 'filled' | 'outlined'
 
-export interface TextFieldProps extends StringProps<
-  InputHTMLAttributes<HTMLInputElement>,
-  'className' | 'id'
-> {
+export interface TextFieldProps extends StringProps<InputHTMLAttributes, 'className' | 'id'> {
   variant?: TextFieldVariant
   label: string
   supportingText?: ReactNode
@@ -74,7 +71,7 @@ export function TextField({
               onChange?.(event)
             }}
             className="flex-1 disabled:opacity-[0.38] outline-none"
-            {...props}
+            {...(props as InputHTMLAttributes)}
           />
           {endAdornment && <div className="-mr-4">{endAdornment}</div>}
         </div>
