@@ -6,9 +6,44 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>syncthing-custom-gui</title>
+    <script>
+      // Sets the theme class before first paint so there is no flash of the wrong theme while the
+      // bundle loads. Keep in sync with getStoredTheme (src/lib/theme.ts) and ThemeProvider, which
+      // takes over once the app is running.
+      ;(function () {
+        var stored
+        try {
+          stored = localStorage.getItem('syncthing-theme')
+        } catch (e) {
+          // storage can be unavailable (e.g. blocked); fall back to the system theme
+        }
+        var dark =
+          stored === 'dark' ||
+          (stored !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+        document.documentElement.classList.add(dark ? 'dark' : 'light')
+      })()
+    </script>
+    <!-- Linked here rather than imported from index.tsx so it is render-blocking in dev too,
+         avoiding a flash of unstyled content while the bundle loads. -->
+    <link rel="stylesheet" href="/src/styles/index.css" />
   </head>
   <body>
-    <div id="root" style="background-color: black"></div>
+    <div id="root">
+      <!-- Inline styles so there is no class name to clash with the app's. Colours come from the theme
+           tokens in index.css, switched by the theme class set by the script above. -->
+      <div
+        style="
+          height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: var(--md-on-surface);
+          font-family: sans-serif;
+        "
+      >
+        Loading syncthing-custom-gui...
+      </div>
+    </div>
     <script type="module" src="/src/index.tsx"></script>
   </body>
 </html>

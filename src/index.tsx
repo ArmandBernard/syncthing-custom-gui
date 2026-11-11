@@ -3,7 +3,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AuthProvider } from './hooks/AuthProvider.tsx'
 import { ThemeProvider } from './hooks/ThemeProvider.tsx'
 import { SnackbarProvider } from './hooks/SnackbarProvider.tsx'
-import './styles/index.css'
 import App from './App.tsx'
 import { InvalidationLayer } from './InvalidationLayer.tsx'
 
