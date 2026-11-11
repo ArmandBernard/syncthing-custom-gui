@@ -6,6 +6,7 @@ import { RelativeTime } from '@components/RelativeTime.tsx'
 import { useSyncthingQuery } from '@hooks/useSyncthingQuery.ts'
 import { Button } from '@components/ui/Button.tsx'
 import { useSyncthingMutation } from '@hooks/useSyncthingMutation.ts'
+import { useSyncthingBatchMutation } from '@hooks/useSyncthingBatchMutation.ts'
 import { useSyncthingInvalidate } from '@hooks/useSyncthingInvalidate.ts'
 import { lazy, useState } from 'preact/compat'
 import { getEnumKeys } from '@lib/getEnumKeys.ts'
@@ -93,47 +94,34 @@ function AcceptFolderAlert({
   deviceDictionary: Map<DeviceID, DeviceConfiguration>
   onEditClick: (folderId: FolderID) => void
 }) {
-  const { mutateAsync: patchDevice, isPending: ignoreOfferIsPending } = useSyncthingMutation(
-    'PATCH /config/devices/:id',
-  )
   const invalidate = useSyncthingInvalidate('GET /cluster/pending/folders')
+  // One batch mutation, so isPending covers every device patch and the refetch afterwards.
+  const { mutate: ignoreOffers, isPending: ignoreOfferIsPending } = useSyncthingBatchMutation(
+    'PATCH /config/devices/:id',
+    { onSettled: () => invalidate() },
+  )
   const offers = getEnumEntries(folder.offeredBy)
   const offerPair1 = offers[0]
   const [offer1Device, offer1Offer] = offerPair1
 
-  async function handleOnIgnoreClick() {
-    const now = new Date().toISOString()
+  function handleOnIgnoreClick() {
+    const time = new Date().toISOString()
 
-    const pendingQueries = []
+    ignoreOffers(
+      offers.flatMap(([deviceId, offer]) => {
+        const device = deviceDictionary.get(deviceId)
+        if (!device) {
+          return []
+        }
 
-    for (const [deviceId, offer] of offers) {
-      const device = deviceDictionary.get(deviceId)
-
-      if (!device) {
-        continue
-      }
-      pendingQueries.push(
-        patchDevice({
+        return {
           params: { id: deviceId },
           body: {
-            ignoredFolders: [
-              ...device.ignoredFolders,
-              {
-                time: now,
-                id: folderID,
-                label: offer.label,
-              },
-            ],
+            ignoredFolders: [...device.ignoredFolders, { time, id: folderID, label: offer.label }],
           },
-        }),
-      )
-    }
-
-    try {
-      await Promise.all(pendingQueries)
-    } finally {
-      await invalidate()
-    }
+        }
+      }),
+    )
   }
 
   function handleOnAddClick() {
