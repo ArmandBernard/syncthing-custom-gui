@@ -2,6 +2,7 @@ import { act, cleanup, renderHook } from '@testing-library/preact'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { useCurrentTime } from './useCurrentTime.ts'
 import dayJs from 'dayjs'
+import { getTimeoutTimers } from '@lib/getTimeoutTimers.testUtil.ts'
 
 const startTime = dayJs('2026-01-01T00:00:00Z')
 
@@ -26,10 +27,10 @@ describe('useCurrentTime', () => {
     expect(result.current.toISOString()).toBe(startTime.toISOString())
   })
 
-  it('does not run a timer while nothing is mounted', () => {
-    renderUseCurrentTime().unmount()
+  it('does not run a timer while nothing is mounted', async () => {
+    await unmountHook(renderUseCurrentTime().unmount)
 
-    expect(vi.getTimerCount()).toBe(0)
+    expect(getTimeoutTimers()).toHaveLength(0)
   })
 
   it('updates the time every second', async () => {
@@ -63,7 +64,7 @@ describe('useCurrentTime', () => {
     const first = renderUseCurrentTime()
     const second = renderUseCurrentTime()
 
-    expect(vi.getTimerCount()).toBe(1)
+    expect(getTimeoutTimers()).toHaveLength(1)
 
     await advance(1000)
     expect(first.result.current.toISOString()).toBe(startTime.add(1, 's').toISOString())
@@ -74,36 +75,36 @@ describe('useCurrentTime', () => {
     const stays = renderUseCurrentTime()
     const leaves = renderUseCurrentTime()
 
-    leaves.unmount()
+    await unmountHook(leaves.unmount)
     await advance(2000)
 
-    expect(vi.getTimerCount()).toBe(1)
+    expect(getTimeoutTimers()).toHaveLength(1)
     expect(stays.result.current.toISOString()).toBe(startTime.add(2, 's').toISOString())
   })
 
   it('stops ticking when the last hook unmounts', async () => {
     const { unmount } = renderUseCurrentTime()
 
-    unmount()
+    await unmountHook(unmount)
     await advance(5000)
 
-    expect(vi.getTimerCount()).toBe(0)
+    expect(getTimeoutTimers()).toHaveLength(0)
   })
 
   it('does not stack timers when remounting before the pending tick fires', async () => {
-    renderUseCurrentTime().unmount()
+    await unmountHook(renderUseCurrentTime().unmount)
     await advance(500)
 
     const { result } = renderUseCurrentTime()
 
-    expect(vi.getTimerCount()).toBe(1)
+    expect(getTimeoutTimers()).toHaveLength(1)
 
     await advance(3000)
     expect(result.current.toISOString()).toBe(startTime.add(3500, 'ms').toISOString())
   })
 
-  it('refreshes a stale time when mounting after an idle period', () => {
-    renderUseCurrentTime().unmount()
+  it('refreshes a stale time when mounting after an idle period', async () => {
+    await unmountHook(renderUseCurrentTime().unmount)
 
     vi.setSystemTime(new Date('2026-01-01T01:00:00Z'))
     const { result } = renderUseCurrentTime()
@@ -116,4 +117,9 @@ function advance(ms: number) {
   return act(async () => {
     await vi.advanceTimersByTimeAsync(ms)
   })
+}
+
+// Unmounting inside act flushes Preact's deferred effect cleanup, which is what clears our timer.
+function unmountHook(unmount: () => void) {
+  return act(() => unmount())
 }
