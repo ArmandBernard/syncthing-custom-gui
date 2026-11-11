@@ -1,4 +1,5 @@
-import { type ReactNode, useRef, useState } from 'react'
+import type { ComponentChildren } from 'preact'
+import { useRef, useState } from 'preact/hooks'
 import { useDeviceID } from '../device-id/useDeviceID.ts'
 import type { DeviceID } from '@lib/syncthing/types/common.ts'
 import type { SystemConnections } from '@lib/syncthing/types/system.ts'
@@ -29,7 +30,7 @@ interface Rates {
  * Samples are taken from the query cache as each poll lands, rather than from
  * the latest value in render, so every poll is sampled exactly once.
  */
-export function TransferHistoryContextProvider({ children }: { children: ReactNode }) {
+export function TransferHistoryContextProvider({ children }: { children: ComponentChildren }) {
   const myId = useDeviceID()
   const lastSamples = useRef<Record<DeviceID, Sample>>({})
   const [history, setHistory] =

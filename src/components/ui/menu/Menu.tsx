@@ -1,13 +1,12 @@
 import {
-  Children,
+  toChildArray,
   cloneElement,
-  useId,
-  useRef,
-  useState,
-  type ReactElement,
-  type ReactNode,
-} from 'react'
-import type { TargetedKeyboardEvent, TargetedToggleEvent } from 'preact'
+  type ComponentChildren,
+  type TargetedKeyboardEvent,
+  type TargetedToggleEvent,
+  type VNode,
+} from 'preact'
+import { useId, useRef, useState } from 'preact/hooks'
 import { usePopoverPosition, type PopoverOrigin } from '@hooks/usePopoverPosition.ts'
 import { useRovingMenuFocus } from '@hooks/useRovingMenuFocus.ts'
 import { MenuItem } from './MenuItem.tsx'
@@ -25,9 +24,9 @@ export interface MenuProps {
   /** Point on the popup placed at `anchorOrigin`. See `anchorOrigin`. */
   transformOrigin?: PopoverOrigin
   /** `Menu.Item`/`Menu.Toggle` elements only. */
-  children: ReactNode
+  children: ComponentChildren
   /** The Button to render **/
-  button: ReactElement<HTMLButtonElement>
+  button: VNode<HTMLButtonElement>
 }
 
 /**
@@ -191,7 +190,7 @@ export function Menu({ anchorOrigin, transformOrigin, children, button }: MenuPr
         {/* The ref accesses below (`_itemRef`, and `requestClose` in `onSelect`) only run when the
             DOM node attaches or the user selects an item, never during render. */}
         {/* oxlint-disable-next-line react/refs */}
-        {Children.map(children, (child, index) => {
+        {toChildArray(children).map((child, index) => {
           if (isMenuItemElement(child)) {
             return cloneElement(child, {
               _focused: focusedIndex === index,

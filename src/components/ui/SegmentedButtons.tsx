@@ -1,4 +1,4 @@
-import { useId } from 'react'
+import { useId } from 'preact/hooks'
 
 export interface SegmentedButtonsOption {
   value: string

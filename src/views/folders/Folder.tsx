@@ -1,5 +1,5 @@
 import type { DeviceConfiguration, FolderConfiguration } from '@lib/syncthing/types/config'
-import { useState } from 'react'
+import { useState } from 'preact/hooks'
 import { useSyncthingQuery } from '@hooks/useSyncthingQuery.ts'
 import { CardAccordion } from '@components/ui/CardAccordion.tsx'
 import { TimeSpan } from '@components/TimeSpan.tsx'

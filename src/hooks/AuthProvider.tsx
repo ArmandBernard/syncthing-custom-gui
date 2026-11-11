@@ -1,8 +1,9 @@
-import { type ReactNode, Suspense, useCallback, useState } from 'react'
+import type { ComponentChildren } from 'preact'
+import { useCallback, useState } from 'preact/hooks'
+import { lazy, Suspense } from 'preact/compat'
 import { useSyncthingQuery } from './useSyncthingQuery'
 import { AuthContext, type AuthStatus } from './AuthContext'
 import { CircularProgressCentred } from '@components/CircularProgressCentred.tsx'
-import { lazy } from 'preact/compat'
 import { useSyncthingMutation } from '@hooks/useSyncthingMutation.ts'
 import type { RequestOptions } from '@lib/syncthing/RequestOptions.ts'
 import type { EndpointMap } from '@lib/syncthing/endpoints.ts'
@@ -11,7 +12,7 @@ const LoginForm = lazy(() => import('../views/LoginForm.tsx'))
 
 const POLL_INTERVAL_MS = 30000
 
-export function AuthProvider({ children }: { children: ReactNode }) {
+export function AuthProvider({ children }: { children: ComponentChildren }) {
   // Allowed to run unauthenticated
   const { error, isSuccess, isError, refetch } = useSyncthingQuery('GET /system/ping', {
     refetchInterval: POLL_INTERVAL_MS,

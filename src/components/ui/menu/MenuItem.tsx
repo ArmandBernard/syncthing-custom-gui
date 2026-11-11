@@ -1,5 +1,4 @@
-import type { ReactNode } from 'react'
-import type { AnchorHTMLAttributes, ButtonHTMLAttributes } from 'preact'
+import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ComponentChildren } from 'preact'
 import type { StringProps } from '../stringProps'
 
 export interface MenuItemProps extends StringProps<
@@ -12,7 +11,7 @@ export interface MenuItemProps extends StringProps<
   /** Renders the item as a link instead of a button, so the destination shows on hover/status bar. */
   href?: string
   disabled?: boolean
-  children: ReactNode
+  children: ComponentChildren
   /** Internal: injected by Menu via cloneElement, do not pass directly. */
   _focused?: boolean
   /** Internal: injected by Menu via cloneElement, do not pass directly. */

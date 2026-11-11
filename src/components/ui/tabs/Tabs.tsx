@@ -1,4 +1,4 @@
-import { type PropsWithChildren } from 'react'
+import type { PropsWithChildren } from 'preact/compat'
 
 export interface TabsProps extends PropsWithChildren {
   'aria-label'?: string

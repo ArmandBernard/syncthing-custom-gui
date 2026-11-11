@@ -1,5 +1,4 @@
-import { type Ref } from 'react'
-import type { ButtonHTMLAttributes, HTMLAttributes } from 'preact'
+import type { ButtonHTMLAttributes, HTMLAttributes, Ref } from 'preact'
 import type { StringProps } from './stringProps'
 
 export type CardVariant = 'elevated' | 'filled' | 'outlined'

@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext } from 'preact/hooks'
 import { SnackbarContext, type SnackbarContextValue } from './SnackbarContext'
 
 export function useSnackbar(): SnackbarContextValue {

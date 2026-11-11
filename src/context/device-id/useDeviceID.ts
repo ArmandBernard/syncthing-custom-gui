@@ -1,5 +1,5 @@
 import type { DeviceID } from '@lib/syncthing/types/common.ts'
-import { useContext } from 'react'
+import { useContext } from 'preact/hooks'
 import { DeviceIDContext } from './DeviceIdContext.ts'
 
 export function useDeviceID(): DeviceID {

@@ -1,5 +1,5 @@
 import { Dialog } from '@components/ui/Dialog.tsx'
-import { useState } from 'react'
+import { useState } from 'preact/hooks'
 import { Button } from '@components/ui/Button.tsx'
 import { useSyncthingMutation } from '@hooks/useSyncthingMutation.ts'
 import { useAuth } from '@hooks/useAuth.ts'

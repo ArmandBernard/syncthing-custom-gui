@@ -1,5 +1,5 @@
 import { useMutation, type UseMutationOptions } from '@tanstack/react-query'
-import { useCallback } from 'react'
+import { useCallback } from 'preact/hooks'
 import { syncthingRequest } from '@lib/syncthing/syncthingRequest'
 import type { EndpointMap } from '@lib/syncthing/endpoints'
 import type { RequestOptions } from '@lib/syncthing/RequestOptions.ts'

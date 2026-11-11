@@ -1,4 +1,5 @@
-import { useCallback, useLayoutEffect, useState, type RefObject } from 'react'
+import type { RefObject } from 'preact'
+import { useCallback, useLayoutEffect, useState } from 'preact/hooks'
 
 export interface PopoverOrigin {
   vertical: 'top' | 'bottom'

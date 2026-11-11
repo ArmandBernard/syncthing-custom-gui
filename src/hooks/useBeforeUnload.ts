@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect } from 'preact/hooks'
 
 export function useBeforeUnload(callback: () => void): void {
   useEffect(() => {

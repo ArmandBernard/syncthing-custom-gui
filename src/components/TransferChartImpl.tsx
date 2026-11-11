@@ -1,5 +1,5 @@
-import { useEffect, useId, useMemo, useState } from 'react'
 import type { TargetedPointerEvent } from 'preact'
+import { useEffect, useId, useMemo, useState } from 'preact/hooks'
 import { ParentSize } from '@visx/responsive'
 import { scaleLinear } from '@visx/scale'
 import { AreaClosed } from '@visx/shape'

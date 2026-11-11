@@ -1,4 +1,4 @@
-import { lazy, type PropsWithChildren, Suspense } from 'react'
+import { lazy, type PropsWithChildren, Suspense } from 'preact/compat'
 import type { TransferHistoryPoint } from '@context/transfer-history/useDeviceTransferHistory.ts'
 
 const TransferChartImpl = lazy(() => import('./TransferChartImpl'))

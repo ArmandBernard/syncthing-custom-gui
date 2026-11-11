@@ -1,5 +1,4 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
+import { render } from 'preact'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AuthProvider } from './hooks/AuthProvider.tsx'
 import { ThemeProvider } from './hooks/ThemeProvider.tsx'
@@ -15,18 +14,17 @@ const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: false } },
 })
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <SnackbarProvider>
-          <AuthProvider>
-            <InvalidationLayer>
-              <App />
-            </InvalidationLayer>
-          </AuthProvider>
-        </SnackbarProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
-  </StrictMode>,
+render(
+  <QueryClientProvider client={queryClient}>
+    <ThemeProvider>
+      <SnackbarProvider>
+        <AuthProvider>
+          <InvalidationLayer>
+            <App />
+          </InvalidationLayer>
+        </AuthProvider>
+      </SnackbarProvider>
+    </ThemeProvider>
+  </QueryClientProvider>,
+  document.getElementById('root')!,
 )

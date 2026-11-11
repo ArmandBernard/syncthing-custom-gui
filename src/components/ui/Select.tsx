@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useId, useRef, useState } from 'react'
 import type { TargetedKeyboardEvent, TargetedToggleEvent } from 'preact'
+import { useCallback, useEffect, useId, useRef, useState } from 'preact/hooks'
 import { usePopoverPosition } from '@hooks/usePopoverPosition.ts'
 
 export interface SelectOption {

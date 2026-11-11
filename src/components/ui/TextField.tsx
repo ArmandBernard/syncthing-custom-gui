@@ -1,5 +1,5 @@
-import { type ReactNode, useId, useState } from 'react'
-import type { InputHTMLAttributes } from 'preact'
+import type { ComponentChildren, InputHTMLAttributes } from 'preact'
+import { useId, useState } from 'preact/hooks'
 import type { StringProps } from './stringProps'
 
 export type TextFieldVariant = 'filled' | 'outlined'
@@ -7,9 +7,9 @@ export type TextFieldVariant = 'filled' | 'outlined'
 export interface TextFieldProps extends StringProps<InputHTMLAttributes, 'className' | 'id'> {
   variant?: TextFieldVariant
   label: string
-  supportingText?: ReactNode
+  supportingText?: ComponentChildren
   error?: boolean
-  endAdornment?: ReactNode
+  endAdornment?: ComponentChildren
 }
 
 export function TextField({
@@ -22,6 +22,7 @@ export function TextField({
   onFocus,
   onBlur,
   onChange,
+  onInput,
   defaultValue,
   value,
   endAdornment,
@@ -66,8 +67,11 @@ export function TextField({
               setIsFocused(false)
               onBlur?.(event)
             }}
-            onChange={(event) => {
+            // Preact's native `onChange` only fires on blur (compat remaps it to `onInput`). We listen to
+            // `input` directly so `onChange` keeps meaning "the value changed" without depending on compat.
+            onInput={(event) => {
               setUncontrolledValue(event.currentTarget.value)
+              onInput?.(event)
               onChange?.(event)
             }}
             className="flex-1 disabled:opacity-[0.38] outline-none"

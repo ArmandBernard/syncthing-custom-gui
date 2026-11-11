@@ -1,0 +1,15 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["react", "typescript", "oxc"],
+  "options": {
+    "typeAware": true,
+    "typeCheck": true,
+  },
+  "rules": {
+    "react/rules-of-hooks": "error",
+    // oxlint's React rules only recognise hooks imported from 'react', so with preact/hooks this
+    // rule treats `useRef` results as plain hook values and flags ordinary `ref.current` mutations.
+    "react/immutability": "off",
+    "react/only-export-components": ["warn", { "allowConstantExport": true }],
+  },
+}

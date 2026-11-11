@@ -1,4 +1,4 @@
-import { useId } from 'react'
+import { useId } from 'preact/hooks'
 import { Radio } from './Radio'
 
 export interface RadioGroupOption {

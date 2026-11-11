@@ -1,4 +1,4 @@
-import type { PropsWithChildren } from 'react'
+import type { PropsWithChildren } from 'preact/compat'
 import { useTabsContext } from './useTabsContext'
 
 export interface TabPanelProps extends PropsWithChildren {

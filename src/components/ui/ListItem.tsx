@@ -1,11 +1,11 @@
-import type { ReactNode } from 'react'
+import type { ComponentChildren } from 'preact'
 
 export default function ListItem({
   leftSlot,
   rightSlot,
 }: {
-  leftSlot: ReactNode
-  rightSlot: ReactNode
+  leftSlot: ComponentChildren
+  rightSlot: ComponentChildren
 }) {
   return (
     <li className="flex justify-between py-0.5">

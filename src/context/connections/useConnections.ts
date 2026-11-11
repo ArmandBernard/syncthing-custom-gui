@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext } from 'preact/hooks'
 import { ConnectionsContext } from './ConnectionsContext.ts'
 
 export function useConnections() {

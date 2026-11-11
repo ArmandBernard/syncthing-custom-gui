@@ -4,7 +4,8 @@ import { CircularProgressCentred } from '@components/CircularProgressCentred.tsx
 
 import { useConnections } from '@context/connections/useConnections.ts'
 import { useDeviceID } from '@context/device-id/useDeviceID.ts'
-import { lazy, Suspense, useState } from 'preact/compat'
+import { useState } from 'preact/hooks'
+import { lazy, Suspense } from 'preact/compat'
 import type { DeviceID } from '@lib/syncthing/types/common.ts'
 import { IconButton } from '@components/ui/IconButton.tsx'
 import { MoreVertIcon } from '@components/icons/MoreVertIcon.tsx'
