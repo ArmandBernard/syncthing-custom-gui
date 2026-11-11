@@ -1,4 +1,4 @@
-import { forwardRef, type ReactNode } from 'react'
+import { type ReactNode } from 'react'
 import type { ButtonHTMLAttributes } from 'preact'
 import type { StringProps } from './stringProps'
 
@@ -51,19 +51,17 @@ function RemoveIcon() {
   )
 }
 
-export const Chip = forwardRef<HTMLButtonElement, ChipProps>(function Chip(
-  {
-    label,
-    children,
-    selected = false,
-    onRemove,
-    className = '',
-    type = 'button',
-    disabled,
-    ...props
-  },
+export function Chip({
+  label,
+  children,
+  selected = false,
+  onRemove,
+  className = '',
+  type = 'button',
+  disabled,
   ref,
-) {
+  ...props
+}: ChipProps) {
   const content = label ?? children
   const state = selected ? 'selected' : 'unselected'
   const outlineClasses = OUTLINE_CLASSES[state]
@@ -110,4 +108,4 @@ export const Chip = forwardRef<HTMLButtonElement, ChipProps>(function Chip(
       </button>
     </div>
   )
-})
+}

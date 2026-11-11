@@ -1,4 +1,3 @@
-import { forwardRef } from 'react'
 import type { ButtonHTMLAttributes } from 'preact'
 import type { StringProps } from './stringProps'
 
@@ -22,10 +21,13 @@ const VARIANT_CLASSES: Record<IconButtonVariant, string> = {
     'bg-transparent text-on-surface-variant border border-outline-variant hover:bg-on-surface-variant/8 active:bg-on-surface-variant/12',
 }
 
-export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(function IconButton(
-  { variant = 'standard', className = '', type = 'button', ...props },
+export function IconButton({
+  variant = 'standard',
+  className = '',
+  type = 'button',
   ref,
-) {
+  ...props
+}: IconButtonProps) {
   return (
     <button
       ref={ref}
@@ -36,4 +38,4 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(functio
       {...props}
     />
   )
-})
+}

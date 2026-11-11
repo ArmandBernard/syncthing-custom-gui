@@ -1,4 +1,4 @@
-import { forwardRef, type ReactNode } from 'react'
+import { type ReactNode } from 'react'
 import type { ButtonHTMLAttributes, TargetedKeyboardEvent } from 'preact'
 import type { StringProps } from '../stringProps'
 import { useTabsContext } from './useTabsContext'
@@ -21,10 +21,17 @@ export interface TabProps extends StringProps<
  * found via `closest`/`querySelectorAll` rather than tracked in context —
  * this keeps `Tabs` from having to know its children's shape.
  */
-export const Tab = forwardRef<HTMLButtonElement, TabProps>(function Tab(
-  { value, label, icon, className = '', disabled, onClick, onKeyDown, ...props },
+export function Tab({
+  value,
+  label,
+  icon,
+  className = '',
+  disabled,
+  onClick,
+  onKeyDown,
   ref,
-) {
+  ...props
+}: TabProps) {
   const { idBase, selectedValue, onSelect } = useTabsContext()
   const isSelected = selectedValue === value
   const tabId = `${idBase}-tab-${value}`
@@ -96,4 +103,4 @@ export const Tab = forwardRef<HTMLButtonElement, TabProps>(function Tab(
       />
     </button>
   )
-})
+}

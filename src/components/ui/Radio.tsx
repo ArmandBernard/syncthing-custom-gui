@@ -1,4 +1,4 @@
-import { forwardRef, useId, useState } from 'react'
+import { useId, useState } from 'react'
 import type { InputHTMLAttributes } from 'preact'
 import type { StringProps } from './stringProps'
 
@@ -8,10 +8,17 @@ export interface RadioProps extends StringProps<
   label?: string
 }
 
-export const Radio = forwardRef<HTMLInputElement, RadioProps>(function Radio(
-  { label, className = '', disabled, checked, defaultChecked, onChange, id, ...rest },
+export function Radio({
+  label,
+  className = '',
+  disabled,
+  checked,
+  defaultChecked,
+  onChange,
+  id,
   ref,
-) {
+  ...rest
+}: RadioProps) {
   const generatedId = useId()
   const inputId = id ?? generatedId
 
@@ -57,4 +64,4 @@ export const Radio = forwardRef<HTMLInputElement, RadioProps>(function Radio(
       {label && <span className="text-sm text-on-surface">{label}</span>}
     </label>
   )
-})
+}
