@@ -30,7 +30,7 @@ export function IgnoredFolders({ error }: IgnoredFoldersProps) {
 
   return (
     <div className="flex flex-col gap-4">
-      <Table className="grid grid-cols-[7rem_1fr_2fr_8rem_auto]">
+      <Table className="grid grid-cols-[7rem_1fr_2fr_9rem_auto]">
         <thead className="contents">
           <tr className="contents">
             <th>Id</th>
