@@ -1,15 +1,12 @@
-import {
-  type Dispatch,
-  type PropsWithChildren,
-  type ReactNode,
-  type SetStateAction,
-  useId,
-} from 'react'
+import type { ComponentChildren } from 'preact'
+import type { Dispatch, StateUpdater } from 'preact/hooks'
+import { useId } from 'preact/hooks'
+import type { PropsWithChildren } from 'preact/compat'
 
 export type AccordionProps = PropsWithChildren<{
   expanded: boolean
-  setExpanded: Dispatch<SetStateAction<boolean>>
-  buttonBody: ReactNode
+  setExpanded: Dispatch<StateUpdater<boolean>>
+  buttonBody: ComponentChildren
   buttonClassname?: string
 }>
 

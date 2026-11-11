@@ -1,5 +1,5 @@
-import { useId, useState } from 'react'
 import type { InputHTMLAttributes } from 'preact'
+import { useId, useState } from 'preact/hooks'
 import type { StringProps } from './stringProps'
 
 export interface SwitchProps extends StringProps<

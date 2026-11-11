@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext } from 'preact/hooks'
 import { AuthContext, type AuthContextValue } from './AuthContext'
 
 export function useAuth(): AuthContextValue {

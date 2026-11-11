@@ -8,9 +8,9 @@ import { Button } from '@components/ui/Button.tsx'
 import { useSyncthingMutation } from '@hooks/useSyncthingMutation.ts'
 import { useSyncthingBatchMutation } from '@hooks/useSyncthingBatchMutation.ts'
 import { useSyncthingInvalidate } from '@hooks/useSyncthingInvalidate.ts'
-import { lazy, useState } from 'preact/compat'
+import { useState } from 'preact/hooks'
+import { lazy, Suspense } from 'preact/compat'
 import { getEnumKeys } from '@lib/getEnumKeys.ts'
-import { Suspense } from 'react'
 
 const FolderDialog = lazy(() => import('./FolderDialog.tsx'))
 

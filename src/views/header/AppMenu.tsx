@@ -6,7 +6,8 @@ import { useAuth } from '@hooks/useAuth.ts'
 import { IconButton } from '@components/ui/IconButton.tsx'
 import { SettingsIcon } from '@components/icons/SettingsIcon.tsx'
 import { useSyncthingQuery } from '@hooks/useSyncthingQuery.ts'
-import { lazy, Suspense, useState } from 'react'
+import { useState } from 'preact/hooks'
+import { lazy, Suspense } from 'preact/compat'
 
 const SettingsDialog = lazy(() => import('../settings/SettingsDialog.tsx'))
 const ShareDeviceDialog = lazy(() => import('../this-device/ShareDeviceDialog.tsx'))

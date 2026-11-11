@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
-import { createPortal } from 'preact'
+import { type ComponentChildren, createPortal } from 'preact'
+import { useCallback, useEffect, useRef, useState } from 'preact/hooks'
 import { SnackbarContext, type SnackbarOptions } from './SnackbarContext'
 
 interface SnackbarEntry {
@@ -13,7 +13,7 @@ interface SnackbarEntry {
 const DEFAULT_DURATION_MS = 4000
 const EXIT_TRANSITION_MS = 200
 
-export function SnackbarProvider({ children }: { children: ReactNode }) {
+export function SnackbarProvider({ children }: { children: ComponentChildren }) {
   const [queue, setQueue] = useState<SnackbarEntry[]>([])
   // Id of the entry that has started its exit; it is removed once the exit transition finishes.
   const [dismissedId, setDismissedId] = useState<number | null>(null)

@@ -1,4 +1,4 @@
-import { createContext } from 'react'
+import { createContext } from 'preact'
 import type { Theme } from '@lib/theme'
 
 export interface ThemeContextValue {

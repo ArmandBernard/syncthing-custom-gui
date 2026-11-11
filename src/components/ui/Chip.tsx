@@ -1,10 +1,9 @@
-import { type ReactNode } from 'react'
-import type { ButtonHTMLAttributes } from 'preact'
+import type { ButtonHTMLAttributes, ComponentChildren } from 'preact'
 import type { StringProps } from './stringProps'
 
 export interface ChipProps extends StringProps<ButtonHTMLAttributes<HTMLButtonElement>> {
-  label?: ReactNode
-  children?: ReactNode
+  label?: ComponentChildren
+  children?: ComponentChildren
   selected?: boolean
   /** When provided, a separate trailing "remove" button is rendered alongside the chip. */
   onRemove?: () => void

@@ -1,9 +1,9 @@
-import { type ReactNode, useEffect, useId, useRef, useState } from 'react'
-import type { InputHTMLAttributes } from 'preact'
+import type { ComponentChildren, InputHTMLAttributes } from 'preact'
+import { useEffect, useId, useRef, useState } from 'preact/hooks'
 import type { StringProps } from './stringProps'
 
 export interface CheckboxProps extends StringProps<Omit<InputHTMLAttributes, 'type' | 'role'>> {
-  label?: ReactNode
+  label?: ComponentChildren
   labelPosition?: 'left' | 'right'
   /** Visual "mixed" state. Must be set imperatively on the DOM node, since HTML has no `indeterminate` attribute. */
   indeterminate?: boolean

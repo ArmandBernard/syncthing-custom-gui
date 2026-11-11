@@ -1,6 +1,6 @@
 import { Dialog } from '@components/ui/Dialog.tsx'
 import { TextField } from '@components/ui/TextField.tsx'
-import { useState } from 'react'
+import { useState } from 'preact/hooks'
 import type { FolderConfiguration } from '@lib/syncthing/types/config'
 import { Button } from '@components/ui/Button.tsx'
 import { useSyncthingMutation } from '@hooks/useSyncthingMutation.ts'

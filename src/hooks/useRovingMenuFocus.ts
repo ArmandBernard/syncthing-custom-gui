@@ -1,12 +1,5 @@
-import {
-  Children,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  type ReactNode,
-  type RefObject,
-} from 'react'
+import { toChildArray, type ComponentChildren, type RefObject } from 'preact'
+import { useCallback, useEffect, useRef, useState } from 'preact/hooks'
 import { isMenuItemElement, isMenuGroupElement } from '@components/ui/menu/menuChildGuards.ts'
 
 interface MenuFocusItem {
@@ -30,7 +23,7 @@ interface MenuFocusItem {
  * mouse-clicks a segment directly.
  */
 export function useRovingMenuFocus(
-  children: ReactNode,
+  children: ComponentChildren,
   containerRef: RefObject<HTMLElement | null>,
 ) {
   const [focusedIndex, setFocusedIndex] = useState(-1)
@@ -40,7 +33,7 @@ export function useRovingMenuFocus(
     timeout: null,
   })
 
-  const items = Children.toArray(children).reduce<MenuFocusItem[]>((acc, child, index) => {
+  const items = toChildArray(children).reduce<MenuFocusItem[]>((acc, child, index) => {
     if (isMenuItemElement(child)) {
       acc.push({
         index,

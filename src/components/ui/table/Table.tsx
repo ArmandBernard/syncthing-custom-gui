@@ -1,5 +1,5 @@
 import type { TableHTMLAttributes } from 'preact'
-import type { PropsWithChildren } from 'react'
+import type { PropsWithChildren } from 'preact/compat'
 
 // Tailwind only generates classes it can find as complete strings in the source,
 // so these must be written out in full rather than assembled at runtime.

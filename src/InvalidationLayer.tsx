@@ -1,5 +1,6 @@
 import { type QueryClient, useQueryClient } from '@tanstack/react-query'
-import { type PropsWithChildren, useCallback } from 'react'
+import { useCallback } from 'preact/hooks'
+import type { PropsWithChildren } from 'preact/compat'
 import { useSyncthingEvent } from '@hooks/useSyncthingEvent.ts'
 import { getEnumKeys } from '@lib/getEnumKeys.ts'
 import { getEnumEntries } from '@lib/getEnumEntries.ts'

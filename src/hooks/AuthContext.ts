@@ -1,4 +1,4 @@
-import { createContext } from 'react'
+import { createContext } from 'preact'
 import type { RequestOptions } from '@lib/syncthing/RequestOptions.ts'
 import type { EndpointMap } from '@lib/syncthing/endpoints.ts'
 import type { SyncthingApiError } from '@lib/syncthing/SyncthingApiError.ts'

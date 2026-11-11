@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect } from 'preact/hooks'
 import { hashKey, useQueryClient } from '@tanstack/react-query'
 import type { EndpointMap } from '@lib/syncthing/endpoints.ts'
 import type { RequestOptions } from '@lib/syncthing/RequestOptions.ts'

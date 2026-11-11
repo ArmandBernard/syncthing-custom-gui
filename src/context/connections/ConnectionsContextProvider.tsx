@@ -1,5 +1,5 @@
-import type { ReactNode } from 'react'
-import { useEffect, useState } from 'react'
+import type { ComponentChildren } from 'preact'
+import { useEffect, useState } from 'preact/hooks'
 import { useQueries } from '@tanstack/react-query'
 import { useSyncthingQuery } from '@hooks/useSyncthingQuery.ts'
 import { syncthingRequest } from '@lib/syncthing/syncthingRequest.ts'
@@ -11,7 +11,7 @@ const IDLE_POLL_INTERVAL = 15000
 // How long to keep polling fast after a transfer stops
 const TRANSFERRING_COOLDOWN = 10000
 
-export function ConnectionsContextProvider({ children }: { children: ReactNode }) {
+export function ConnectionsContextProvider({ children }: { children: ComponentChildren }) {
   const [wasTransferring, setWasTransferring] = useState(false)
   const [isCoolingDown, setIsCoolingDown] = useState(false)
 

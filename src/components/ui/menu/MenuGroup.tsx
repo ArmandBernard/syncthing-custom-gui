@@ -1,7 +1,7 @@
-import type { ReactNode } from 'react'
+import type { ComponentChildren } from 'preact'
 
 export interface MenuGroupProps {
-  children: ReactNode
+  children: ComponentChildren
   disabled?: boolean
   className?: string
   /** Internal: injected by Menu via cloneElement, do not pass directly. */

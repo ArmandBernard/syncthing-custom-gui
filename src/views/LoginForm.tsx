@@ -1,5 +1,5 @@
-import { useState } from 'react'
 import type { TargetedEvent } from 'preact'
+import { useState } from 'preact/hooks'
 import { Card } from '@components/ui/Card.tsx'
 import { TextField } from '@components/ui/TextField.tsx'
 import { Checkbox } from '@components/ui/Checkbox.tsx'

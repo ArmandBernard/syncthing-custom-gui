@@ -1,5 +1,5 @@
 import { CircularProgress } from './ui/Progress.tsx'
-import { useId } from 'react'
+import { useId } from 'preact/hooks'
 
 export function CircularProgressCentred({ name }: { name: string }) {
   const labelId = useId()

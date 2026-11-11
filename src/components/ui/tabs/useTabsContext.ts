@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext } from 'preact/hooks'
 import { TabsContext, type TabsContextValue } from './TabsContext'
 
 export function useTabsContext(): TabsContextValue {

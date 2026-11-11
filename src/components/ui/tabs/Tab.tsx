@@ -1,5 +1,4 @@
-import { type ReactNode } from 'react'
-import type { ButtonHTMLAttributes, TargetedKeyboardEvent } from 'preact'
+import type { ButtonHTMLAttributes, ComponentChildren, TargetedKeyboardEvent } from 'preact'
 import type { StringProps } from '../stringProps'
 import { useTabsContext } from './useTabsContext'
 
@@ -8,8 +7,8 @@ export interface TabProps extends StringProps<
 > {
   /** Identifies this tab and the `TabPanel` it controls — must match a `TabPanel`'s `value`. */
   value: string
-  label: ReactNode
-  icon?: ReactNode
+  label: ComponentChildren
+  icon?: ComponentChildren
 }
 
 /**

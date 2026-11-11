@@ -1,11 +1,12 @@
-import { useEffect, useId, useRef, type ReactNode } from 'react'
+import type { ComponentChildren } from 'preact'
+import { useEffect, useId, useRef } from 'preact/hooks'
 
 export interface DialogProps {
   open: boolean
   onClose: () => void
-  title: ReactNode
-  children: ReactNode
-  actions?: ReactNode
+  title: ComponentChildren
+  children: ComponentChildren
+  actions?: ComponentChildren
   centred?: boolean
   className?: string
 }

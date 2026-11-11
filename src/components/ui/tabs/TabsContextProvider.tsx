@@ -1,4 +1,5 @@
-import { type PropsWithChildren, useId } from 'preact/compat'
+import { useId } from 'preact/hooks'
+import type { PropsWithChildren } from 'preact/compat'
 import { TabsContext } from '@components/ui/tabs/TabsContext.ts'
 
 export function TabsContextProvider<T extends string>({

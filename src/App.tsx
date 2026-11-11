@@ -2,8 +2,7 @@ import { Header } from './views/header/Header.tsx'
 import { TransferHistoryContextProvider } from './context/transfer-history/TransferHistoryContextProvider.tsx'
 import { ConnectionsContextProvider } from './context/connections/ConnectionsContextProvider.tsx'
 import { DeviceIDContextProvider } from './context/device-id/DeviceIDContextProvider.tsx'
-import { lazy } from 'preact/compat'
-import { Suspense } from 'react'
+import { lazy, Suspense } from 'preact/compat'
 import { CircularProgressCentred } from '@components/CircularProgressCentred.tsx'
 
 const Dashboard = lazy(() => import('./Dashboard.tsx'))

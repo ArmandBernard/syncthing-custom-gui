@@ -1,8 +1,8 @@
-import type { ReactNode } from 'react'
+import type { ComponentChildren } from 'preact'
 import { useSyncthingQuery } from '@hooks/useSyncthingQuery.ts'
 import { DeviceIDContext } from './DeviceIdContext.ts'
 
-export function DeviceIDContextProvider({ children }: { children: ReactNode }) {
+export function DeviceIDContextProvider({ children }: { children: ComponentChildren }) {
   const { data: status } = useSyncthingQuery('GET /system/status')
 
   if (!status) {

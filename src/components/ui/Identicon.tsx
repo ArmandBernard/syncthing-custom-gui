@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react'
+import type { ComponentChildren } from 'preact'
 
 export function Identicon({
   id,
@@ -36,7 +36,7 @@ export function Identicon({
     )
   }
 
-  const children: ReactNode[] = []
+  const children: ComponentChildren[] = []
 
   if (id) {
     const onlyNumbersAndLetters = id.toString().replace(/[\W_]/g, '')

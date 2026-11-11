@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useState, type ReactNode } from 'react'
+import type { ComponentChildren } from 'preact'
+import { useCallback, useEffect, useState } from 'preact/hooks'
 import { getStoredTheme, setStoredTheme, type Theme } from '@lib/theme'
 import { ThemeContext } from './ThemeContext'
 
-export function ThemeProvider({ children }: { children: ReactNode }) {
+export function ThemeProvider({ children }: { children: ComponentChildren }) {
   const [theme, setThemeState] = useState<Theme>(() => getStoredTheme())
 
   useEffect(() => {
