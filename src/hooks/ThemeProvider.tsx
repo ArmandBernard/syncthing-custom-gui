@@ -1,5 +1,5 @@
 import type { ComponentChildren } from 'preact'
-import { useCallback, useEffect, useState } from 'preact/hooks'
+import { useCallback, useLayoutEffect, useState } from 'preact/hooks'
 import { useSystemPreferredTheme } from '@lib/useSystemPreferredTheme'
 import { getStoredTheme, setStoredTheme, type Theme } from '@lib/theme'
 import { ThemeContext } from './ThemeContext'
@@ -10,7 +10,8 @@ export function ThemeProvider({ children }: { children: ComponentChildren }) {
   const systemTheme = useSystemPreferredTheme()
   const effectiveTheme = theme === 'system' ? (systemTheme ?? 'light') : theme
 
-  useEffect(() => {
+  // Use a layoutEffect to block rendering until the theme is known
+  useLayoutEffect(() => {
     const root = document.documentElement
     root.classList.remove('light', 'dark')
     root.classList.add(effectiveTheme)
