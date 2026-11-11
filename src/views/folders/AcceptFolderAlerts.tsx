@@ -93,17 +93,47 @@ function AcceptFolderAlert({
   deviceDictionary: Map<DeviceID, DeviceConfiguration>
   onEditClick: (folderId: FolderID) => void
 }) {
-  const { mutateAsync: removeOffer, isPending: removeOfferIsPending } = useSyncthingMutation(
-    'DELETE /cluster/pending/folders',
+  const { mutateAsync: patchDevice, isPending: ignoreOfferIsPending } = useSyncthingMutation(
+    'PATCH /config/devices/:id',
   )
   const invalidate = useSyncthingInvalidate('GET /cluster/pending/folders')
   const offers = getEnumEntries(folder.offeredBy)
   const offerPair1 = offers[0]
   const [offer1Device, offer1Offer] = offerPair1
 
-  async function handleOnRemoveClick() {
-    await removeOffer({ query: { folder: folderID } })
-    await invalidate()
+  async function handleOnIgnoreClick() {
+    const now = new Date().toISOString()
+
+    const pendingQueries = []
+
+    for (const [deviceId, offer] of offers) {
+      const device = deviceDictionary.get(deviceId)
+
+      if (!device) {
+        continue
+      }
+      pendingQueries.push(
+        patchDevice({
+          params: { id: deviceId },
+          body: {
+            ignoredFolders: [
+              ...device.ignoredFolders,
+              {
+                time: now,
+                id: folderID,
+                label: offer.label,
+              },
+            ],
+          },
+        }),
+      )
+    }
+
+    try {
+      await Promise.all(pendingQueries)
+    } finally {
+      await invalidate()
+    }
   }
 
   function handleOnAddClick() {
@@ -129,8 +159,8 @@ function AcceptFolderAlert({
         <Button variant="filled" onClick={handleOnAddClick}>
           Add
         </Button>
-        <Button variant="tonal" disabled={removeOfferIsPending} onClick={handleOnRemoveClick}>
-          Dismiss
+        <Button variant="tonal" disabled={ignoreOfferIsPending} onClick={handleOnIgnoreClick}>
+          Ignore
         </Button>
       </div>
     </div>
