@@ -11,6 +11,7 @@ import { TabsContextProvider } from '@components/ui/tabs/TabsContextProvider.tsx
 import { AuthSettings } from './AuthSettings.tsx'
 import { IgnoredFolders, type IgnoredFolderRef } from './IgnoredFolders.tsx'
 import { useSyncthingBatchMutation } from '@hooks/useSyncthingBatchMutation.ts'
+import type { DeviceConfiguration } from '@lib/syncthing/types/config'
 
 type SettingsDialogTabs = 'auth' | 'ignored-folders'
 
@@ -24,10 +25,8 @@ export default function SettingsDialog({
   const [currentTab, setCurrentTab] = useState<SettingsDialogTabs>('auth')
   const [user, setUser] = useState<string>('')
   const [password, setPassword] = useState<string>('')
+  const [queuedFolderRemovals, setQueuedFolderRemovals] = useState<IgnoredFolderRef[]>([])
   const { logout } = useAuth()
-
-  // Deleted ignored folders are queued here, and only sent when Save is pressed.
-  const [removedIgnoredFolders, setRemovedIgnoredFolders] = useState<IgnoredFolderRef[]>([])
 
   const {
     mutateAsync,
@@ -48,32 +47,14 @@ export default function SettingsDialog({
   function handleClose() {
     setUser('')
     setPassword('')
-    setRemovedIgnoredFolders([])
+    setQueuedFolderRemovals([])
     onClose()
-  }
-
-  function buildUnignoreRequests() {
-    return (devices ?? []).flatMap((device) => {
-      const removed = removedIgnoredFolders.filter((r) => r.deviceId === device.deviceID)
-      if (removed.length === 0) {
-        return []
-      }
-
-      return {
-        params: { id: device.deviceID },
-        body: {
-          ignoredFolders: device.ignoredFolders.filter(
-            (folder) => !removed.some((r) => r.folderId === folder.id),
-          ),
-        },
-      }
-    })
   }
 
   async function handleSave() {
     // Before the GUI settings: changing the credentials logs the user out, which would
     // make any later request fail.
-    const unignoreRequests = buildUnignoreRequests()
+    const unignoreRequests = buildUnignoreRequests(devices, queuedFolderRemovals)
     if (unignoreRequests.length > 0) {
       await patchDevices(unignoreRequests)
     }
@@ -124,9 +105,9 @@ export default function SettingsDialog({
         </TabPanel>
         <TabPanel value="ignored-folders" className="pt-4">
           <IgnoredFolders
-            removed={removedIgnoredFolders}
+            removed={queuedFolderRemovals}
             onRemove={(ignoredFolder) =>
-              setRemovedIgnoredFolders((removed) => [...removed, ignoredFolder])
+              setQueuedFolderRemovals((removed) => [...removed, ignoredFolder])
             }
             error={error}
           />
@@ -134,4 +115,25 @@ export default function SettingsDialog({
       </TabsContextProvider>
     </Dialog>
   )
+}
+
+function buildUnignoreRequests(
+  devices: DeviceConfiguration[] | undefined,
+  queuedFolderRemovals: IgnoredFolderRef[],
+) {
+  return (devices ?? []).flatMap((device) => {
+    const removed = queuedFolderRemovals.filter((r) => r.deviceId === device.deviceID)
+    if (removed.length === 0) {
+      return []
+    }
+
+    return {
+      params: { id: device.deviceID },
+      body: {
+        ignoredFolders: device.ignoredFolders.filter(
+          (folder) => !removed.some((r) => r.folderId === folder.id),
+        ),
+      },
+    }
+  })
 }
