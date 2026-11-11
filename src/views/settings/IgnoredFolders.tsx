@@ -1,8 +1,4 @@
-import type {
-  DeviceConfiguration,
-  GUIConfiguration,
-  ObservedFolder,
-} from '@lib/syncthing/types/config'
+import type { DeviceConfiguration, ObservedFolder } from '@lib/syncthing/types/config'
 import type { SyncthingApiError } from '@lib/syncthing/SyncthingApiError.ts'
 import { ErrorAlert } from '@components/ui/ErrorAlert.tsx'
 import { useSyncthingQuery } from '@hooks/useSyncthingQuery.ts'
@@ -10,22 +6,37 @@ import { RelativeTime } from '@components/RelativeTime.tsx'
 import { Table } from '@components/ui/table/Table.tsx'
 import { IconButton } from '@components/ui/IconButton.tsx'
 import { DeleteIcon } from '@components/icons/DeleteIcon.tsx'
-import { useSyncthingMutation } from '@hooks/useSyncthingMutation.ts'
+
+/** Identifies one ignored folder: the same folder can be ignored by several devices. */
+export interface IgnoredFolderRef {
+  deviceId: string
+  folderId: string
+}
 
 interface IgnoredFoldersProps {
-  guiConfig: GUIConfiguration | undefined
+  /** Ignored folders queued for removal. They are hidden here, and removed when the settings are saved. */
+  removed: IgnoredFolderRef[]
+  onRemove: (ignoredFolder: IgnoredFolderRef) => void
   error: SyncthingApiError | null
 }
 
-export function IgnoredFolders({ error }: IgnoredFoldersProps) {
+function getAllIgnoredFolders(devices: DeviceConfiguration[] | undefined) {
+  return (
+    devices?.flatMap((device) =>
+      device.ignoredFolders.map((ignoredFolder) => ({
+        deviceId: device.deviceID,
+        deviceName: device.name,
+        ...ignoredFolder,
+      })),
+    ) ?? []
+  )
+}
+
+export function IgnoredFolders({ removed, onRemove, error }: IgnoredFoldersProps) {
   const { data: devices } = useSyncthingQuery('GET /config/devices')
 
-  const ignoredFolders = devices?.flatMap((device) =>
-    device.ignoredFolders.map((ignoredFolder) => ({
-      deviceId: device.deviceID,
-      deviceName: device.name,
-      ...ignoredFolder,
-    })),
+  const ignoredFolders = getAllIgnoredFolders(devices).filter(
+    (folder) => !removed.some((r) => r.deviceId === folder.deviceId && r.folderId === folder.id),
   )
 
   return (
@@ -41,8 +52,8 @@ export function IgnoredFolders({ error }: IgnoredFoldersProps) {
           </tr>
         </thead>
         <tbody className="contents">
-          {ignoredFolders?.map((folder) => (
-            <Row key={`${folder.deviceId}:${folder.id}`} folder={folder} devices={devices} />
+          {ignoredFolders.map((folder) => (
+            <Row key={`${folder.deviceId}:${folder.id}`} folder={folder} onRemove={onRemove} />
           ))}
         </tbody>
       </Table>
@@ -51,31 +62,17 @@ export function IgnoredFolders({ error }: IgnoredFoldersProps) {
   )
 }
 
-type RowRrops = {
+type RowProps = {
   folder: ObservedFolder & {
     deviceId: string
     deviceName: string
   }
-  devices: DeviceConfiguration[] | undefined
+  onRemove: (ignoredFolder: IgnoredFolderRef) => void
 }
 
-function Row({ folder, devices }: RowRrops) {
-  const { mutateAsync: patchDevice, isPending } = useSyncthingMutation('PATCH /config/devices/:id')
-
-  async function removeIgnoredFolder(deviceID: string, folderID: string) {
-    const device = devices?.find((d) => d.deviceID === deviceID)
-    if (!device) return
-
-    await patchDevice({
-      params: { id: deviceID },
-      body: {
-        ignoredFolders: device.ignoredFolders.filter((f) => f.id !== folderID),
-      },
-    })
-  }
-
+function Row({ folder, onRemove }: RowProps) {
   return (
-    <tr key={`${folder.deviceId}:${folder.id}`} className="contents">
+    <tr className="contents">
       <td>
         <code>{folder.id}</code>
       </td>
@@ -87,10 +84,9 @@ function Row({ folder, devices }: RowRrops) {
       <td className="justify-end pr-0!">
         <IconButton
           aria-label="Delete"
-          onClick={() => removeIgnoredFolder(folder.deviceId, folder.id)}
-          disabled={isPending}
+          onClick={() => onRemove({ deviceId: folder.deviceId, folderId: folder.id })}
         >
-          <DeleteIcon fill="var(--color-error)" />
+          <DeleteIcon />
         </IconButton>
       </td>
     </tr>

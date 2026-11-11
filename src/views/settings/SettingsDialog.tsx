@@ -9,7 +9,8 @@ import { Tab } from '@components/ui/tabs/Tab.tsx'
 import { TabPanel } from '@components/ui/tabs/TabPanel.tsx'
 import { TabsContextProvider } from '@components/ui/tabs/TabsContextProvider.tsx'
 import { AuthSettings } from './AuthSettings.tsx'
-import { IgnoredFolders } from './IgnoredFolders.tsx'
+import { IgnoredFolders, type IgnoredFolderRef } from './IgnoredFolders.tsx'
+import { useSyncthingBatchMutation } from '@hooks/useSyncthingBatchMutation.ts'
 
 type SettingsDialogTabs = 'auth' | 'ignored-folders'
 
@@ -25,16 +26,58 @@ export default function SettingsDialog({
   const [password, setPassword] = useState<string>('')
   const { logout } = useAuth()
 
-  const { mutateAsync, isPending, error } = useSyncthingMutation('PATCH /config/gui')
+  // Deleted ignored folders are queued here, and only sent when Save is pressed.
+  const [removedIgnoredFolders, setRemovedIgnoredFolders] = useState<IgnoredFolderRef[]>([])
+
+  const {
+    mutateAsync,
+    isPending: guiIsPending,
+    error: guiError,
+  } = useSyncthingMutation('PATCH /config/gui')
+  const {
+    mutateAsync: patchDevices,
+    isPending: devicesIsPending,
+    error: devicesError,
+  } = useSyncthingBatchMutation('PATCH /config/devices/:id')
   const { data: guiConfig } = useSyncthingQuery('GET /config/gui', { enabled: isOpen })
+  const { data: devices } = useSyncthingQuery('GET /config/devices', { enabled: isOpen })
+
+  const isPending = guiIsPending || devicesIsPending
+  const error = guiError ?? devicesError
 
   function handleClose() {
     setUser('')
     setPassword('')
+    setRemovedIgnoredFolders([])
     onClose()
   }
 
+  function buildUnignoreRequests() {
+    return (devices ?? []).flatMap((device) => {
+      const removed = removedIgnoredFolders.filter((r) => r.deviceId === device.deviceID)
+      if (removed.length === 0) {
+        return []
+      }
+
+      return {
+        params: { id: device.deviceID },
+        body: {
+          ignoredFolders: device.ignoredFolders.filter(
+            (folder) => !removed.some((r) => r.folderId === folder.id),
+          ),
+        },
+      }
+    })
+  }
+
   async function handleSave() {
+    // Before the GUI settings: changing the credentials logs the user out, which would
+    // make any later request fail.
+    const unignoreRequests = buildUnignoreRequests()
+    if (unignoreRequests.length > 0) {
+      await patchDevices(unignoreRequests)
+    }
+
     await mutateAsync({
       body: {
         ...(user !== '' ? { user: user } : {}),
@@ -80,7 +123,13 @@ export default function SettingsDialog({
           />
         </TabPanel>
         <TabPanel value="ignored-folders" className="pt-4">
-          <IgnoredFolders guiConfig={guiConfig} error={error} />
+          <IgnoredFolders
+            removed={removedIgnoredFolders}
+            onRemove={(ignoredFolder) =>
+              setRemovedIgnoredFolders((removed) => [...removed, ignoredFolder])
+            }
+            error={error}
+          />
         </TabPanel>
       </TabsContextProvider>
     </Dialog>

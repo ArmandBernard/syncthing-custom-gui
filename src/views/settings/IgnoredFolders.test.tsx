@@ -1,28 +1,19 @@
-import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/preact'
+import { cleanup, fireEvent, render, screen, within } from '@testing-library/preact'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { IgnoredFolders } from './IgnoredFolders.tsx'
+import { IgnoredFolders, type IgnoredFolderRef } from './IgnoredFolders.tsx'
 import { useSyncthingQuery } from '@hooks/useSyncthingQuery.ts'
 import { SyncthingApiError } from '@lib/syncthing/SyncthingApiError.ts'
 import type { DeviceConfiguration, ObservedFolder } from '@lib/syncthing/types/config'
 import type { ISODateTime } from '@lib/syncthing/types/common.ts'
 
-const patchDevice = vi.fn()
-const mutationState = { isPending: false }
-
 vi.mock('@hooks/useSyncthingQuery.ts', () => ({
   useSyncthingQuery: vi.fn(),
-}))
-
-vi.mock('@hooks/useSyncthingMutation.ts', () => ({
-  useSyncthingMutation: () => ({ mutateAsync: patchDevice, ...mutationState }),
 }))
 
 beforeEach(() => {
   // Only Date is faked: waitFor relies on real timers to poll.
   vi.useFakeTimers({ toFake: ['Date'] })
   vi.setSystemTime(new Date('2026-01-01T03:00:00Z'))
-  patchDevice.mockResolvedValue(undefined)
-  mutationState.isPending = false
   mockDevices(undefined)
 })
 
@@ -51,8 +42,13 @@ function device(
   return { deviceID, name, ignoredFolders } as DeviceConfiguration
 }
 
-function renderIgnoredFolders(error: SyncthingApiError | null = null) {
-  render(<IgnoredFolders guiConfig={undefined} error={error} />)
+function renderIgnoredFolders({
+  error = null,
+  removed = [],
+}: { error?: SyncthingApiError | null; removed?: IgnoredFolderRef[] } = {}) {
+  const onRemove = vi.fn()
+  render(<IgnoredFolders removed={removed} onRemove={onRemove} error={error} />)
+  return { onRemove }
 }
 
 /** The body rows only, without the header row. */
@@ -114,62 +110,47 @@ describe('IgnoredFolders', () => {
   })
 
   it('shows an error', () => {
-    renderIgnoredFolders(new SyncthingApiError(500, 'Boom'))
+    renderIgnoredFolders({ error: new SyncthingApiError(500, 'Boom') })
 
     expect(screen.getByText('500 Error')).toBeTruthy()
     expect(screen.getByText('Boom')).toBeTruthy()
   })
 
   describe('deleting an ignored folder', () => {
-    it('removes only that folder from the device', async () => {
+    it('queues the removal of that folder from that device, without sending anything', () => {
       mockDevices([device('DEV-A', 'Laptop', [folder('docs'), folder('photos'), folder('music')])])
-      renderIgnoredFolders()
+      const { onRemove } = renderIgnoredFolders()
 
       fireEvent.click(within(bodyRows()[1]).getByRole('button', { name: 'Delete' }))
 
-      await waitFor(() => expect(patchDevice).toHaveBeenCalledTimes(1))
-      expect(patchDevice).toHaveBeenCalledWith({
-        params: { id: 'DEV-A' },
-        body: { ignoredFolders: [folder('docs'), folder('music')] },
-      })
+      expect(onRemove).toHaveBeenCalledTimes(1)
+      expect(onRemove).toHaveBeenCalledWith({ deviceId: 'DEV-A', folderId: 'photos' })
     })
 
-    it('patches an empty list when removing the last ignored folder', async () => {
-      mockDevices([device('DEV-A', 'Laptop', [folder('docs')])])
-      renderIgnoredFolders()
-
-      fireEvent.click(screen.getByRole('button', { name: 'Delete' }))
-
-      await waitFor(() => expect(patchDevice).toHaveBeenCalled())
-      expect(patchDevice).toHaveBeenCalledWith({
-        params: { id: 'DEV-A' },
-        body: { ignoredFolders: [] },
-      })
-    })
-
-    it('patches the right device when several ignored the same folder', async () => {
+    it('queues the right device when several ignored the same folder', () => {
       mockDevices([
         device('DEV-A', 'Laptop', [folder('docs')]),
         device('DEV-B', 'Phone', [folder('docs'), folder('music')]),
       ])
-      renderIgnoredFolders()
+      const { onRemove } = renderIgnoredFolders()
 
       fireEvent.click(within(bodyRows()[1]).getByRole('button', { name: 'Delete' }))
 
-      await waitFor(() => expect(patchDevice).toHaveBeenCalledTimes(1))
-      expect(patchDevice).toHaveBeenCalledWith({
-        params: { id: 'DEV-B' },
-        body: { ignoredFolders: [folder('music')] },
-      })
+      expect(onRemove).toHaveBeenCalledWith({ deviceId: 'DEV-B', folderId: 'docs' })
     })
 
-    it('disables the delete buttons while a request is pending', () => {
-      mutationState.isPending = true
-      mockDevices([device('DEV-A', 'Laptop', [folder('docs')])])
-      renderIgnoredFolders()
+    it('hides folders that are queued for removal', () => {
+      mockDevices([
+        device('DEV-A', 'Laptop', [folder('docs'), folder('photos')]),
+        device('DEV-B', 'Phone', [folder('docs')]),
+      ])
+      renderIgnoredFolders({ removed: [{ deviceId: 'DEV-A', folderId: 'docs' }] })
 
-      const button = screen.getByRole('button', { name: 'Delete' }) as HTMLButtonElement
-      expect(button.disabled).toBe(true)
+      const rows = bodyRows()
+      expect(rows).toHaveLength(2)
+      expect(within(rows[0]).getByText('photos')).toBeTruthy()
+      // the same folder ignored by another device is a different entry, and stays
+      expect(within(rows[1]).getByText('Phone')).toBeTruthy()
     })
   })
 })
