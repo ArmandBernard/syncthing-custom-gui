@@ -11,6 +11,10 @@ import { useSyncthingInvalidate } from '@hooks/useSyncthingInvalidate.ts'
 import ListItem from '@components/ui/ListItem.tsx'
 import { useDeviceID } from '@context/device-id/useDeviceID.ts'
 import { ErrorAlert } from '@components/ui/ErrorAlert.tsx'
+import { IconButton } from '@components/ui/IconButton.tsx'
+import { CopyIcon } from '@components/icons/CopyIcon.tsx'
+import { useSnackbar } from '@hooks/useSnackbar.ts'
+import copyToClipboard from '@lib/copyToClipboard.ts'
 
 export function Folder({
   folder,
@@ -23,6 +27,7 @@ export function Folder({
 }) {
   const [expanded, setExpanded] = useState<boolean>(false)
   const myDeviceID = useDeviceID()
+  const snackbar = useSnackbar()
 
   const { data: status } = useSyncthingQuery('GET /db/status', { query: { folder: folder.id } })
   const { mutateAsync: scanAsync, isPending: scanAsyncIsPending } =
@@ -31,6 +36,11 @@ export function Folder({
 
   function handleEditClick() {
     onEditClick()
+  }
+
+  async function handlePathCopy() {
+    await copyToClipboard(folder.path)
+    snackbar.show('Path copied to clipboard')
   }
 
   async function handleRescanClick() {
@@ -54,7 +64,22 @@ export function Folder({
       <div className="flex flex-col gap-4">
         {status?.error && <ErrorAlert error={new Error(status?.error)} />}
         <ul>
-          <ListItem leftSlot="Path" rightSlot={folder.path} />
+          <ListItem
+            leftSlot="Path"
+            rightSlot={
+              <span className="flex gap-1 items-baseline">
+                {folder.path}
+                <IconButton
+                  className="p-0! self-center"
+                  aria-label="Copy path"
+                  title="Copy path"
+                  onClick={handlePathCopy}
+                >
+                  <CopyIcon className="h-5 w-5" />
+                </IconButton>
+              </span>
+            }
+          />
           {status && (
             <ListItem
               leftSlot="Contents"
