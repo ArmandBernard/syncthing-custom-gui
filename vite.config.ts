@@ -49,5 +49,17 @@ export default defineConfig(({ mode }) => ({
   // Inlined so the preact/compat alias applies to react-query's own 'react' imports.
   test: { environment: 'happy-dom', server: { deps: { inline: ['@tanstack/react-query'] } } },
   server: { proxy },
-  preview: { proxy },
+  // `vite preview` serves dist/index.html itself, but refreshCsrfCookie() only uses the
+  // dev bootstrap path when import.meta.env.DEV is set. In preview it fetches /index.html,
+  // which must reach Syncthing (as it does in production) to receive the CSRF cookie.
+  preview: {
+    proxy: {
+      ...proxy,
+      '^/index\\.html$': {
+        target: 'https://127.0.0.1:8384',
+        changeOrigin: true,
+        secure: false,
+      },
+    },
+  },
 }))
